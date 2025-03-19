@@ -1,159 +1,110 @@
-import React, { useState } from 'react';
-import PhotoCard from '@/components/PhotoCard'
-import FullscreenModal from '@/components/FullscreenModal'
+"use client"; // Mark this component as a client-side component
 
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
+import PhotoCard from '@/components/PhotoCard';
+import FullscreenModal from '@/components/FullscreenModal';
 
 const mockPhotos = [
   {
     id: '1',
     src: '/images/wildlife/RedPanda.JPG',
-    alt: 'Sample photo 1',
-    title: 'Morning Light',
-    description: 'Captured during sunrise'
-  },
-  {
-    id: '2',
-    src: '/images/random.jpg',
-    alt: 'Sample photo 2',
-    title: 'Urban Landscape',
-    description: 'City view at dusk'
+    alt: 'Photo 1',
   },
   {
     id: '3',
     src: '/images/wildlife/DSC_0011.JPG',
-    alt: 'Sample photo 3',
-    title: 'DSC 0011',
-    description: 'Wildlife photo 1'
+    alt: 'Photo 3',
   },
   {
     id: '4',
     src: '/images/wildlife/DSC_0025.JPG',
-    alt: 'Sample photo 4',
-    title: 'DSC 0025',
-    description: 'Wildlife photo 2'
+    alt: 'Photo 4',
   },
   {
     id: '5',
     src: '/images/wildlife/DSC_0036.JPG',
-    alt: 'Sample photo 5',
-    title: 'DSC 0036',
-    description: 'Wildlife photo 3'
+    alt: 'Photo 5',
   },
   {
     id: '6',
     src: '/images/wildlife/DSC_0083.JPG',
-    alt: 'Sample photo 6',
-    title: 'DSC 0083',
-    description: 'Wildlife photo 4'
+    alt: 'Photo 6',
   },
   {
     id: '7',
     src: '/images/wildlife/DSC_0086.JPG',
-    alt: 'Sample photo 7',
-    title: 'DSC 0086',
-    description: 'Wildlife photo 5'
+    alt: 'Photo 7',
   },
   {
     id: '8',
     src: '/images/wildlife/DSC_0087.JPG',
-    alt: 'Sample photo 8',
-    title: 'DSC 0087',
-    description: 'Wildlife photo 6'
+    alt: 'Photo 8',
   },
   {
     id: '9',
     src: '/images/wildlife/DSC_0160.JPG',
-    alt: 'Sample photo 9',
-    title: 'DSC 0160',
-    description: 'Wildlife photo 7'
+    alt: 'Photo 9',
   },
   {
     id: '10',
     src: '/images/wildlife/DSC_0189.JPG',
-    alt: 'Sample photo 10',
-    title: 'DSC 0189',
-    description: 'Wildlife photo 8'
+    alt: 'Photo 10',
   },
   {
     id: '11',
     src: '/images/wildlife/DSC_0212.JPG',
-    alt: 'Sample photo 11',
-    title: 'DSC 0212',
-    description: 'Wildlife photo 9'
+    alt: 'Photo 11',
   },
   {
     id: '12',
     src: '/images/wildlife/DSC_0228.JPG',
-    alt: 'Sample photo 12',
-    title: 'DSC 0228',
-    description: 'Wildlife photo 10'
+    alt: 'Photo 12',
   },
   {
     id: '13',
     src: '/images/wildlife/DSC_0259.JPG',
-    alt: 'Sample photo 13',
-    title: 'DSC 0259',
-    description: 'Wildlife photo 11'
+    alt: 'Photo 13',
   },
   {
     id: '14',
     src: '/images/wildlife/DSC_0457.JPG',
-    alt: 'Sample photo 14',
-    title: 'DSC 0457',
-    description: 'Wildlife photo 12'
+    alt: 'Photo 14',
   },
   {
     id: '15',
     src: '/images/wildlife/DSC_0539.JPG',
-    alt: 'Sample photo 15',
-    title: 'DSC 0539',
-    description: 'Wildlife photo 13'
+    alt: 'Photo 15',
   },
   {
     id: '16',
     src: '/images/wildlife/DSC_0995.JPG',
-    alt: 'Sample photo 16',
-    title: 'DSC 0995',
-    description: 'Wildlife photo 14'
+    alt: 'Photo 16',
   },
   {
     id: '17',
     src: '/images/wildlife/Elephants.JPG',
-    alt: 'Sample photo 17',
-    title: 'Elephants',
-    description: 'Wildlife photo 15'
+    alt: 'Photo 17',
   },
   {
     id: '18',
     src: '/images/wildlife/Fishes.JPG',
-    alt: 'Sample photo 18',
-    title: 'Fishes',
-    description: 'Wildlife photo 16'
+    alt: 'Photo 18',
   },
   {
     id: '19',
     src: '/images/wildlife/Fox.JPG',
-    alt: 'Sample photo 19',
-    title: 'Fox',
-    description: 'Wildlife photo 17'
+    alt: 'Photo 19',
   },
   {
     id: '20',
     src: '/images/wildlife/picture.jpg',
-    alt: 'Sample photo 20',
-    title: 'Picture',
-    description: 'Wildlife photo 18'
+    alt: 'Photo 20',
   },
-  {
-    id: '21',
-    src: '/images/wildlife/RedPanda.JPG',
-    alt: 'Sample photo 21',
-    title: 'Red Panda',
-    description: 'Wildlife photo 19'
-  },
-]
+];
 
 export default function WildlifeGallery() {
+  const router = useRouter(); // Initialize the router
   const categoryTitle = 'Wildlife';
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -183,23 +134,40 @@ export default function WildlifeGallery() {
     }
   };
 
+  const handleBack = () => {
+    router.push('/gallery'); // Navigate back to the gallery home page
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">{categoryTitle} Photography</h1>
-      
+      {/* Title and Back Button Container */}
+      <div className="flex items-center justify-center mb-8 relative">
+        {/* Back Button */}
+        <button
+          onClick={handleBack}
+          className="text-gray-600 hover:text-gray-900 flex items-center transition-colors absolute left-0"
+        >
+          <span className="mr-2">&#8592;</span> {/* Left arrow icon */}
+          Back to Gallery
+        </button>
+
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-center">{categoryTitle} Photography</h1>
+      </div>
+
+      {/* Gallery Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockPhotos.map((photo, index) => (
           <div key={photo.id} onClick={() => openModal(index)}>
             <PhotoCard
               src={photo.src}
               alt={photo.alt}
-              title={photo.title}
-              description={photo.description}
             />
           </div>
         ))}
       </div>
 
+      {/* Fullscreen Modal */}
       <FullscreenModal
         isOpen={isModalOpen}
         currentImage={currentImage}
@@ -211,4 +179,4 @@ export default function WildlifeGallery() {
       />
     </div>
   );
-} 
+}
