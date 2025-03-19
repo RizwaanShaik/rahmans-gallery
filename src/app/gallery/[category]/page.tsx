@@ -4,14 +4,14 @@ import PhotoCard from '@/components/PhotoCard'
 const mockPhotos = [
   {
     id: '1',
-    src: '/placeholder-1.jpg',
+    src: '/images/random.jpg',
     alt: 'Sample photo 1',
     title: 'Morning Light',
     description: 'Captured during sunrise'
   },
   {
     id: '2',
-    src: '/placeholder-2.jpg',
+    src: '/images/random.jpg',
     alt: 'Sample photo 2',
     title: 'Urban Landscape',
     description: 'City view at dusk'

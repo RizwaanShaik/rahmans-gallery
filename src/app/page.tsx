@@ -6,25 +6,25 @@ const categories = [
     id: 'nature',
     title: 'Nature Photography',
     description: 'Capturing the beauty of landscapes and wildlife',
-    image: '/placeholder-nature.jpg'
+    image: '/images/random.jpg'
   },
   {
     id: 'portrait',
     title: 'Portraits',
     description: 'Human expressions and emotions',
-    image: '/placeholder-portrait.jpg'
+    image: '/images/random.jpg'
   },
   {
     id: 'architecture',
     title: 'Architecture',
     description: 'Structural beauty and urban landscapes',
-    image: '/placeholder-architecture.jpg'
+    image: '/images/random.jpg'
   },
   {
     id: 'abstract',
     title: 'Abstract',
     description: 'Artistic and conceptual photography',
-    image: '/placeholder-abstract.jpg'
+    image: '/images/random.jpg'
   }
 ]
 
