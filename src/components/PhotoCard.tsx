@@ -14,7 +14,7 @@ export default function PhotoCard({ src, alt, title, description, onClick }: Pho
       className="group cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
       onClick={onClick}
     >
-      <div className="aspect-w-4 aspect-h-3 relative">
+      <div className="relative w-full aspect-[4/3]">
         <Image
           src={src}
           alt={alt}
