@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
 export default function About() {
   return (
@@ -6,13 +6,17 @@ export default function About() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center">About Professor Rahman</h1>
         
-        <div className="mb-12 relative w-full h-[400px]">
-          <Image
-            src="/placeholder-profile.jpg"
-            alt="Professor Rahman"
-            fill
-            className="object-cover rounded-lg"
-          />
+        {/* Image Container */}
+        <div className="mb-12 relative w-[300px] h-[400px] mx-auto">
+          <div className="relative w-full h-full overflow-hidden rounded-[50%]">
+            <Image
+              src="/images/about/IMG_0020.JPG"
+              alt="Professor Rahman"
+              fill
+              className="object-cover"
+              style={{ objectPosition: 'center' }} // Ensure the image is centered
+            />
+          </div>
         </div>
 
         <div className="prose prose-lg mx-auto">
@@ -45,5 +49,5 @@ export default function About() {
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

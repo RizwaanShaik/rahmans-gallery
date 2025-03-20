@@ -1,7 +1,7 @@
 "use client";
 
-import Link from 'next/link'
-import { useState } from 'react'
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -13,7 +13,7 @@ export default function Navigation() {
           <Link href="/" className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors">
             Rahman Gallery
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
             <Link href="/" className="text-gray-600 hover:text-gray-800 transition-colors">
@@ -24,6 +24,9 @@ export default function Navigation() {
             </Link>
             <Link href="/about" className="text-gray-600 hover:text-gray-800 transition-colors">
               About
+            </Link>
+            <Link href="/contact" className="text-gray-600 hover:text-gray-800 transition-colors">
+              Contact
             </Link>
           </div>
 
@@ -53,30 +56,37 @@ export default function Navigation() {
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden py-2 space-y-1 border-t border-gray-200">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="block px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Home
             </Link>
-            <Link 
-              href="/gallery" 
+            <Link
+              href="/gallery"
               className="block px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Gallery
             </Link>
-            <Link 
-              href="/about" 
+            <Link
+              href="/about"
               className="block px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               About
             </Link>
+            <Link
+              href="/contact"
+              className="block px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Contact
+            </Link>
           </div>
         )}
       </div>
     </nav>
-  )
-} 
+  );
+}

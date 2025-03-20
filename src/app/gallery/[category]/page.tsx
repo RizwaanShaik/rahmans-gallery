@@ -104,7 +104,7 @@ const mockPhotos = [
 ];
 
 export default function WildlifeGallery() {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
   const categoryTitle = 'Wildlife';
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -135,20 +135,21 @@ export default function WildlifeGallery() {
   };
 
   const handleBack = () => {
-    router.push('/gallery'); // Navigate back to the gallery home page
+    router.push('/gallery');
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Title and Back Button Container */}
       <div className="flex items-center justify-center mb-8 relative">
-        {/* Back Button */}
+        {/* Back Button - Arrow only on mobile, full text on larger screens */}
         <button
           onClick={handleBack}
           className="text-gray-600 hover:text-gray-900 flex items-center transition-colors absolute left-0"
+          aria-label="Back to Gallery"
         >
-          <span className="mr-2">&#8592;</span> {/* Left arrow icon */}
-          Back to Gallery
+          <span className="text-2xl">&#8592;</span> {/* Left arrow icon */}
+          <span className="hidden sm:inline ml-2">Back to Gallery</span> {/* Text hidden on mobile */}
         </button>
 
         {/* Title */}
@@ -156,7 +157,7 @@ export default function WildlifeGallery() {
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {mockPhotos.map((photo, index) => (
           <div key={photo.id} onClick={() => openModal(index)}>
             <PhotoCard
