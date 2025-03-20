@@ -1,6 +1,6 @@
 "use client"; // Mark this component as a client-side component
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 
 export default function ContactPage() {
@@ -196,7 +196,7 @@ export default function ContactPage() {
               </svg>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
               <p className="text-gray-600">
-                Thank you for your message. I'll get back to you as soon as possible.
+                Thank you for your message. I&apos;ll get back to you as soon as possible.
               </p>
             </div>
           </div>

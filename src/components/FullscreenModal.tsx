@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, TouchEvent } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 
 interface FullscreenModalProps {
@@ -25,6 +25,22 @@ export default function FullscreenModal({
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const handleNext = useCallback(() => {
+    setFade(true);
+    setTimeout(() => {
+      onNext();
+      setFade(false);
+    }, 300); // Match the duration in the CSS transition
+  }, [onNext]);
+
+  const handlePrev = useCallback(() => {
+    setFade(true);
+    setTimeout(() => {
+      onPrev();
+      setFade(false);
+    }, 300); // Match the duration in the CSS transition
+  }, [onPrev]);
+
   // Handle keyboard events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -47,7 +63,7 @@ export default function FullscreenModal({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, onNext, onPrev]);
+  }, [isOpen, onClose, handleNext, handlePrev]);
 
   // Handle browser back button
   useEffect(() => {
@@ -64,22 +80,6 @@ export default function FullscreenModal({
       window.removeEventListener('popstate', handlePopState);
     };
   }, [isOpen, onClose]);
-
-  const handleNext = () => {
-    setFade(true);
-    setTimeout(() => {
-      onNext();
-      setFade(false);
-    }, 300); // Match the duration in the CSS transition
-  };
-
-  const handlePrev = () => {
-    setFade(true);
-    setTimeout(() => {
-      onPrev();
-      setFade(false);
-    }, 300); // Match the duration in the CSS transition
-  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -123,6 +123,11 @@ export default function FullscreenModal({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
+
+      {/* Swipe indicator for mobile - only shows on smaller screens */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 md:hidden bg-black/40 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
+        Swipe to navigate
+      </div>
 
       {/* Main Image Container */}
       <div className="relative w-full h-full flex items-center justify-center">
