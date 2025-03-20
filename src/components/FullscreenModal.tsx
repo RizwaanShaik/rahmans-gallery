@@ -109,13 +109,13 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Navigation Arrows - Improved visibility on mobile */}
+      {/* Navigation Arrows - Show only on desktop */}
       <button 
         onClick={onPrev} 
         disabled={currentIndex === 0} 
         className={`absolute left-2 sm:left-10 top-1/2 transform -translate-y-1/2 text-white
                     text-4xl sm:text-5xl p-2 rounded-full bg-black/30 hover:bg-black/50
-                    transition-all duration-300 ${currentIndex === 0 ? 'opacity-30' : 'opacity-75 hover:opacity-100'}`}
+                    transition-all duration-300 ${currentIndex === 0 ? 'opacity-30' : 'opacity-75 hover:opacity-100'} hidden sm:block`}
         aria-label="Previous image"
       >
         &#9664; {/* Left Arrow */}
@@ -125,7 +125,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
         disabled={currentIndex === totalImages - 1} 
         className={`absolute right-2 sm:right-10 top-1/2 transform -translate-y-1/2 text-white
                     text-4xl sm:text-5xl p-2 rounded-full bg-black/30 hover:bg-black/50
-                    transition-all duration-300 ${currentIndex === totalImages - 1 ? 'opacity-30' : 'opacity-75 hover:opacity-100'}`}
+                    transition-all duration-300 ${currentIndex === totalImages - 1 ? 'opacity-30' : 'opacity-75 hover:opacity-100'} hidden sm:block`}
         aria-label="Next image"
       >
         &#9654; {/* Right Arrow */}
