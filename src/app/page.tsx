@@ -1,32 +1,5 @@
-import Link from 'next/link'
 import Image from 'next/image'
-
-const categories = [
-  {
-    id: 'nature',
-    title: 'Nature Photography',
-    description: 'Capturing the beauty of landscapes and wildlife',
-    image: '/images/random.jpg'
-  },
-  {
-    id: 'portrait',
-    title: 'Portraits',
-    description: 'Human expressions and emotions',
-    image: '/images/random.jpg'
-  },
-  {
-    id: 'architecture',
-    title: 'Architecture',
-    description: 'Structural beauty and urban landscapes',
-    image: '/images/random.jpg'
-  },
-  {
-    id: 'abstract',
-    title: 'Abstract',
-    description: 'Artistic and conceptual photography',
-    image: '/images/random.jpg'
-  }
-]
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -39,41 +12,46 @@ export default function Home() {
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
           A curated collection of photographs capturing moments of beauty, emotion, and wonder through the lens of a passionate photographer and educator.
         </p>
+        <Link 
+          href="/gallery" 
+          className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+        >
+          Explore Gallery
+        </Link>
       </section>
 
-      {/* Categories Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 py-12">
-        {categories.map((category) => (
-          <Link 
-            key={category.id}
-            href={`/gallery/${category.id}`}
-            className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            <div className="aspect-w-16 aspect-h-9 relative">
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all duration-300 z-10" />
-              <Image
-                src={category.image}
-                alt={category.title}
-                fill
-                className="object-cover transform group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2">{category.title}</h3>
-                <p className="text-sm text-gray-200">{category.description}</p>
-              </div>
-            </div>
-          </Link>
-        ))}
+      {/* Featured Image Section */}
+      <section className="py-16">
+        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
+          <Image
+            src="/images/wildlife/RedPanda.JPG"
+            alt="Featured Photography"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <h2 className="text-3xl font-bold mb-2">Discover the Collection</h2>
+            <p className="text-lg text-gray-200">Explore a diverse portfolio of wildlife, portraits, architecture, and abstract photography.</p>
+          </div>
+        </div>
       </section>
 
-      {/* About Section */}
+      {/* About Preview Section */}
       <section className="py-20 text-center">
         <h2 className="text-3xl font-bold mb-6">About Professor Rahman</h2>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
           This gallery is dedicated to preserving and sharing the photographic legacy of Professor Rahman, 
           who captured life&apos;s beautiful moments through his lens until 2021. His work continues to inspire 
           and touch hearts through this digital collection.
         </p>
+        <Link 
+          href="/about" 
+          className="inline-block border-2 border-gray-800 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+        >
+          Learn More
+        </Link>
       </section>
     </div>
   )
