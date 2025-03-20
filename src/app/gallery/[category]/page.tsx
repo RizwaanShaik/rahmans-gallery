@@ -5,6 +5,12 @@ import { useRouter, useParams } from 'next/navigation'; // Import useParams
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
 
+// Import directly based on the category
+const getPhotosByCategory = (category: string) => {
+  // For now using mock data
+  return mockPhotos;
+};
+
 const mockPhotos = [
   {
     id: '1',
@@ -103,7 +109,7 @@ const mockPhotos = [
   },
 ];
 
-export default function WildlifeGallery() {
+export default function CategoryGallery() {
   const router = useRouter();
   const params = useParams(); // Get URL parameters
   const categoryId = params?.category as string || 'wildlife';
@@ -117,6 +123,7 @@ export default function WildlifeGallery() {
   };
   
   const categoryTitle = categoryTitles[categoryId] || 'Photography';
+  const photos = getPhotosByCategory(categoryId);
   
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -129,27 +136,26 @@ export default function WildlifeGallery() {
   }, [params]);
 
   const openModal = (index: number) => {
-    setCurrentImage(mockPhotos[index].src);
+    setCurrentImage(photos[index].src);
     setCurrentIndex(index);
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
-    // Just close the modal, don't navigate
   };
 
   const nextImage = () => {
-    if (currentIndex < mockPhotos.length - 1) {
+    if (currentIndex < photos.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setCurrentImage(mockPhotos[currentIndex + 1].src);
+      setCurrentImage(photos[currentIndex + 1].src);
     }
   };
 
   const prevImage = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setCurrentImage(mockPhotos[currentIndex - 1].src);
+      setCurrentImage(photos[currentIndex - 1].src);
     }
   };
 
@@ -191,7 +197,7 @@ export default function WildlifeGallery() {
 
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {mockPhotos.map((photo, index) => (
+        {photos.map((photo, index) => (
           <div key={photo.id} onClick={() => openModal(index)}>
             <PhotoCard
               src={photo.src}
@@ -208,7 +214,7 @@ export default function WildlifeGallery() {
         onClose={closeModal}
         onNext={nextImage}
         onPrev={prevImage}
-        totalImages={mockPhotos.length}
+        totalImages={photos.length}
         currentIndex={currentIndex}
       />
     </div>

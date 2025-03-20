@@ -11,7 +11,7 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors">
-            Rahman Gallery
+            Rahman's Gallery
           </Link>
 
           {/* Desktop Navigation */}
