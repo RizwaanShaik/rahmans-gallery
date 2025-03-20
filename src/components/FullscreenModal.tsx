@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, TouchEvent } from 'react';
+import Image from 'next/image';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
   // Prevent back navigation gesture
   useEffect(() => {
     if (isOpen && modalRef.current) {
-      const handlePopState = (e: PopStateEvent) => {
+      const handlePopState = () => {
         // Prevent the default action
         window.history.pushState(null, document.title, window.location.href);
         // Close the modal instead
@@ -140,13 +141,23 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
         &times; {/* X Character */}
       </button>
 
+      {/* Swipe instruction for mobile - shows briefly */}
+      <div className="absolute bottom-4 inset-x-0 text-center text-white text-sm px-4 py-2 bg-black/50 mx-auto max-w-xs rounded-full sm:hidden">
+        Swipe to navigate
+      </div>
+
       {/* Image */}
       <div className="relative flex items-center justify-center">
-        <img
-          src={currentImage}
-          alt={`Fullscreen view`}
-          className={`max-w-[90vw] max-h-[80vh] rounded-lg shadow-lg transition-opacity duration-300 ${fade ? 'opacity-0' : 'opacity-100'}`}
-        />
+        <div className="relative max-w-[90vw] max-h-[80vh]">
+          <Image
+            src={currentImage}
+            alt="Fullscreen view"
+            width={1200}
+            height={800}
+            className={`rounded-lg shadow-lg transition-opacity duration-300 object-contain ${fade ? 'opacity-0' : 'opacity-100'}`}
+            priority
+          />
+        </div>
         
         {/* Image Counter */}
         <div className="absolute -bottom-8 inset-x-0 text-center text-white">

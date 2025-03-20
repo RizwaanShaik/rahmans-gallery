@@ -1,13 +1,18 @@
 "use client"; // Mark this component as a client-side component
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation'; // Import useParams
+import { useRouter, useParams } from 'next/navigation';
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
 
 // Import directly based on the category
-const getPhotosByCategory = (category: string) => {
+const getPhotosByCategory = (categoryId: string) => {
+  // In a real application, we would filter photos based on categoryId
+  console.log(`Loading photos for category: ${categoryId}`);
+  
   // For now using mock data
+  // In a production app, you could filter photos by category here
+  // or load different photo sets based on categoryId
   return mockPhotos;
 };
 
@@ -111,7 +116,7 @@ const mockPhotos = [
 
 export default function CategoryGallery() {
   const router = useRouter();
-  const params = useParams(); // Get URL parameters
+  const params = useParams();
   const categoryId = params?.category as string || 'wildlife';
   
   // Map category ID to display title
