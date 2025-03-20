@@ -1,5 +1,7 @@
-import Image from 'next/image'
-import Link from 'next/link'
+"use client";
+
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -38,6 +40,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Wildlife Section */}
+      <section className="py-16">
+        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
+          <Image
+            src="/images/wildlife/hero.JPG"
+            alt="Wildlife Photography"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <h2 className="text-3xl font-bold mb-2">Wildlife Photography</h2>
+            <p className="text-lg text-gray-200">Discover the beauty of nature through wildlife photography.</p>
+            <Link
+              href="/gallery/wildlife"
+              className="inline-block mt-4 bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Explore Wildlife
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Architecture Section */}
+      <section className="py-16">
+        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
+          <Image
+            src="/images/architecture/hero.JPG"
+            alt="Architecture Photography"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <h2 className="text-3xl font-bold mb-2">Architecture</h2>
+            <p className="text-lg text-gray-200">Explore the world of architectural marvels.</p>
+            <Link
+              href="/gallery/architecture"
+              className="inline-block mt-4 bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Explore Architecture
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* About Preview Section */}
       <section className="py-20 text-center">
         <h2 className="text-3xl font-bold mb-6">About Professor Rahman</h2>
@@ -54,5 +104,5 @@ export default function Home() {
         </Link>
       </section>
     </div>
-  )
+  );
 }
