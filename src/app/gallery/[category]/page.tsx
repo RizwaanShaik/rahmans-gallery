@@ -1,7 +1,7 @@
 "use client"; // Mark this component as a client-side component
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation'; // Import useParams
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
 
@@ -105,10 +105,28 @@ const mockPhotos = [
 
 export default function WildlifeGallery() {
   const router = useRouter();
-  const categoryTitle = 'Wildlife';
+  const params = useParams(); // Get URL parameters
+  const categoryId = params?.category as string || 'wildlife';
+  
+  // Map category ID to display title
+  const categoryTitles: {[key: string]: string} = {
+    'wildlife': 'Wildlife',
+    'portrait': 'Portrait',
+    'architecture': 'Architecture',
+    'abstract': 'Abstract'
+  };
+  
+  const categoryTitle = categoryTitles[categoryId] || 'Photography';
+  
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Prevent unintended navigation when component mounts or URL params change
+  useEffect(() => {
+    // This is just to ensure the component doesn't trigger navigation on initial render
+    // or when params change
+  }, [params]);
 
   const openModal = (index: number) => {
     setCurrentImage(mockPhotos[index].src);
@@ -118,6 +136,7 @@ export default function WildlifeGallery() {
 
   const closeModal = () => {
     setModalOpen(false);
+    // Just close the modal, don't navigate
   };
 
   const nextImage = () => {
@@ -140,19 +159,33 @@ export default function WildlifeGallery() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Title and Back Button Container */}
-      <div className="flex items-center justify-center mb-8 relative">
-        {/* Back Button - Arrow only on mobile, full text on larger screens */}
+      {/* Mobile-optimized header for smaller screens */}
+      <div className="sm:hidden mb-6">
+        <div className="flex items-center">
+          <button
+            onClick={handleBack}
+            className="bg-white rounded-full shadow p-2 mr-3 flex-shrink-0 text-gray-700 hover:text-gray-900 transition-colors"
+            aria-label="Back to Gallery"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold truncate">{categoryTitle} Photography</h1>
+        </div>
+      </div>
+
+      {/* Desktop header for larger screens */}
+      <div className="hidden sm:flex items-center justify-center mb-8 relative">
         <button
           onClick={handleBack}
           className="text-gray-600 hover:text-gray-900 flex items-center transition-colors absolute left-0"
           aria-label="Back to Gallery"
         >
-          <span className="text-2xl">&#8592;</span> {/* Left arrow icon */}
-          <span className="hidden sm:inline ml-2">Back to Gallery</span> {/* Text hidden on mobile */}
+          <span className="mr-2">&#8592;</span>
+          <span>Back to Gallery</span>
         </button>
 
-        {/* Title */}
         <h1 className="text-3xl font-bold text-center">{categoryTitle} Photography</h1>
       </div>
 
