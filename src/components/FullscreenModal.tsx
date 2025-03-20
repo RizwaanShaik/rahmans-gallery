@@ -11,7 +11,7 @@ interface FullscreenModalProps {
   currentIndex: number;
 }
 
-const FullscreenModal: React.FC<FullscreenModalProps> = ({
+export default function FullscreenModal({
   isOpen,
   currentImage,
   onClose,
@@ -19,86 +19,88 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
   onPrev,
   totalImages,
   currentIndex,
-}) => {
+}: FullscreenModalProps) {
   const [fade, setFade] = useState(false);
-  const touchStartX = useRef<number | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Handle keyboard navigation
+  // Handle keyboard events
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') {
-        onNext();
-      } else if (event.key === 'ArrowLeft') {
-        onPrev();
-      } else if (event.key === 'Escape') {
-        onClose();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      
+      switch (e.key) {
+        case 'ArrowRight':
+          handleNext();
+          break;
+        case 'ArrowLeft':
+          handlePrev();
+          break;
+        case 'Escape':
+          onClose();
+          break;
+        default:
+          break;
       }
     };
 
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose, onNext, onPrev]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = () => {
+      onClose();
+    };
+
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.history.pushState({ modal: true }, '');
+      window.addEventListener('popstate', handlePopState);
     }
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handlePopState);
     };
-  }, [isOpen, onNext, onPrev, onClose]);
-
-  // Fade effect
-  useEffect(() => {
-    if (isOpen) {
-      setFade(true);
-      const timer = setTimeout(() => setFade(false), 300); // Duration of the fade effect
-      return () => clearTimeout(timer);
-    }
-  }, [currentImage, isOpen]);
-
-  // Prevent back navigation gesture
-  useEffect(() => {
-    if (isOpen && modalRef.current) {
-      const handlePopState = () => {
-        // Prevent the default action
-        window.history.pushState(null, document.title, window.location.href);
-        // Close the modal instead
-        onClose();
-      };
-
-      // Add a history entry when opening the modal
-      window.history.pushState(null, document.title, window.location.href);
-      
-      // Listen for popstate (back button/gesture)
-      window.addEventListener('popstate', handlePopState);
-      
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    }
   }, [isOpen, onClose]);
 
-  // Touch swipe handlers
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = e.touches[0].clientX;
+  const handleNext = () => {
+    setFade(true);
+    setTimeout(() => {
+      onNext();
+      setFade(false);
+    }, 300); // Match the duration in the CSS transition
   };
 
-  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
-    if (touchStartX.current === null) return;
-    
-    const touchEndX = e.changedTouches[0].clientX;
-    const diffX = touchEndX - touchStartX.current;
-    
-    // Swipe distance threshold (adjust as needed)
-    if (Math.abs(diffX) > 50) {
-      if (diffX > 0) {
-        // Swipe right, go to previous image
-        onPrev();
-      } else {
-        // Swipe left, go to next image
-        onNext();
-      }
+  const handlePrev = () => {
+    setFade(true);
+    setTimeout(() => {
+      onPrev();
+      setFade(false);
+    }, 300); // Match the duration in the CSS transition
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNext();
     }
-    
-    touchStartX.current = null;
+    if (isRightSwipe) {
+      handlePrev();
+    }
   };
 
   if (!isOpen) return null;
@@ -106,66 +108,67 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
   return (
     <div 
       ref={modalRef}
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Navigation Arrows - Show only on desktop */}
-      <button 
-        onClick={onPrev} 
-        disabled={currentIndex === 0} 
-        className={`absolute left-2 sm:left-10 top-1/2 transform -translate-y-1/2 text-white
-                    text-4xl sm:text-5xl p-2 rounded-full bg-black/30 hover:bg-black/50
-                    transition-all duration-300 ${currentIndex === 0 ? 'opacity-30' : 'opacity-75 hover:opacity-100'} hidden sm:block`}
-        aria-label="Previous image"
+      {/* Close Button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors bg-black/60 rounded-full p-2 backdrop-blur-sm"
+        aria-label="Close"
       >
-        &#9664; {/* Left Arrow */}
-      </button>
-      <button 
-        onClick={onNext} 
-        disabled={currentIndex === totalImages - 1} 
-        className={`absolute right-2 sm:right-10 top-1/2 transform -translate-y-1/2 text-white
-                    text-4xl sm:text-5xl p-2 rounded-full bg-black/30 hover:bg-black/50
-                    transition-all duration-300 ${currentIndex === totalImages - 1 ? 'opacity-30' : 'opacity-75 hover:opacity-100'} hidden sm:block`}
-        aria-label="Next image"
-      >
-        &#9654; {/* Right Arrow */}
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
 
-      {/* Close Button with X - Made more touch-friendly */}
-      <button 
-        onClick={onClose} 
-        className="absolute top-4 right-4 text-white text-3xl bg-black/30 h-10 w-10 rounded-full flex items-center justify-center"
-        aria-label="Close fullscreen view"
-      >
-        &times; {/* X Character */}
-      </button>
-
-      {/* Swipe instruction for mobile - shows briefly */}
-      <div className="absolute bottom-4 inset-x-0 text-center text-white text-sm px-4 py-2 bg-black/50 mx-auto max-w-xs rounded-full sm:hidden">
-        Swipe to navigate
-      </div>
-
-      {/* Image */}
-      <div className="relative flex items-center justify-center">
-        <div className="relative max-w-[90vw] max-h-[80vh]">
+      {/* Main Image Container */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center justify-center">
           <Image
             src={currentImage}
             alt="Fullscreen view"
-            width={1200}
-            height={800}
-            className={`rounded-lg shadow-lg transition-opacity duration-300 object-contain ${fade ? 'opacity-0' : 'opacity-100'}`}
+            width={1920}
+            height={1080}
+            className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${fade ? 'opacity-0' : 'opacity-100'}`}
             priority
+            quality={100}
           />
         </div>
-        
-        {/* Image Counter */}
-        <div className="absolute -bottom-8 inset-x-0 text-center text-white">
-          {currentIndex + 1} / {totalImages}
+      </div>
+
+      {/* Bottom Controls Bar */}
+      <div className="absolute bottom-8 left-0 right-0 z-50 flex items-center justify-center gap-4 px-4">
+        {/* Navigation Buttons */}
+        <div className="flex items-center gap-4 backdrop-blur-sm bg-black/60 px-6 py-3 rounded-full">
+          <button
+            onClick={handlePrev}
+            className="text-white hover:text-gray-300 transition-colors p-2"
+            aria-label="Previous image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Image Counter */}
+          <div className="text-white px-4 text-sm font-medium">
+            {currentIndex + 1} / {totalImages}
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="text-white hover:text-gray-300 transition-colors p-2"
+            aria-label="Next image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
   );
-};
-
-export default FullscreenModal;
+}

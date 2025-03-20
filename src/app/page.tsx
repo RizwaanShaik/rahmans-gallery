@@ -18,31 +18,16 @@ export default function Home() {
           href="/gallery" 
           className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors"
         >
-          Explore Gallery
+          Explore All Collections
         </Link>
       </section>
 
-      {/* Featured Image Section */}
+      {/* Featured Collections Section */}
       <section className="py-16">
-        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
-          <Image
-            src="/images/wildlife/RedPanda.JPG"
-            alt="Featured Photography"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <h2 className="text-3xl font-bold mb-2">Discover the Collection</h2>
-            <p className="text-lg text-gray-200">Explore a diverse portfolio of wildlife, portraits, architecture, and abstract photography.</p>
-          </div>
-        </div>
-      </section>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Featured Collections</h2>
 
-      {/* Wildlife Section */}
-      <section className="py-16">
-        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
+        {/* Wildlife Section */}
+        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl mb-16">
           <Image
             src="/images/wildlife/hero.JPG"
             alt="Wildlife Photography"
@@ -52,7 +37,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <h2 className="text-3xl font-bold mb-2">Wildlife Photography</h2>
+            <h3 className="text-3xl font-bold mb-2">Wildlife Photography</h3>
             <p className="text-lg text-gray-200">Discover the beauty of nature through wildlife photography.</p>
             <Link
               href="/gallery/wildlife"
@@ -62,10 +47,8 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </section>
 
-      {/* Architecture Section */}
-      <section className="py-16">
+        {/* Architecture Section */}
         <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
           <Image
             src="/images/architecture/hero.JPG"
@@ -76,7 +59,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <h2 className="text-3xl font-bold mb-2">Architecture</h2>
+            <h3 className="text-3xl font-bold mb-2">Architecture</h3>
             <p className="text-lg text-gray-200">Explore the world of architectural marvels.</p>
             <Link
               href="/gallery/architecture"
