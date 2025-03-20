@@ -1,28 +1,24 @@
-import Image from 'next/image'
+import React from 'react';
+import Image from 'next/image';
 
 interface PhotoCardProps {
-  src: string
-  alt: string
-  onClick?: () => void
+  src: string;
+  alt: string; 
 }
 
-export default function PhotoCard({ src, alt, onClick }: PhotoCardProps) {
+const PhotoCard: React.FC<PhotoCardProps> = ({ src, alt }) => {
   return (
-    <div 
-      className="group cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
-      onClick={onClick}
-    >
-      <div className="relative w-full aspect-[4/3]">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover transform group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute inset-0 p-4 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        </div>
-      </div>
+    <div className="photo-card">
+      <Image
+        src={src}
+        alt={alt}
+        layout="responsive" // Use responsive layout
+        width={500} // Set a width
+        height={300} // Set a height
+        className="rounded-lg" // Add any additional classes
+      />
     </div>
-  )
-} 
+  );
+};
+
+export default PhotoCard;

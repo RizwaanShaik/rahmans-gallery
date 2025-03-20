@@ -34,7 +34,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-20 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Professor Rahman's Photography
+          Professor Rahman&apos;s Photography
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
           A curated collection of photographs capturing moments of beauty, emotion, and wonder through the lens of a passionate photographer and educator.
@@ -71,7 +71,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-6">About Professor Rahman</h2>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto">
           This gallery is dedicated to preserving and sharing the photographic legacy of Professor Rahman, 
-          who captured life's beautiful moments through his lens until 2021. His work continues to inspire 
+          who captured life&apos;s beautiful moments through his lens until 2021. His work continues to inspire 
           and touch hearts through this digital collection.
         </p>
       </section>
