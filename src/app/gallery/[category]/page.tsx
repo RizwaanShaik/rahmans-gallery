@@ -5,8 +5,16 @@ import { useRouter, useParams } from 'next/navigation';
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
 
+// Define the Photo type
+interface Photo {
+  id: string;
+  src: string;
+  fullscreenSrc: string;
+  alt: string;
+}
+
 // Import directly based on the category
-const getPhotosByCategory = (categoryId: string) => {
+const getPhotosByCategory = (categoryId: string): Photo[] => {
   // In a real application, we would filter photos based on categoryId
   console.log(`Loading photos for category: ${categoryId}`);
   
@@ -133,15 +141,16 @@ const getPhotosByCategory = (categoryId: string) => {
       return [
         {
           id: '1',
-          src: '/images/portrait/portrait1.jpg',
+          src: '/images/portrait/thumbnails/portrait1.jpeg',
+          fullscreenSrc: '/images/portrait/fullscreen/portrait1.jpeg',
           alt: 'Portrait 1',
         },
         {
           id: '2',
-          src: '/images/portrait/portrait2.jpg',
+          src: '/images/portrait/thumbnails/portrait2.jpeg',
+          fullscreenSrc: '/images/portrait/fullscreen/portrait2.jpeg',
           alt: 'Portrait 2',
         },
-        // Add more portrait photos here
       ];
     case 'architecture':
       return [
@@ -156,15 +165,16 @@ const getPhotosByCategory = (categoryId: string) => {
       return [
         {
           id: '1',
-          src: '/images/abstract/abstract1.jpg',
+          src: '/images/abstract/thumbnails/abstract1.jpeg',
+          fullscreenSrc: '/images/abstract/fullscreen/abstract1.jpeg',
           alt: 'Abstract 1',
         },
         {
           id: '2',
-          src: '/images/abstract/abstract2.jpg',
+          src: '/images/abstract/thumbnails/abstract2.jpeg',
+          fullscreenSrc: '/images/abstract/fullscreen/abstract2.jpeg',
           alt: 'Abstract 2',
         },
-        // Add more abstract photos here
       ];
     default:
       return [];
