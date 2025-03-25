@@ -23,22 +23,25 @@ export default function FullscreenModal({
   const [fade, setFade] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleNext = useCallback(() => {
     setFade(true);
+    setIsLoading(true);
     setTimeout(() => {
       onNext();
       setFade(false);
-    }, 300); // Match the duration in the CSS transition
+    }, 300);
   }, [onNext]);
 
   const handlePrev = useCallback(() => {
     setFade(true);
+    setIsLoading(true);
     setTimeout(() => {
       onPrev();
       setFade(false);
-    }, 300); // Match the duration in the CSS transition
+    }, 300);
   }, [onPrev]);
 
   // Handle keyboard events
@@ -132,14 +135,25 @@ export default function FullscreenModal({
       {/* Main Image Container */}
       <div className="relative w-full h-full flex items-center justify-center">
         <div className="relative w-full h-full flex items-center justify-center">
+          {/* Loading Spinner */}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+            </div>
+          )}
+          
           <Image
             src={currentImage}
             alt="Fullscreen view"
-            width={1920}
-            height={1080}
-            className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${fade ? 'opacity-0' : 'opacity-100'}`}
+            width={1600}
+            height={900}
+            className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
+              fade ? 'opacity-0' : 'opacity-100'
+            }`}
             priority
-            quality={100}
+            quality={85}
+            onLoadingComplete={() => setIsLoading(false)}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1600px"
           />
         </div>
       </div>

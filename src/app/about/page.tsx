@@ -10,11 +10,11 @@ export default function About() {
         <div className="mb-12 relative w-[300px] h-[400px] mx-auto">
           <div className="relative w-full h-full overflow-hidden rounded-[50%]">
             <Image
-              src="/images/about/IMG_0020.JPG"
+              src="/images/about/thumbnails/IMG_0020.jpeg"
               alt="Professor Rahman"
               fill
               className="object-cover"
-              style={{ objectPosition: 'center' }} // Ensure the image is centered
+              style={{ objectPosition: 'center' }}
             />
           </div>
         </div>

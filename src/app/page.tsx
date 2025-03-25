@@ -29,7 +29,7 @@ export default function Home() {
         {/* Wildlife Section */}
         <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl mb-16">
           <Image
-            src="/images/wildlife/hero.JPG"
+            src="/images/wildlife/hero/hero.jpeg"
             alt="Wildlife Photography"
             fill
             className="object-cover"
@@ -51,7 +51,7 @@ export default function Home() {
         {/* Architecture Section */}
         <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl">
           <Image
-            src="/images/architecture/hero.JPG"
+            src="/images/architecture/hero/hero.jpeg"
             alt="Architecture Photography"
             fill
             className="object-cover"

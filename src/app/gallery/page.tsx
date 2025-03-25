@@ -6,7 +6,7 @@ const categories = [
     id: 'wildlife',
     title: 'Wildlife Photography',
     description: 'Capturing the beauty of landscapes and wildlife',
-    image: '/images/wildlife/RedPanda.JPG', // Ensure this image exists
+    image: '/images/wildlife/hero/hero.jpeg',
   },
   {
     id: 'portrait',
@@ -18,7 +18,7 @@ const categories = [
     id: 'architecture',
     title: 'Architecture',
     description: 'Structural beauty and urban landscapes',
-    image: '/images/random.jpg',
+    image: '/images/architecture/hero/hero.jpeg',
   },
   {
     id: 'abstract',
