@@ -27,22 +27,26 @@ export default function FullscreenModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleNext = useCallback(() => {
-    setFade(true);
-    setIsLoading(true);
-    setTimeout(() => {
-      onNext();
-      setFade(false);
-    }, 300);
-  }, [onNext]);
+    if (currentIndex < totalImages - 1) {
+      setFade(true);
+      setIsLoading(true);
+      setTimeout(() => {
+        onNext();
+        setFade(false);
+      }, 300);
+    }
+  }, [onNext, currentIndex, totalImages]);
 
   const handlePrev = useCallback(() => {
-    setFade(true);
-    setIsLoading(true);
-    setTimeout(() => {
-      onPrev();
-      setFade(false);
-    }, 300);
-  }, [onPrev]);
+    if (currentIndex > 0) {
+      setFade(true);
+      setIsLoading(true);
+      setTimeout(() => {
+        onPrev();
+        setFade(false);
+      }, 300);
+    }
+  }, [onPrev, currentIndex]);
 
   // Handle keyboard events
   useEffect(() => {
@@ -134,28 +138,26 @@ export default function FullscreenModal({
 
       {/* Main Image Container */}
       <div className="relative w-full h-full flex items-center justify-center">
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Loading Spinner */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
-            </div>
-          )}
-          
-          <Image
-            src={currentImage}
-            alt="Fullscreen view"
-            width={1600}
-            height={900}
-            className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
-              fade ? 'opacity-0' : 'opacity-100'
-            }`}
-            priority
-            quality={85}
-            onLoadingComplete={() => setIsLoading(false)}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1600px"
-          />
-        </div>
+        {/* Loading Spinner */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+          </div>
+        )}
+        
+        <Image
+          src={currentImage}
+          alt="Fullscreen view"
+          width={1600}
+          height={900}
+          className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
+            fade ? 'opacity-0' : 'opacity-100'
+          }`}
+          priority
+          quality={85}
+          onLoadingComplete={() => setIsLoading(false)}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1600px"
+        />
       </div>
 
       {/* Bottom Controls Bar */}
@@ -166,6 +168,7 @@ export default function FullscreenModal({
             onClick={handlePrev}
             className="text-white hover:text-gray-300 transition-colors p-2"
             aria-label="Previous image"
+            disabled={currentIndex === 0}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -181,6 +184,7 @@ export default function FullscreenModal({
             onClick={handleNext}
             className="text-white hover:text-gray-300 transition-colors p-2"
             aria-label="Next image"
+            disabled={currentIndex === totalImages - 1}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
