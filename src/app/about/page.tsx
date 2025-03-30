@@ -72,8 +72,7 @@ export default function About() {
             <h2 className="text-2xl font-semibold mb-4">Photography Interests and Achievements</h2>
             <p className="mb-4">
               His photographic expertise spanned multiple genres including Fine Art, Travel Photography, Documentary Photography, Advertising Photography, 
-              and Macro Photography. He participated in numerous exhibitions, including "Deccan Rock Forms," "Nukkad" (street life of Calcutta), 
-              "Heritage Structures of Hyderabad," and "Ragilo Rajasthan."
+              and Macro Photography. He participated in numerous exhibitions, including &ldquo;Deccan Rock Forms,&rdquo; &ldquo;Nukkad,&rdquo; &ldquo;Heritage Structures of Hyderabad,&rdquo; and &ldquo;Ragilo Rajasthan.&rdquo;
             </p>
             <p className="mb-4">
               His contributions were recognized with several awards, including the State Best Teacher Award from the Government of Andhra Pradesh (2012) 

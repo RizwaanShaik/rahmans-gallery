@@ -98,7 +98,7 @@ export default function Home() {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-2">Exhibitions</h3>
-            <p className="text-gray-600">Featured in exhibitions including "Deccan Rock Forms," "Nukkad," "Heritage Structures of Hyderabad," and "Ragilo Rajasthan."</p>
+            <p className="text-gray-600">Featured in exhibitions including &ldquo;Deccan Rock Forms,&rdquo; &ldquo;Nukkad,&rdquo; &ldquo;Heritage Structures of Hyderabad,&rdquo; and &ldquo;Ragilo Rajasthan.&rdquo;</p>
           </div>
         </div>
       </section>
