@@ -46,6 +46,7 @@ async function ensureDirectories() {
 async function optimizeImage(inputPath, outputPath, config) {
   try {
     await sharp(inputPath)
+      .rotate()
       .resize(config.width, null, {
         withoutEnlargement: true,
         fit: 'inside'
