@@ -11,6 +11,7 @@ interface FullscreenModalProps {
   totalImages: number;
   currentIndex: number;
   highContrast?: boolean;
+  getNextImageSrc?: (currentIndex: number) => string | null;
 }
 
 export default function FullscreenModal({
@@ -23,35 +24,54 @@ export default function FullscreenModal({
   totalImages,
   currentIndex,
   highContrast = false,
+  getNextImageSrc,
 }: FullscreenModalProps) {
-  const [fade, setFade] = useState(false);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [displayedImage, setDisplayedImage] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Initialize displayed image
+  useEffect(() => {
+    if (currentImage) {
+      setDisplayedImage(currentImage);
+    }
+  }, []);
+
+  // Preload next image when available
+  useEffect(() => {
+    if (currentIndex < totalImages - 1 && getNextImageSrc) {
+      const nextImageSrc = getNextImageSrc(currentIndex);
+      if (nextImageSrc) {
+        const preloadImage = new window.Image();
+        preloadImage.src = nextImageSrc;
+      }
+    }
+  }, [currentIndex, totalImages, getNextImageSrc]);
+
+  // Update displayed image when current image changes
+  useEffect(() => {
+    if (currentImage) {
+      setIsLoading(true);
+      setDisplayedImage(currentImage);
+    }
+  }, [currentImage]);
 
   const handleNext = useCallback(() => {
     if (currentIndex < totalImages - 1) {
-      setFade(true);
       setIsLoading(true);
-      setTimeout(() => {
-        onNext();
-        setFade(false);
-      }, 300);
+      onNext();
     }
-  }, [onNext, currentIndex, totalImages]);
+  }, [currentIndex, totalImages, onNext]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
-      setFade(true);
       setIsLoading(true);
-      setTimeout(() => {
-        onPrev();
-        setFade(false);
-      }, 300);
+      onPrev();
     }
-  }, [onPrev, currentIndex]);
+  }, [currentIndex, onPrev]);
 
   // Handle keyboard events with focus trap
   useEffect(() => {
@@ -147,7 +167,7 @@ export default function FullscreenModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !displayedImage) return null;
 
   return (
     <div 
@@ -163,35 +183,6 @@ export default function FullscreenModal({
     >
       {/* Top Controls Bar */}
       <div className="fixed top-4 right-4 flex items-center gap-4 z-50">
-        {originalImage && (
-          <a
-            href={originalImage}
-            download
-            onClick={(e) => e.stopPropagation()}
-            className={`${
-              highContrast 
-                ? 'bg-white text-black border-2 border-black' 
-                : 'bg-black/60 text-white'
-            } px-4 py-2 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm`}
-            aria-label="Download original image"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
-              />
-            </svg>
-            <span>Download Original</span>
-          </a>
-        )}
         <button
           onClick={onClose}
           className={`${
@@ -220,28 +211,66 @@ export default function FullscreenModal({
           </div>
         )}
         
-        <Image
-          src={currentImage}
-          alt="Fullscreen view"
-          width={1920}
-          height={1080}
-          className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
-            fade ? 'opacity-0' : 'opacity-100'
-          }`}
-          priority
-          quality={100}
-          onLoadingComplete={() => setIsLoading(false)}
-          sizes="100vw"
-        />
+        <div className="relative">
+          {displayedImage && (
+            <Image
+              src={displayedImage}
+              alt="Fullscreen view"
+              width={1920}
+              height={1080}
+              className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
+                isLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              priority
+              quality={100}
+              onLoadingComplete={() => {
+                setIsLoading(false);
+              }}
+              sizes="100vw"
+            />
+          )}
+        </div>
       </div>
 
       {/* Bottom Controls Bar */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
+      <div className="fixed bottom-4 left-0 right-0 flex flex-col items-center gap-4 px-4">
+        {/* Download Button - Moved to bottom */}
+        {originalImage && (
+          <a
+            href={originalImage}
+            download
+            onClick={(e) => e.stopPropagation()}
+            className={`${
+              highContrast 
+                ? 'bg-white text-black border-2 border-black' 
+                : 'bg-black/60 text-white'
+            } px-4 py-2 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm w-full sm:w-auto justify-center mb-2`}
+            aria-label="Download original image"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+              />
+            </svg>
+            <span className="whitespace-nowrap">Download Original</span>
+          </a>
+        )}
+
+        {/* Navigation Controls */}
         <div className={`flex items-center gap-4 ${
           highContrast 
             ? 'bg-white border-2 border-black' 
             : 'backdrop-blur-sm bg-black/60'
-        } px-6 py-3 rounded-full`}>
+        } px-6 py-3 rounded-full w-full sm:w-auto justify-between sm:justify-center`}>
           <button
             onClick={handlePrev}
             className={`${
@@ -257,8 +286,10 @@ export default function FullscreenModal({
             </svg>
           </button>
 
-          <div className={`px-4 text-sm font-medium ${highContrast ? 'text-black' : 'text-white'}`}>
-            {currentIndex + 1} / {totalImages}
+          <div className={`px-4 text-sm font-medium ${highContrast ? 'text-black' : 'text-white'} flex items-center whitespace-nowrap`}>
+            <span>{currentIndex + 1}</span>
+            <span className="mx-1">/</span>
+            <span>{totalImages}</span>
           </div>
 
           <button
