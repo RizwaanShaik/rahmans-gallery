@@ -87,7 +87,7 @@ export default function Contact() {
           <div className={`rounded-xl shadow-xl overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <div className={`px-6 py-4 ${isDarkMode ? 'bg-blue-800' : 'bg-blue-600'}`}>
               <h2 className="text-xl font-semibold text-white">Share Your Story</h2>
-              <p className="text-blue-100 text-sm">Your memories help preserve Professor Rahman's legacy</p>
+              <p className="text-blue-100 text-sm">Your memories help preserve Professor Rahman&apos;s legacy</p>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
@@ -251,7 +251,7 @@ export default function Contact() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
               <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                 <blockquote className="italic text-lg">
-                  "Photography is the story I fail to put into words."
+                &quot;Photography is the story I fail to put into words.&quot;
                 </blockquote>
                 <p className="mt-2 text-sm text-gray-300">- Professor Rahman</p>
               </div>
