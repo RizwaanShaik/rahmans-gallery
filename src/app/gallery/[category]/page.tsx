@@ -1,6 +1,6 @@
 "use client"; // Mark this component as a client-side component
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
@@ -10,7 +10,9 @@ interface Photo {
   id: string;
   src: string;
   fullscreenSrc: string;
+  originalSrc: string;
   alt: string;
+  description?: string;
 }
 
 // Import directly based on the category
@@ -23,156 +25,181 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
     case 'wildlife':
       return [
         {
-          id: '1',
+          id: 'wildlife-1',
           src: '/images/wildlife/thumbnails/RedPanda.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/RedPanda.jpeg',
+          originalSrc: '/images/original/wildlife/RedPanda.JPG',
           alt: 'Red Panda',
+          description: 'A beautiful red panda captured in its natural habitat, showcasing its vibrant fur and expressive face.'
         },
         {
-          id: '3',
+          id: 'wildlife-2',
           src: '/images/wildlife/thumbnails/DSC_0011.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0011.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0011.JPG',
           alt: 'Wildlife Photo 3',
         },
         {
-          id: '4',
+          id: 'wildlife-3',
           src: '/images/wildlife/thumbnails/DSC_0025.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0025.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0025.JPG',
           alt: 'Wildlife Photo 4',
         },
         {
-          id: '5',
+          id: 'wildlife-4',
           src: '/images/wildlife/thumbnails/DSC_0036.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0036.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0036.JPG',
           alt: 'Wildlife Photo 5',
         },
         {
-          id: '6',
+          id: 'wildlife-5',
           src: '/images/wildlife/thumbnails/DSC_0083.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0083.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0083.JPG',
           alt: 'Wildlife Photo 6',
         },
         {
-          id: '7',
+          id: 'wildlife-6',
           src: '/images/wildlife/thumbnails/DSC_0086.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0086.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0086.JPG',
           alt: 'Wildlife Photo 7',
         },
         {
-          id: '8',
+          id: 'wildlife-7',
           src: '/images/wildlife/thumbnails/DSC_0087.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0087.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0087.JPG',
           alt: 'Wildlife Photo 8',
         },
         {
-          id: '9',
+          id: 'wildlife-8',
           src: '/images/wildlife/thumbnails/DSC_0160.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0160.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0160.JPG',
           alt: 'Wildlife Photo 9',
         },
         {
-          id: '10',
+          id: 'wildlife-9',
           src: '/images/wildlife/thumbnails/DSC_0189.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0189.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0189.JPG',
           alt: 'Wildlife Photo 10',
         },
         {
-          id: '11',
+          id: 'wildlife-10',
           src: '/images/wildlife/thumbnails/DSC_0212.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0212.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0212.JPG',
           alt: 'Wildlife Photo 11',
         },
         {
-          id: '12',
+          id: 'wildlife-11',
           src: '/images/wildlife/thumbnails/DSC_0228.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0228.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0228.JPG',
           alt: 'Wildlife Photo 12',
         },
         {
-          id: '13',
+          id: 'wildlife-12',
           src: '/images/wildlife/thumbnails/DSC_0259.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0259.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0259.JPG',
           alt: 'Wildlife Photo 13',
         },
         {
-          id: '14',
+          id: 'wildlife-13',
           src: '/images/wildlife/thumbnails/DSC_0457.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0457.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0457.JPG',
           alt: 'Wildlife Photo 14',
         },
         {
-          id: '15',
+          id: 'wildlife-14',
           src: '/images/wildlife/thumbnails/DSC_0539.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0539.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0539.JPG',
           alt: 'Wildlife Photo 15',
         },
         {
-          id: '16',
+          id: 'wildlife-15',
           src: '/images/wildlife/thumbnails/DSC_0995.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/DSC_0995.jpeg',
+          originalSrc: '/images/original/wildlife/DSC_0995.JPG',
           alt: 'Wildlife Photo 16',
         },
         {
-          id: '17',
+          id: 'wildlife-16',
           src: '/images/wildlife/thumbnails/Elephants.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/Elephants.jpeg',
+          originalSrc: '/images/original/wildlife/Elephants.JPG',
           alt: 'Elephants',
         },
         {
-          id: '18',
+          id: 'wildlife-17',
           src: '/images/wildlife/thumbnails/Fishes.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/Fishes.jpeg',
+          originalSrc: '/images/original/wildlife/Fishes.JPG',
           alt: 'Fishes',
         },
         {
-          id: '19',
+          id: 'wildlife-18',
           src: '/images/wildlife/thumbnails/Fox.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/Fox.jpeg',
+          originalSrc: '/images/original/wildlife/Fox.JPG',
           alt: 'Fox',
         },
         {
-          id: '20',
+          id: 'wildlife-19',
           src: '/images/wildlife/thumbnails/picture.jpeg',
           fullscreenSrc: '/images/wildlife/fullscreen/picture.jpeg',
+          originalSrc: '/images/original/wildlife/picture.JPG',
           alt: 'Wildlife Picture',
         },
       ];
     case 'portrait':
       return [
         {
-          id: '1',
+          id: 'portrait-1',
           src: '/images/portrait/thumbnails/portrait1.jpeg',
           fullscreenSrc: '/images/portrait/fullscreen/portrait1.jpeg',
+          originalSrc: '/images/original/portrait/portrait1.JPG',
           alt: 'Portrait 1',
         },
         {
-          id: '2',
+          id: 'portrait-2',
           src: '/images/portrait/thumbnails/portrait2.jpeg',
           fullscreenSrc: '/images/portrait/fullscreen/portrait2.jpeg',
+          originalSrc: '/images/original/portrait/portrait2.JPG',
           alt: 'Portrait 2',
         },
       ];
     case 'architecture':
       return [
         {
-          id: '1',
+          id: 'architecture-1',
           src: '/images/architecture/thumbnails/hero.jpeg',
           fullscreenSrc: '/images/architecture/fullscreen/hero.jpeg',
+          originalSrc: '/images/original/architecture/hero.JPG',
           alt: 'Architecture Hero',
         },
       ];
     case 'abstract':
       return [
         {
-          id: '1',
+          id: 'abstract-1',
           src: '/images/abstract/thumbnails/abstract1.jpeg',
           fullscreenSrc: '/images/abstract/fullscreen/abstract1.jpeg',
+          originalSrc: '/images/original/abstract/abstract1.JPG',
           alt: 'Abstract 1',
         },
         {
-          id: '2',
+          id: 'abstract-2',
           src: '/images/abstract/thumbnails/abstract2.jpeg',
           fullscreenSrc: '/images/abstract/fullscreen/abstract2.jpeg',
+          originalSrc: '/images/original/abstract/abstract2.JPG',
           alt: 'Abstract 2',
         },
       ];
@@ -185,17 +212,61 @@ export default function CategoryGallery() {
   const router = useRouter();
   const params = useParams();
   const categoryId = params?.category as string || 'wildlife';
+  const [displayedPhotos, setDisplayedPhotos] = useState<Photo[]>([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const allPhotos = getPhotosByCategory(categoryId);
+
+  const lastPhotoRef = useCallback((node: HTMLDivElement) => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMorePhotos();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore]);
+
+  const ITEMS_PER_PAGE = 12;
   
-  // Map category ID to display title
-  const categoryTitles: {[key: string]: string} = {
-    'wildlife': 'Wildlife',
-    'portrait': 'Portrait',
-    'architecture': 'Architecture',
-    'abstract': 'Abstract'
-  };
-  
-  const categoryTitle = categoryTitles[categoryId] || 'Photography';
-  const photos = getPhotosByCategory(categoryId);
+  const loadMorePhotos = useCallback(() => {
+    setLoading(true);
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const newPhotos = allPhotos.slice(start, end);
+    
+    if (newPhotos.length > 0) {
+      // Ensure no duplicates by checking IDs
+      setDisplayedPhotos(prev => {
+        const existingIds = new Set(prev.map(p => p.id));
+        const uniqueNewPhotos = newPhotos.filter(photo => !existingIds.has(photo.id));
+        return [...prev, ...uniqueNewPhotos];
+      });
+      setPage(prev => prev + 1);
+      setHasMore(end < allPhotos.length);
+    } else {
+      setHasMore(false);
+    }
+    setLoading(false);
+  }, [page, allPhotos]);
+
+  // Reset everything when category changes
+  useEffect(() => {
+    setDisplayedPhotos([]);
+    setPage(1);
+    setHasMore(true);
+    setLoading(false);
+  }, [categoryId]);
+
+  // Load initial photos when category changes or on first load
+  useEffect(() => {
+    if (page === 1) {
+      loadMorePhotos();
+    }
+  }, [page, loadMorePhotos]);
   
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -208,7 +279,7 @@ export default function CategoryGallery() {
   }, [params]);
 
   const openModal = (index: number) => {
-    setCurrentImage(photos[index].fullscreenSrc);
+    setCurrentImage(displayedPhotos[index].fullscreenSrc);
     setCurrentIndex(index);
     setModalOpen(true);
   };
@@ -218,16 +289,16 @@ export default function CategoryGallery() {
   };
 
   const nextImage = () => {
-    if (currentIndex < photos.length - 1) {
+    if (currentIndex < displayedPhotos.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setCurrentImage(photos[currentIndex + 1].fullscreenSrc);
+      setCurrentImage(displayedPhotos[currentIndex + 1].fullscreenSrc);
     }
   };
 
   const prevImage = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setCurrentImage(photos[currentIndex - 1].fullscreenSrc);
+      setCurrentImage(displayedPhotos[currentIndex - 1].fullscreenSrc);
     }
   };
 
@@ -249,7 +320,7 @@ export default function CategoryGallery() {
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
-          <h1 className="text-2xl font-bold truncate">{categoryTitle} Photography</h1>
+          <h1 className="text-2xl font-bold truncate">{categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography</h1>
         </div>
       </div>
 
@@ -264,31 +335,44 @@ export default function CategoryGallery() {
           <span>Back to Gallery</span>
         </button>
 
-        <h1 className="text-3xl font-bold text-center">{categoryTitle} Photography</h1>
+        <h1 className="text-3xl font-bold text-center">{categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography</h1>
       </div>
 
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {photos.map((photo, index) => (
-          <div key={photo.id} onClick={() => openModal(index)}>
+        {displayedPhotos.map((photo, index) => (
+          <div 
+            key={photo.id} 
+            ref={index === displayedPhotos.length - 1 ? lastPhotoRef : null}
+            onClick={() => openModal(index)}
+          >
             <PhotoCard
               src={photo.src}
               alt={photo.alt}
+              description={photo.description}
             />
           </div>
         ))}
       </div>
 
+      {/* Loading indicator */}
+      {loading && (
+        <div className="flex justify-center my-8">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-800 rounded-full animate-spin"></div>
+        </div>
+      )}
+
       {/* Fullscreen Modal */}
       <FullscreenModal
         isOpen={isModalOpen}
         currentImage={currentImage}
+        originalImage={displayedPhotos[currentIndex]?.originalSrc}
         onClose={closeModal}
         onNext={nextImage}
         onPrev={prevImage}
-        totalImages={photos.length}
+        totalImages={displayedPhotos.length}
         currentIndex={currentIndex}
       />
     </div>
   );
-}
+} 

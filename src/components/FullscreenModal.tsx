@@ -4,27 +4,32 @@ import Image from 'next/image';
 interface FullscreenModalProps {
   isOpen: boolean;
   currentImage: string;
+  originalImage?: string;
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
   totalImages: number;
   currentIndex: number;
+  highContrast?: boolean;
 }
 
 export default function FullscreenModal({
   isOpen,
   currentImage,
+  originalImage,
   onClose,
   onNext,
   onPrev,
   totalImages,
   currentIndex,
+  highContrast = false,
 }: FullscreenModalProps) {
   const [fade, setFade] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const modalRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const handleNext = useCallback(() => {
     if (currentIndex < totalImages - 1) {
@@ -48,11 +53,11 @@ export default function FullscreenModal({
     }
   }, [onPrev, currentIndex]);
 
-  // Handle keyboard events
+  // Handle keyboard events with focus trap
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      
       switch (e.key) {
         case 'ArrowRight':
           handleNext();
@@ -62,6 +67,26 @@ export default function FullscreenModal({
           break;
         case 'Escape':
           onClose();
+          break;
+        case 'Tab':
+          // Trap focus within modal
+          const focusableElements = modalRef.current?.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          ) || [];
+          const firstFocusable = focusableElements[0] as HTMLElement;
+          const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+              lastFocusable.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === lastFocusable) {
+              firstFocusable.focus();
+              e.preventDefault();
+            }
+          }
           break;
         default:
           break;
@@ -87,6 +112,18 @@ export default function FullscreenModal({
       window.removeEventListener('popstate', handlePopState);
     };
   }, [isOpen, onClose]);
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen) {
+      const previousActiveElement = document.activeElement as HTMLElement;
+      modalRef.current?.focus();
+
+      return () => {
+        previousActiveElement?.focus();
+      };
+    }
+  }, [isOpen]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -115,58 +152,103 @@ export default function FullscreenModal({
   return (
     <div 
       ref={modalRef}
-      className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col items-center justify-center"
+      className={`fixed inset-0 ${highContrast ? 'bg-white' : 'bg-black bg-opacity-95'} z-50 flex flex-col items-center justify-center`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image viewer"
+      tabIndex={-1}
     >
-      {/* Close Button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors bg-black/60 rounded-full p-2 backdrop-blur-sm"
-        aria-label="Close"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
-      {/* Swipe indicator for mobile - only shows on smaller screens */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 md:hidden bg-black/40 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
-        Swipe to navigate
+      {/* Top Controls Bar */}
+      <div className="fixed top-4 right-4 flex items-center gap-4 z-50">
+        {originalImage && (
+          <a
+            href={originalImage}
+            download
+            onClick={(e) => e.stopPropagation()}
+            className={`${
+              highContrast 
+                ? 'bg-white text-black border-2 border-black' 
+                : 'bg-black/60 text-white'
+            } px-4 py-2 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm`}
+            aria-label="Download original image"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+              />
+            </svg>
+            <span>Download Original</span>
+          </a>
+        )}
+        <button
+          onClick={onClose}
+          className={`${
+            highContrast 
+              ? 'bg-white text-black border-2 border-black' 
+              : 'bg-black/60 text-white'
+          } p-2 rounded-full hover:bg-opacity-80 transition-colors backdrop-blur-sm`}
+          aria-label="Close modal"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* Main Image Container */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div ref={imageRef} className="relative w-full h-full flex items-center justify-center p-4">
         {/* Loading Spinner */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+            <div className={`w-12 h-12 border-4 ${
+              highContrast 
+                ? 'border-black/20 border-t-black' 
+                : 'border-white/20 border-t-white'
+            } rounded-full animate-spin`}></div>
           </div>
         )}
         
         <Image
           src={currentImage}
           alt="Fullscreen view"
-          width={1600}
-          height={900}
+          width={1920}
+          height={1080}
           className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
             fade ? 'opacity-0' : 'opacity-100'
           }`}
           priority
-          quality={85}
+          quality={100}
           onLoadingComplete={() => setIsLoading(false)}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1600px"
+          sizes="100vw"
         />
       </div>
 
       {/* Bottom Controls Bar */}
-      <div className="absolute bottom-8 left-0 right-0 z-50 flex items-center justify-center gap-4 px-4">
-        {/* Navigation Buttons */}
-        <div className="flex items-center gap-4 backdrop-blur-sm bg-black/60 px-6 py-3 rounded-full">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
+        <div className={`flex items-center gap-4 ${
+          highContrast 
+            ? 'bg-white border-2 border-black' 
+            : 'backdrop-blur-sm bg-black/60'
+        } px-6 py-3 rounded-full`}>
           <button
             onClick={handlePrev}
-            className="text-white hover:text-gray-300 transition-colors p-2"
+            className={`${
+              highContrast 
+                ? 'text-black hover:text-gray-700' 
+                : 'text-white hover:text-gray-300'
+            } transition-colors p-2 disabled:opacity-50`}
             aria-label="Previous image"
             disabled={currentIndex === 0}
           >
@@ -175,14 +257,17 @@ export default function FullscreenModal({
             </svg>
           </button>
 
-          {/* Image Counter */}
-          <div className="text-white px-4 text-sm font-medium">
+          <div className={`px-4 text-sm font-medium ${highContrast ? 'text-black' : 'text-white'}`}>
             {currentIndex + 1} / {totalImages}
           </div>
 
           <button
             onClick={handleNext}
-            className="text-white hover:text-gray-300 transition-colors p-2"
+            className={`${
+              highContrast 
+                ? 'text-black hover:text-gray-700' 
+                : 'text-white hover:text-gray-300'
+            } transition-colors p-2 disabled:opacity-50`}
             aria-label="Next image"
             disabled={currentIndex === totalImages - 1}
           >

@@ -9,13 +9,13 @@ export default function About() {
         {/* Image Container */}
         <div className="mb-12 relative w-[300px] h-[400px] mx-auto">
           <div className="relative w-full h-full overflow-hidden rounded-[50%]">
-            <Image
+          <Image
               src="/images/about/thumbnails/IMG_0020.jpeg"
               alt="Professor Shaik Khaleel-ur-Rahman"
-              fill
+            fill
               className="object-cover"
               style={{ objectPosition: 'center' }}
-            />
+          />
           </div>
         </div>
 
@@ -103,4 +103,4 @@ export default function About() {
       </div>
     </div>
   );
-}
+} 
