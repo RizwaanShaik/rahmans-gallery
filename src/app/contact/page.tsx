@@ -1,207 +1,309 @@
-"use client"; 
+"use client";
 
-import React, { useState } from 'react';
-import emailjs from '@emailjs/browser';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
-export default function ContactPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  date: string;
+  relation: string;
+}
+
+export default function Contact() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState({
+    name: '',
+    email: '',
+    message: '',
+    relation: 'Student'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Check for dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      if (typeof window !== 'undefined') {
+        const isDark = document.documentElement.classList.contains('dark');
+        setIsDarkMode(isDark);
+      }
+    };
+
+    checkDarkMode();
+    
+    // Listen for storage events (which we dispatch when theme changes)
+    window.addEventListener('storage', checkDarkMode);
+    
+    return () => {
+      window.removeEventListener('storage', checkDarkMode);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
-    
-    try {
-      // Send email using EmailJS
-      await emailjs.send(
-        'service_k027bvr', // Your EmailJS service ID
-        'template_mlnh9pb', // Your EmailJS template ID
-        {
-          name: name, // From Name
-          email: email, // Reply To
-          message: message, // Content
-        },
-        'KGyg8MIyzMnx7qIiY' // Your EmailJS user ID
-      );
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
 
-      setSuccess(true);
-      setName('');
-      setEmail('');
-      setMessage('');
-      
-      // Auto-hide the success message after 5 seconds
-      setTimeout(() => {
-        setSuccess(false);
-      }, 5000);
-      
-    } catch (err) {
-      console.error('EmailJS Error:', err);
-      setError('Failed to send message. Please try again.');
+    try {
+      // Simulate API call - in production, use a real API endpoint
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const message: Message = {
+        id: Date.now().toString(),
+        ...newMessage,
+        date: new Date().toISOString()
+      };
+
+      setMessages([message, ...messages]);
+      setNewMessage({ name: '', email: '', message: '', relation: 'Student' });
+      setSubmitStatus('success');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setSubmitStatus('error');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen pt-16">
+      <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Me</h1>
-          <p className="text-lg text-gray-600">Get in touch with me for software development inquiries or collaborations</p>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            Share Your Memories
+          </h1>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto">
+            Leave a message to share your experiences and memories of Professor Rahman
+          </p>
         </div>
 
-        {/* Personal Information Section */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* About Me */}
-            <div className="md:col-span-2">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">About Me</h2>
-              <p className="text-gray-600 leading-relaxed">
-                I am a passionate software engineer with expertise in web development and modern technologies. 
-                I specialize in creating efficient, scalable, and user-friendly applications using the latest 
-                frameworks and best practices. My goal is to build innovative solutions that make a difference.
-              </p>
+        {/* Form and decorative image in two columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* Form Column */}
+          <div className={`rounded-xl shadow-xl overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <div className={`px-6 py-4 ${isDarkMode ? 'bg-blue-800' : 'bg-blue-600'}`}>
+              <h2 className="text-xl font-semibold text-white">Share Your Story</h2>
+              <p className="text-blue-100 text-sm">Your memories help preserve Professor Rahman's legacy</p>
             </div>
-
-            {/* Contact Details */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Contact Details</h2>
-              
-              {/* Phone */}
-              <div className="flex items-center space-x-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <a href="tel:+918639136086" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  +91 8639136086
-                </a>
+            
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="block text-sm font-medium">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={newMessage.name}
+                    onChange={(e) => setNewMessage({ ...newMessage, name: e.target.value })}
+                    className={`block w-full px-3 py-2 rounded ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white' 
+                        : 'bg-white border-gray-300 text-gray-900'
+                    }`}
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium">
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    value={newMessage.email}
+                    onChange={(e) => setNewMessage({ ...newMessage, email: e.target.value })}
+                    className={`block w-full px-3 py-2 rounded ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white' 
+                        : 'bg-white border-gray-300 text-gray-900'
+                    }`}
+                    placeholder="john@example.com"
+                  />
+                </div>
               </div>
 
-              {/* Email */}
-              <div className="flex items-center space-x-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <a href="mailto:shaikrizwaan@gmail.com" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  shaikrizwaan@gmail.com
-                </a>
+              <div className="space-y-2">
+                <label htmlFor="relation" className="block text-sm font-medium">
+                  Your Relation to Professor Rahman
+                </label>
+                <select
+                  id="relation"
+                  value={newMessage.relation}
+                  onChange={(e) => setNewMessage({ ...newMessage, relation: e.target.value })}
+                  className={`block w-full px-3 py-2 rounded ${
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
+                >
+                  <option value="Student">Student</option>
+                  <option value="Colleague">Colleague</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Family">Family Member</option>
+                  <option value="Admirer">Admirer of Work</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="message" className="block text-sm font-medium">
+                  Your Message
+                </label>
+                <textarea
+                  id="message"
+                  required
+                  rows={5}
+                  value={newMessage.message}
+                  onChange={(e) => setNewMessage({ ...newMessage, message: e.target.value })}
+                  className={`block w-full px-3 py-2 rounded ${
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
+                  placeholder="Share your memories, thoughts, or tribute to Professor Rahman..."
+                />
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded text-base font-medium text-white transition-colors
+                    ${isSubmitting 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : isDarkMode 
+                        ? 'bg-blue-700 hover:bg-blue-800' 
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : 'Share Your Memory'}
+                </button>
+              </div>
+
+              {submitStatus === 'success' && (
+                <div className={`rounded p-4 border ${
+                  isDarkMode 
+                    ? 'bg-green-900/30 border-green-800 text-green-200' 
+                    : 'bg-green-50 border-green-200 text-green-800'
+                }`}>
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">
+                        Thank you for sharing your memory! Your message has been sent successfully.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className={`rounded p-4 border ${
+                  isDarkMode 
+                    ? 'bg-red-900/30 border-red-800 text-red-200' 
+                    : 'bg-red-50 border-red-200 text-red-800'
+                }`}>
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">
+                        Sorry, there was an error sending your message. Please try again later.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
+          
+          {/* Decorative Image Column */}
+          <div className="hidden lg:block relative rounded-xl overflow-hidden shadow-xl h-[600px]">
+            <Image 
+              src="/images/wildlife/hero/hero.jpeg" 
+              alt="Professor Rahman" 
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <blockquote className="italic text-lg">
+                  "Photography is the story I fail to put into words."
+                </blockquote>
+                <p className="mt-2 text-sm text-gray-300">- Professor Rahman</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Contact Form */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Send a Message</h2>
+        {/* Messages Display */}
+        <div className="mt-12 space-y-6">
+          <h2 className="text-2xl font-bold mb-8 text-center">
+            {messages.length > 0 ? 'Shared Memories' : ''}
+          </h2>
           
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
-                placeholder="Your name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
-                placeholder="Your email address"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                Message
-              </label>
-              <textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
-                rows={6}
-                className="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200 resize-none"
-                placeholder="Your message"
-              />
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full flex justify-center py-3.5 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`rounded-xl shadow-lg p-6 transition-all hover:shadow-xl ${
+                  isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
                 }`}
               >
-                {isLoading ? 'Sending...' : 'Send Message'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* Success Popup */}
-      {success && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setSuccess(false)}></div>
-          <div className="bg-white rounded-lg p-8 max-w-md mx-auto z-10 relative">
-            <button 
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700" 
-              onClick={() => setSuccess(false)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="text-center">
-              <svg 
-                className="h-16 w-16 text-green-500 mx-auto mb-4" 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M5 13l4 4L19 7" 
-                />
-              </svg>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
-              <p className="text-gray-600">
-                Thank you for your message. I&apos;ll get back to you as soon as possible.
+                <div className={`flex items-center justify-between mb-4 pb-2 border-b ${
+                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
+                }`}>
+                  <div>
+                    <h3 className="text-lg font-medium">
+                      {msg.name}
+                    </h3>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {msg.relation}
+                    </p>
+                  </div>
+                  <time className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {new Date(msg.date).toLocaleDateString()}
+                  </time>
+                </div>
+                <p className={`whitespace-pre-line ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {msg.message}
+                </p>
+              </div>
+            ))}
+          </div>
+          
+          {messages.length === 0 && (
+            <div className="text-center py-10">
+              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                Be the first to share your memory of Professor Rahman.
               </p>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
-} 
+}
