@@ -223,7 +223,7 @@ export default function FullscreenModal({
               }`}
               priority
               quality={100}
-              onLoadingComplete={() => {
+              onLoad={() => {
                 setIsLoading(false);
               }}
               sizes="100vw"
@@ -244,12 +244,12 @@ export default function FullscreenModal({
               highContrast 
                 ? 'bg-white text-black border-2 border-black' 
                 : 'bg-black/60 text-white'
-            } px-4 py-2 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm w-full sm:w-auto justify-center mb-2`}
+            } px-6 py-3 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm w-full sm:w-auto justify-center mb-2`}
             aria-label="Download original image"
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
+              className="h-6 w-6" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -270,25 +270,25 @@ export default function FullscreenModal({
           highContrast 
             ? 'bg-white border-2 border-black' 
             : 'backdrop-blur-sm bg-black/60'
-        } px-6 py-3 rounded-full w-full sm:w-auto justify-between sm:justify-center`}>
+        } px-8 py-4 rounded-full w-full sm:w-auto justify-between sm:justify-center`}>
           <button
             onClick={handlePrev}
             className={`${
               highContrast 
                 ? 'text-black hover:text-gray-700' 
                 : 'text-white hover:text-gray-300'
-            } transition-colors p-2 disabled:opacity-50`}
+            } transition-colors p-4 disabled:opacity-50 hover:bg-black/20 rounded-full`}
             aria-label="Previous image"
             disabled={currentIndex === 0}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
-          <div className={`px-4 text-sm font-medium ${highContrast ? 'text-black' : 'text-white'} flex items-center whitespace-nowrap`}>
+          <div className={`px-6 text-base font-medium ${highContrast ? 'text-black' : 'text-white'} flex items-center whitespace-nowrap`}>
             <span>{currentIndex + 1}</span>
-            <span className="mx-1">/</span>
+            <span className="mx-2">/</span>
             <span>{totalImages}</span>
           </div>
 
@@ -298,11 +298,11 @@ export default function FullscreenModal({
               highContrast 
                 ? 'text-black hover:text-gray-700' 
                 : 'text-white hover:text-gray-300'
-            } transition-colors p-2 disabled:opacity-50`}
+            } transition-colors p-4 disabled:opacity-50 hover:bg-black/20 rounded-full`}
             aria-label="Next image"
             disabled={currentIndex === totalImages - 1}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

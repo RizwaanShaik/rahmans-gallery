@@ -219,6 +219,33 @@ export default function CategoryGallery() {
   const observer = useRef<IntersectionObserver | null>(null);
   const allPhotos = getPhotosByCategory(categoryId);
 
+  const ITEMS_PER_PAGE = 12;
+  
+  const loadMorePhotos = useCallback(() => {
+    if (loading) return; // Prevent multiple simultaneous loads
+    setLoading(true);
+    
+    // Use setTimeout to prevent UI blocking on mobile
+    setTimeout(() => {
+      const start = (page - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE;
+      const newPhotos = allPhotos.slice(start, end);
+      
+      if (newPhotos.length > 0) {
+        setDisplayedPhotos(prev => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const uniqueNewPhotos = newPhotos.filter(photo => !existingIds.has(photo.id));
+          return [...prev, ...uniqueNewPhotos];
+        });
+        setPage(prev => prev + 1);
+        setHasMore(end < allPhotos.length);
+      } else {
+        setHasMore(false);
+      }
+      setLoading(false);
+    }, 100); // Small delay to prevent UI blocking
+  }, [page, allPhotos, loading]);
+
   const lastPhotoRef = useCallback((node: HTMLDivElement) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
@@ -226,32 +253,36 @@ export default function CategoryGallery() {
       if (entries[0].isIntersecting && hasMore) {
         loadMorePhotos();
       }
+    }, {
+      root: null,
+      rootMargin: '100px',
+      threshold: 0.1
     });
     if (node) observer.current.observe(node);
-  }, [loading, hasMore]);
+  }, [loading, hasMore, loadMorePhotos]);
 
-  const ITEMS_PER_PAGE = 12;
-  
-  const loadMorePhotos = useCallback(() => {
-    setLoading(true);
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    const newPhotos = allPhotos.slice(start, end);
+  // Add a scroll event listener as a fallback for mobile
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
     
-    if (newPhotos.length > 0) {
-      // Ensure no duplicates by checking IDs
-      setDisplayedPhotos(prev => {
-        const existingIds = new Set(prev.map(p => p.id));
-        const uniqueNewPhotos = newPhotos.filter(photo => !existingIds.has(photo.id));
-        return [...prev, ...uniqueNewPhotos];
-      });
-      setPage(prev => prev + 1);
-      setHasMore(end < allPhotos.length);
-    } else {
-      setHasMore(false);
-    }
-    setLoading(false);
-  }, [page, allPhotos]);
+    const handleScroll = () => {
+      // Debounce scroll events
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1500) {
+          if (!loading && hasMore) {
+            loadMorePhotos();
+          }
+        }
+      }, 100);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, [loading, hasMore, loadMorePhotos]);
 
   // Reset everything when category changes
   useEffect(() => {
@@ -267,16 +298,10 @@ export default function CategoryGallery() {
       loadMorePhotos();
     }
   }, [page, loadMorePhotos]);
-  
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Prevent unintended navigation when component mounts or URL params change
-  useEffect(() => {
-    // This is just to ensure the component doesn't trigger navigation on initial render
-    // or when params change
-  }, [params]);
 
   const openModal = (index: number) => {
     setCurrentImage(displayedPhotos[index].fullscreenSrc);
@@ -307,20 +332,22 @@ export default function CategoryGallery() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 dark:bg-gray-900">
       {/* Mobile-optimized header for smaller screens */}
       <div className="sm:hidden mb-6">
         <div className="flex items-center">
           <button
             onClick={handleBack}
-            className="bg-white rounded-full shadow p-2 mr-3 flex-shrink-0 text-gray-700 hover:text-gray-900 transition-colors"
+            className="bg-white dark:bg-gray-800 rounded-full shadow p-2 mr-3 flex-shrink-0 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Back to Gallery"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
-          <h1 className="text-2xl font-bold truncate">{categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography</h1>
+          <h1 className="text-2xl font-bold truncate text-gray-900 dark:text-white">
+            {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography
+          </h1>
         </div>
       </div>
 
@@ -328,14 +355,16 @@ export default function CategoryGallery() {
       <div className="hidden sm:flex items-center justify-center mb-8 relative">
         <button
           onClick={handleBack}
-          className="text-gray-600 hover:text-gray-900 flex items-center transition-colors absolute left-0"
+          className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center transition-colors absolute left-0"
           aria-label="Back to Gallery"
         >
           <span className="mr-2">&#8592;</span>
-          <span>Back to Gallery</span>
+          <span className="font-medium">Back to Gallery</span>
         </button>
 
-        <h1 className="text-3xl font-bold text-center">{categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+          {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography
+        </h1>
       </div>
 
       {/* Gallery Grid */}
@@ -345,6 +374,7 @@ export default function CategoryGallery() {
             key={photo.id} 
             ref={index === displayedPhotos.length - 1 ? lastPhotoRef : null}
             onClick={() => openModal(index)}
+            className="transform transition-transform duration-300 hover:scale-102 focus:scale-102"
           >
             <PhotoCard
               src={photo.src}
@@ -358,7 +388,7 @@ export default function CategoryGallery() {
       {/* Loading indicator */}
       {loading && (
         <div className="flex justify-center my-8">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-800 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-gray-800 dark:border-t-gray-300 rounded-full animate-spin"></div>
         </div>
       )}
 
