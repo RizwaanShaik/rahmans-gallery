@@ -2,122 +2,71 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import FeaturedCollection from '@/components/FeaturedCollection';
+import Timeline from '@/components/Timeline';
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4">
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section */}
-      <section className="py-20 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Professor S. K. Rahman&apos;s Photography
-        </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-          A distinguished photographer, educator, and visionary who captured life&apos;s beautiful moments through his lens. 
-          His work spans across Fine Art, Travel, Documentary, and Macro Photography, leaving behind a legacy that continues to inspire.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link 
-            href="/gallery" 
-            className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+      <section className="relative h-screen flex items-center justify-center">
+        <Image
+          src="/images/wildlife/hero/hero.jpeg"
+          alt="Hero background"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-10" />
+        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            Professor Rahman&apos;s Photography
+          </h1>
+          <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed">
+            A legacy of capturing the extraordinary in nature and wildlife through the lens
+          </p>
+          <Link
+            href="/gallery"
+            className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg 
+                     hover:bg-white/20 transition-all duration-300 text-lg font-medium"
           >
-            View Gallery
-          </Link>
-          <Link 
-            href="/about" 
-            className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Read Biography
+            Explore Gallery
           </Link>
         </div>
       </section>
 
-      {/* Featured Collections Section */}
-      <section className="py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Featured Collections</h2>
+      {/* Featured Collection */}
+      <section id="featured" className="w-full py-16 bg-white dark:bg-gray-900">
+        <FeaturedCollection />
+      </section>
 
-        {/* Wildlife Section */}
-        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl mb-16">
-          <Image
-            src="/images/wildlife/hero/hero.jpeg"
-            alt="Wildlife Photography"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <h3 className="text-3xl font-bold mb-2">Wildlife Photography</h3>
-            <p className="text-lg text-gray-200">Discover the beauty of nature through wildlife photography.</p>
-            <Link
-              href="/gallery/wildlife"
-              className="inline-block mt-4 bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              View Collection
-            </Link>
-          </div>
-        </div>
+      {/* Timeline */}
+      <section id="timeline" className="w-full py-16 bg-gray-50 dark:bg-gray-800">
+        <Timeline />
+      </section>
 
-        {/* Architecture Section */}
-        <div className="relative h-[70vh] w-full rounded-xl overflow-hidden shadow-2xl mb-16">
-          <Image
-            src="/images/architecture/hero/hero.jpeg"
-            alt="Architecture Photography"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <h3 className="text-3xl font-bold mb-2">Architecture</h3>
-            <p className="text-lg text-gray-200">Explore the world of architectural marvels.</p>
+      {/* About Preview */}
+      <section className="w-full py-16 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              About Professor Rahman
+            </h2>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-8">
+              Professor Shaik Khaleel-ur-Rahman was a distinguished photographer and educator who dedicated his life to the art of photography. 
+              As the Director of Academic and Planning at JNAFAU College of Fine Arts, he inspired countless students with his unique perspective 
+              and technical expertise.
+            </p>
             <Link
-              href="/gallery/architecture"
-              className="inline-block mt-4 bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              href="/about"
+              className="inline-block bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-8 py-3 rounded-lg 
+                       hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors text-lg font-medium"
             >
-              View Collection
+              Read Full Biography
             </Link>
           </div>
         </div>
       </section>
-
-      {/* Awards and Recognition Section */}
-      <section className="py-16 bg-gray-50 rounded-2xl">
-        <h2 className="text-3xl font-bold text-center mb-12">Awards & Recognition</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">State Best Teacher Award</h3>
-            <p className="text-gray-600">Awarded by the Government of Andhra Pradesh in 2012 for outstanding contributions to education.</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Young Teacher Award</h3>
-            <p className="text-gray-600">Recognized by the Singapore Tourism Board & Air India for excellence in teaching.</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Professional Memberships</h3>
-            <p className="text-gray-600">Active member of Telangana Photography Society, Federation of Indian Photography, and Telangana Photography Akademy.</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Exhibitions</h3>
-            <p className="text-gray-600">Featured in exhibitions including &ldquo;Deccan Rock Forms,&rdquo; &ldquo;Nukkad,&rdquo; &ldquo;Heritage Structures of Hyderabad,&rdquo; and &ldquo;Ragilo Rajasthan.&rdquo;</p>
-          </div>
-        </div>
-      </section>
-
-      {/* About Preview Section */}
-      <section className="py-20 text-center">
-        <h2 className="text-3xl font-bold mb-6">About the Artist</h2>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
-          Professor Shaik Khaleel-ur-Rahman was a distinguished photographer and educator who dedicated his life to the art of photography. 
-          As the Director of Academic and Planning at JNAFAU College of Fine Arts, he inspired countless students with his unique perspective 
-          and technical expertise. His work spans various genres, from breathtaking landscapes to intimate portraits, each photograph telling its own story.
-        </p>
-        <Link 
-          href="/about" 
-          className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          Read Full Biography
-        </Link>
-      </section>
-    </div>
+    </main>
   );
 }
