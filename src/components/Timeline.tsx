@@ -61,13 +61,13 @@ const events: TimelineEvent[] = [
 export default function Timeline() {
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 mt-16">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
         Journey & Achievements
       </h2>
 
       <div className="relative">
         {/* Vertical Line */}
-        <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-0.5 h-full bg-gray-200 dark:bg-gray-700" />
+        <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-0.5 h-full bg-gray-200" />
 
         <div className="space-y-6 md:space-y-12">
           {events.map((event, index) => (
@@ -83,29 +83,29 @@ export default function Timeline() {
                   index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:pl-8'
                 }`}
               >
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105">
+                <div className="bg-white p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105">
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-2 ${
-                    event.category === 'education' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                    event.category === 'exhibition' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                    event.category === 'award' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                    event.category === 'education' ? 'bg-yellow-100 text-yellow-800' :
+                    event.category === 'exhibition' ? 'bg-blue-100 text-blue-800' :
+                    event.category === 'award' ? 'bg-green-100 text-green-800' :
+                    'bg-purple-100 text-purple-800'
                   }`}>
                     {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
                   </span>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-1">
                     {event.title}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-gray-600">
                     {event.description}
                   </p>
-                  <div className="mt-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
+                  <div className="mt-2 text-sm font-semibold text-gray-500">
                     {event.year}
                   </div>
                 </div>
               </div>
 
               {/* Center Point */}
-              <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-3 h-3 rounded-full bg-blue-500 dark:bg-blue-400 shadow" />
+              <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-3 h-3 rounded-full bg-blue-500 shadow" />
             </div>
           ))}
         </div>

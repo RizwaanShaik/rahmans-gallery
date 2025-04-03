@@ -169,6 +169,11 @@ export default function FullscreenModal({
 
   if (!isOpen || !displayedImage) return null;
 
+  // Function to get the original image URL
+  const getOriginalImageUrl = () => {
+    return originalImage ? originalImage.replace('/fullscreen/', '/original/') : null;
+  };
+
   return (
     <div 
       ref={modalRef}
@@ -182,7 +187,34 @@ export default function FullscreenModal({
       tabIndex={-1}
     >
       {/* Top Controls Bar */}
-      <div className="fixed top-4 right-4 flex items-center gap-4 z-50">
+      <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 z-50">
+        <a
+          href={getOriginalImageUrl() || ''}
+          download
+          onClick={(e) => e.stopPropagation()}
+          className={`${
+            highContrast 
+              ? 'bg-white text-black border-2 border-black' 
+              : 'bg-black/60 text-white'
+          } px-6 py-3 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm`}
+          aria-label="Download original image"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+            />
+          </svg>
+          <span className="whitespace-nowrap">Download Original</span>
+        </a>
         <button
           onClick={onClose}
           className={`${
@@ -234,37 +266,6 @@ export default function FullscreenModal({
 
       {/* Bottom Controls Bar */}
       <div className="fixed bottom-4 left-0 right-0 flex flex-col items-center gap-4 px-4">
-        {/* Download Button - Moved to bottom */}
-        {originalImage && (
-          <a
-            href={originalImage}
-            download
-            onClick={(e) => e.stopPropagation()}
-            className={`${
-              highContrast 
-                ? 'bg-white text-black border-2 border-black' 
-                : 'bg-black/60 text-white'
-            } px-6 py-3 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm w-full sm:w-auto justify-center mb-2`}
-            aria-label="Download original image"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-6 w-6" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
-              />
-            </svg>
-            <span className="whitespace-nowrap">Download Original</span>
-          </a>
-        )}
-
         {/* Navigation Controls */}
         <div className={`flex items-center gap-4 ${
           highContrast 

@@ -4,25 +4,23 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 
-interface Message {
-  id: string;
+interface Memory {
+  id: number;
   name: string;
   email: string;
   message: string;
-  date: string;
   relation: string;
+  created_at: string;
 }
 
 export default function Contact() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState({
-    name: '',
-    email: '',
-    message: '',
-    relation: 'Student'
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [relation, setRelation] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [memories, setMemories] = useState<Memory[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Initialize EmailJS (replace with your actual public key)
@@ -46,51 +44,55 @@ export default function Contact() {
     };
   }, []);
 
+  // Fetch existing memories
+  useEffect(() => {
+    fetchMemories();
+  }, []);
+
+  const fetchMemories = async () => {
+    try {
+      const response = await fetch('/api/memories');
+      const data = await response.json();
+      if (data.memories) {
+        setMemories(data.memories);
+      }
+    } catch (error) {
+      console.error('Error fetching memories:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
-  
+
     try {
-      // Format date
-      const formattedDate = new Date().toLocaleString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      const response = await fetch('/api/memories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          relation,
+        }),
       });
-  
-      // Send email using EmailJS
-      const response = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_k027bvr',
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_mlnh9pb',
-        {
-          name: newMessage.name,
-          email: newMessage.email,
-          message: newMessage.message,
-          relation: newMessage.relation,
-          date: formattedDate
-        }
-      );
-  
-      if (response.status === 200) {
-        // Create a local message record
-        const message: Message = {
-          id: Date.now().toString(),
-          ...newMessage,
-          date: new Date().toISOString()
-        };
-  
-        setMessages([message, ...messages]);
-        setNewMessage({ name: '', email: '', message: '', relation: 'Student' });
+
+      if (response.ok) {
         setSubmitStatus('success');
+        setName('');
+        setEmail('');
+        setMessage('');
+        setRelation('');
+        // Refresh memories list
+        fetchMemories();
       } else {
-        throw new Error('Failed to send email');
+        setSubmitStatus('error');
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('Error submitting memory:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -128,8 +130,8 @@ export default function Contact() {
                     type="text"
                     id="name"
                     required
-                    value={newMessage.name}
-                    onChange={(e) => setNewMessage({ ...newMessage, name: e.target.value })}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className={`block w-full px-3 py-2 rounded ${
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white' 
@@ -146,8 +148,8 @@ export default function Contact() {
                     type="email"
                     id="email"
                     required
-                    value={newMessage.email}
-                    onChange={(e) => setNewMessage({ ...newMessage, email: e.target.value })}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className={`block w-full px-3 py-2 rounded ${
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white' 
@@ -164,19 +166,19 @@ export default function Contact() {
                 </label>
                 <select
                   id="relation"
-                  value={newMessage.relation}
-                  onChange={(e) => setNewMessage({ ...newMessage, relation: e.target.value })}
+                  value={relation}
+                  onChange={(e) => setRelation(e.target.value)}
                   className={`block w-full px-3 py-2 rounded ${
                     isDarkMode 
                       ? 'bg-gray-700 border-gray-600 text-white' 
                       : 'bg-white border-gray-300 text-gray-900'
                   }`}
                 >
+                  <option value="">Select your relation</option>
                   <option value="Student">Student</option>
                   <option value="Colleague">Colleague</option>
                   <option value="Friend">Friend</option>
-                  <option value="Family">Family Member</option>
-                  <option value="Admirer">Admirer of Work</option>
+                  <option value="Admirer">Admirer</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
@@ -189,8 +191,8 @@ export default function Contact() {
                   id="message"
                   required
                   rows={5}
-                  value={newMessage.message}
-                  onChange={(e) => setNewMessage({ ...newMessage, message: e.target.value })}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   className={`block w-full px-3 py-2 rounded ${
                     isDarkMode 
                       ? 'bg-gray-700 border-gray-600 text-white' 
@@ -287,49 +289,28 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Messages Display */}
-        <div className="mt-12 space-y-6">
-          <h2 className="text-2xl font-bold mb-8 text-center">
-            {messages.length > 0 ? 'Shared Memories' : ''}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`rounded-xl shadow-lg p-6 transition-all hover:shadow-xl ${
-                  isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
-                }`}
-              >
-                <div className={`flex items-center justify-between mb-4 pb-2 border-b ${
-                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
-                }`}>
+        {/* Memories List */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Shared Memories</h2>
+          <div className="space-y-6">
+            {memories.map((memory) => (
+              <div key={memory.id} className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-lg font-medium">
-                      {msg.name}
-                    </h3>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {msg.relation}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900">{memory.name}</h3>
+                    <p className="text-sm text-gray-500">{memory.relation}</p>
                   </div>
-                  <time className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {new Date(msg.date).toLocaleDateString()}
+                  <time className="text-sm text-gray-500">
+                    {new Date(memory.created_at).toLocaleDateString()}
                   </time>
                 </div>
-                <p className={`whitespace-pre-line ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  {msg.message}
-                </p>
+                <p className="text-gray-700">{memory.message}</p>
               </div>
             ))}
+            {memories.length === 0 && (
+              <p className="text-gray-600 text-center py-8">No memories shared yet. Be the first to share!</p>
+            )}
           </div>
-          
-          {messages.length === 0 && (
-            <div className="text-center py-10">
-              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                Be the first to share your memory of Professor Rahman.
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
