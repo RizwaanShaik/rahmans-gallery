@@ -187,7 +187,7 @@ export default function FullscreenModal({
       tabIndex={-1}
     >
       {/* Top Controls Bar */}
-      <div className="fixed top-0 left-0 right-0 flex items-center justify-end gap-4 px-6 py-4 z-50 bg-gradient-to-b from-black/40 to-transparent">
+      <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 z-50 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
         <a
           href={getOriginalImageUrl() || ''}
           download
@@ -196,14 +196,14 @@ export default function FullscreenModal({
             highContrast 
               ? 'bg-white text-black border-2 border-black' 
               : 'bg-white/10 text-white hover:bg-white/20'
-          } px-4 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none`}
+          } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
           aria-label="Download original quality image"
           role="button"
           title="Download original quality image"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-6 w-6" 
+            className="h-5 w-5" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -215,18 +215,19 @@ export default function FullscreenModal({
               d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
             />
           </svg>
-          <span className="whitespace-nowrap">Download Original</span>
+          <span className="hidden sm:inline">Download Original</span>
         </a>
+
         <button
           onClick={onClose}
           className={`${
             highContrast 
               ? 'bg-white text-black border-2 border-black' 
-              : 'bg-black/60 text-white'
-          } p-2 rounded-full hover:bg-opacity-80 transition-colors backdrop-blur-sm`}
+              : 'bg-black/40 text-white hover:bg-black/60'
+          } p-2 rounded-lg transition-colors backdrop-blur-sm`}
           aria-label="Close modal"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>

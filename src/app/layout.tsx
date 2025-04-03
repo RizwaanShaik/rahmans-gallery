@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Professor Rahman's Gallery",
-  description: "A collection of Professor Rahman's photography work",
+  description: "A legacy of capturing the extraordinary in nature and wildlife through the lens",
 };
 
 export default function RootLayout({
@@ -17,16 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} bg-gray-50`}>
         <Navigation />
         <main className="min-h-screen pt-16">
           {children}
         </main>
-        <footer className="py-6 text-center border-t">
-          <div className="container mx-auto px-4">
-            <p className="text-gray-600">© {new Date().getFullYear()} Professor Rahman&apos;s Gallery. All rights reserved.</p>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

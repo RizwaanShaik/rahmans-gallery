@@ -7,15 +7,16 @@ export default function About() {
         <h1 className="text-4xl font-bold mb-8 text-center">About Prof. S. K. Rahman</h1>
         
         {/* Image Container */}
-        <div className="mb-12 relative w-[300px] h-[400px] mx-auto">
-          <div className="relative w-full h-full overflow-hidden rounded-[50%]">
-          <Image
+        <div className="mb-12 relative w-[280px] h-[350px] sm:w-[300px] sm:h-[400px] mx-auto">
+          <div className="relative w-full h-full overflow-hidden rounded-[50%] shadow-xl">
+            <Image
               src="/images/about/thumbnails/IMG_0020.jpeg"
               alt="Professor Shaik Khaleel-ur-Rahman"
-            fill
+              fill
               className="object-cover"
-              style={{ objectPosition: 'center' }}
-          />
+              sizes="(max-width: 640px) 280px, 300px"
+              priority
+            />
           </div>
         </div>
 

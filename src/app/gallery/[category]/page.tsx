@@ -219,7 +219,7 @@ export default function CategoryGallery() {
   const observer = useRef<IntersectionObserver | null>(null);
   const allPhotos = getPhotosByCategory(categoryId);
 
-  const ITEMS_PER_PAGE = 12;
+  const ITEMS_PER_PAGE = 50; // Increased to load all images at once
   
   const loadMorePhotos = useCallback(() => {
     if (loading) return; // Prevent multiple simultaneous loads

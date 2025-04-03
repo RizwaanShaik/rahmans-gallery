@@ -37,14 +37,6 @@ export default function Home() {
 
       {/* Featured Collection */}
       <section id="featured" className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Featured Works
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            A curated selection of iconic photographs that showcase Professor Rahman&apos;s artistic vision
-          </p>
-        </div>
         <FeaturedCollection />
       </section>
 
