@@ -187,7 +187,7 @@ export default function FullscreenModal({
       tabIndex={-1}
     >
       {/* Top Controls Bar */}
-      <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 z-50">
+      <div className="fixed top-0 left-0 right-0 flex items-center justify-end gap-4 px-6 py-4 z-50 bg-gradient-to-b from-black/40 to-transparent">
         <a
           href={getOriginalImageUrl() || ''}
           download
@@ -195,9 +195,11 @@ export default function FullscreenModal({
           className={`${
             highContrast 
               ? 'bg-white text-black border-2 border-black' 
-              : 'bg-black/60 text-white'
-          } px-6 py-3 rounded-full hover:bg-opacity-80 transition-colors flex items-center gap-2 backdrop-blur-sm`}
-          aria-label="Download original image"
+              : 'bg-white/10 text-white hover:bg-white/20'
+          } px-4 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none`}
+          aria-label="Download original quality image"
+          role="button"
+          title="Download original quality image"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
