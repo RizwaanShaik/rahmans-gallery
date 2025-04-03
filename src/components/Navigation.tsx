@@ -41,7 +41,7 @@ export default function Navigation() {
               href="/"
               className="flex items-center text-gray-900 hover:text-gray-600 transition-colors"
             >
-              <span className="text-xl font-bold">Professor Rahman's Gallery</span>
+              <span className="text-xl font-bold">Professor Rahman&apos;s Gallery</span>
             </Link>
           </div>
 
