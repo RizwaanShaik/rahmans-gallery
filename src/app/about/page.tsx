@@ -32,7 +32,7 @@ export default function About() {
         <div className="prose prose-lg max-w-none">
           {/* Biography Quote */}
           <blockquote className="mb-12 p-4 sm:p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg italic text-gray-700 text-center">
-            "Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India."
+           &quot;Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India.&quot;
           </blockquote>
 
           {/* Timeline Sections */}

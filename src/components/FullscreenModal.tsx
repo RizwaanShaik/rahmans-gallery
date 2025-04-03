@@ -38,7 +38,7 @@ export default function FullscreenModal({
     if (currentImage) {
       setDisplayedImage(currentImage);
     }
-  }, []);
+  }, [currentImage]);
 
   // Preload next image when available
   useEffect(() => {
