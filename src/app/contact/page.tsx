@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import emailjs from '@emailjs/browser';
 
 interface Message {
   id: string;
@@ -24,6 +25,11 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Initialize EmailJS (replace with your actual public key)
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'KGyg8MIyzMnx7qIiY');
+  }, []);
+
   // Check for dark mode
   useEffect(() => {
     const checkDarkMode = () => {
@@ -34,10 +40,7 @@ export default function Contact() {
     };
 
     checkDarkMode();
-    
-    // Listen for storage events (which we dispatch when theme changes)
     window.addEventListener('storage', checkDarkMode);
-    
     return () => {
       window.removeEventListener('storage', checkDarkMode);
     };
@@ -47,20 +50,45 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
-
+  
     try {
-      // Simulate API call - in production, use a real API endpoint
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const message: Message = {
-        id: Date.now().toString(),
-        ...newMessage,
-        date: new Date().toISOString()
-      };
-
-      setMessages([message, ...messages]);
-      setNewMessage({ name: '', email: '', message: '', relation: 'Student' });
-      setSubmitStatus('success');
+      // Format date
+      const formattedDate = new Date().toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+  
+      // Send email using EmailJS
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_k027bvr',
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_mlnh9pb',
+        {
+          name: newMessage.name,
+          email: newMessage.email,
+          message: newMessage.message,
+          relation: newMessage.relation,
+          date: formattedDate
+        }
+      );
+  
+      if (response.status === 200) {
+        // Create a local message record
+        const message: Message = {
+          id: Date.now().toString(),
+          ...newMessage,
+          date: new Date().toISOString()
+        };
+  
+        setMessages([message, ...messages]);
+        setNewMessage({ name: '', email: '', message: '', relation: 'Student' });
+        setSubmitStatus('success');
+      } else {
+        throw new Error('Failed to send email');
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
       setSubmitStatus('error');
