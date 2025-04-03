@@ -25,79 +25,116 @@ export default function About() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Early Life</h2>
             <p className="mb-4">
-              Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman grew up in a middle-class family. 
-              His father, Abdul Rahman, served as a Senior Accounts Officer in the A.G.&apos;s Office, Hyderabad. His early childhood was spent in the village, 
-              where he completed his primary education before the family moved to Hyderabad, marking a significant transition from rural to urban life.
+              Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman spent his formative years in his village, 
+              where he developed a deep love for nature and rural surroundings. His father, Abdul Rahman, served as a Senior Accounts Officer in the A.G.&apos;s Office, Hyderabad. 
+              The family&apos;s move from their peaceful rural setting to the bustling city of Hyderabad marked a significant transition in young Rahman&apos;s life.
+            </p>
+            <p className="mb-4">
+              During his teenage years, his father would give him 10 rupees on Sundays to watch movies independently, fostering a love for visual storytelling through films 
+              like Bruce Lee, James Bond, and Indiana Jones. This early exposure to cinema would later influence his photographic style and storytelling approach.
             </p>
           </section>
 
           {/* Education */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Education</h2>
+            <h2 className="text-2xl font-semibold mb-4">Education and Early Career</h2>
+            <p className="mb-4">
+              After completing his Intermediate education in MPC (Mathematics, Physics, Chemistry), Rahman chose to diverge from conventional paths, 
+              pursuing photography at JNTU College of Fine Arts. This decision, though initially shocking to his family, would prove transformative. 
+              His educational journey includes:
+            </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Primary and Secondary Education: Completed primary education in the village and attended Sardar Vallabhbhai Patel Govt. High School, Asifnagar, Hyderabad (1981)</li>
-              <li>Intermediate: Studied MPC subjects at G. Pulla Reddy Junior College, Vijayanagar Colony, Hyderabad (1981-1983)</li>
-              <li>Diploma in Photography: JNTU College of Fine Arts (1983-1985)</li>
-              <li>Bachelor of Commerce: New Science College, Ameerpet, Hyderabad (1986-1989)</li>
-              <li>Master&apos;s in Journalism and Mass Communication: Madurai Kamaraj University (2000)</li>
-              <li>Master of Fine Arts in Photography: JNAFAU (2009)</li>
+              <li>Diploma in Photography from JNTU College of Fine Arts (1983-1985)</li>
+              <li>Bachelor of Commerce from Osmania University (1986-1989)</li>
+              <li>Master&apos;s in Journalism and Mass Communication from Madurai Kamaraj University (2000)</li>
+              <li>Master of Fine Arts in Photography from JNAFAU (2008-2010)</li>
             </ul>
           </section>
 
           {/* Career */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Career</h2>
+            <h2 className="text-2xl font-semibold mb-4">Professional Journey</h2>
             <p className="mb-4">
-              Professor Rahman&apos;s career began as an assistant cameraman, photo lab printer, and event photographer. Despite opportunities in cinema, 
-              he chose to focus on family commitments. His teaching journey began at JNTU College of Fine Arts in 1992, where he served as a Lecturer in Photography.
+              Professor Rahman&apos;s career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons, 
+              and freelance fashion photographer for Impulse Advertising Agency. In 1992, he joined JNTU College of Fine Arts as a Lecturer, marking the beginning 
+              of his academic career.
             </p>
             <p className="mb-4">
-              Over the years, he held various administrative positions including Head of the Department, Special Officer for University Hostel, 
-              Member of the Board of Studies, Controller of Examinations, and Registrar of the University. At the time of his passing, he was the 
-              Director of Academic and Planning and Professor in Photography at JNAFAU College of Fine Arts.
+              Throughout his 27-year tenure, he has held numerous key positions including:
             </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Director of Academic and Planning</li>
+              <li>Registrar of JNAFAU</li>
+              <li>Controller of Examinations</li>
+              <li>Head of the Photography Department</li>
+              <li>Special Officer for University Hostel</li>
+              <li>Board of Studies Member at JNAFAU and Osmania University</li>
+            </ul>
           </section>
 
-          {/* Personal Life */}
+          {/* Photography Expertise */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Personal Life</h2>
+            <h2 className="text-2xl font-semibold mb-4">Photographic Journey</h2>
             <p className="mb-4">
-              An extrovert and family-oriented person, Professor Rahman was passionate about travel and sports. During his college days, he was the 
-              captain of the kabaddi team and a runner-up in javelin throw. His leadership qualities extended beyond sports, as he often took the 
-              initiative in planning events and served as a bridge between different generations in his community.
+              Coming from the tradition of small-format Analog Photography, Professor Rahman mastered black & white film processing and darkroom techniques. 
+              When digital technology emerged in the early 1990s, he embraced the change, starting with the Sony Mavica Floppy Disk storage camera.
             </p>
+            <p className="mb-4">
+              His photographic expertise spans multiple genres:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Fine Art Photography</li>
+              <li>Travel and Documentary Photography</li>
+              <li>Landscape Photography</li>
+              <li>Architectural Photography</li>
+              <li>Advertising Photography</li>
+              <li>Macro Photography</li>
+            </ul>
           </section>
 
-          {/* Photography Interests and Achievements */}
+          {/* Exhibitions and Achievements */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Photography Interests and Achievements</h2>
-            <p className="mb-4">
-              His photographic expertise spanned multiple genres including Fine Art, Travel Photography, Documentary Photography, Advertising Photography, 
-              and Macro Photography. He participated in numerous exhibitions, including &ldquo;Deccan Rock Forms,&rdquo; &ldquo;Nukkad,&rdquo; &ldquo;Heritage Structures of Hyderabad,&rdquo; and &ldquo;Ragilo Rajasthan.&rdquo;
-            </p>
-            <p className="mb-4">
-              His contributions were recognized with several awards, including the State Best Teacher Award from the Government of Andhra Pradesh (2012) 
-              and the Young Teacher Award from the Singapore Tourism Board & Air India. He was an active member of the Telangana Photography Society, 
-              Federation of Indian Photography, and Telangana Photography Akademy.
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">Exhibitions and Recognition</h2>
+            <p className="mb-4">Notable exhibitions include:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>&ldquo;Deccan Rock Forms&rdquo; - Group Exhibition in Kolkata (2000)</li>
+              <li>&ldquo;Nukkad&rdquo; - Solo Exhibition on Street Life of Calcutta (2001)</li>
+              <li>&ldquo;Heritage Structures of Hyderabad&rdquo; - Solo Exhibition (2006)</li>
+              <li>&ldquo;Colors of Rajasthan&rdquo; - Group Exhibition (2015)</li>
+            </ul>
+            <p className="mt-4 mb-4">Awards and Recognition:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>State Best Teacher Award from the Government of Andhra Pradesh (2012)</li>
+              <li>Young Teacher Award (BOLT) from Singapore Tourism Board & Air India</li>
+              <li>PESGCPC Grand Progress Award from PASCAL and GREEK School Photographic Club Cyprus (2019)</li>
+            </ul>
           </section>
 
-          {/* Travel and Projects */}
+          {/* International Experience */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Travel and Projects</h2>
+            <h2 className="text-2xl font-semibold mb-4">International Experience</h2>
             <p className="mb-4">
-              His passion for photography took him across India and internationally to destinations including London, Sri Lanka, Nepal, Thailand, 
-              and Saudi Arabia. He had planned future exhibitions featuring Ladakh, Mumbai, Kerala, Thailand, Sri Lanka, and London.
+              Professor Rahman has conducted photography projects and workshops across multiple countries including:
             </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>United Kingdom - Visited Swansea Metropolitan University (2010) for academic collaboration</li>
+              <li>Sri Lanka - Conducted workshops on Temple Architecture & Travel Photography</li>
+              <li>Thailand - Led workshops on Landscape & Travel Photography</li>
+              <li>Nepal and Saudi Arabia - Photography documentation projects</li>
+            </ul>
           </section>
 
           {/* Legacy */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Legacy</h2>
+            <h2 className="text-2xl font-semibold mb-4">Legacy and Impact</h2>
             <p className="mb-4">
-              Professor Shaik Khaleel-ur-Rahman passed away on May 25, 2021, leaving behind a rich legacy of photographic work and educational contributions. 
-              His photographs continue to inspire and reflect his deep passion for capturing life&apos;s moments, while his dedication to teaching has shaped 
-              countless careers in photography.
+              Throughout his career, Professor Rahman has mentored numerous successful photographers and filmmakers. His students have excelled in various fields 
+              including Film Making, Advertising, Television, Sports Photography, and Education. Notable alumni include P G Vinda, Srikanth Naroj, Samala Bhaskar, 
+              Acharya Venu, and Nachiket Katti (USA).
+            </p>
+            <p className="mb-4">
+              Professor Shaik Khaleel-ur-Rahman passed away on May 25, 2021, leaving behind a rich legacy of photographic work, educational contributions, and 
+              a lasting impact on the field of photography education in India. His work continues to inspire new generations of photographers and visual artists.
             </p>
           </section>
         </div>
