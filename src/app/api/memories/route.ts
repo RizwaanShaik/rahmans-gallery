@@ -11,7 +11,10 @@ export async function GET() {
     return NextResponse.json({ memories: rows });
   } catch (error) {
     console.error('Error fetching memories:', error);
-    return NextResponse.json({ error: 'Failed to fetch memories' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch memories' },
+      { status: 500 }
+    );
   }
 }
 
@@ -21,17 +24,17 @@ export async function POST(request: Request) {
     const { name, email, message, relation } = await request.json();
 
     // Validate required fields
-    if (!name || !email || !message || !relation) {
+    if (!name || !message) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Name and message are required fields' },
         { status: 400 }
       );
     }
 
-    // Insert into database
+    // Insert into database with optional fields
     const { rows } = await sql`
       INSERT INTO memories (name, email, message, relation)
-      VALUES (${name}, ${email}, ${message}, ${relation})
+      VALUES (${name}, ${email || null}, ${message}, ${relation || null})
       RETURNING *
     `;
 

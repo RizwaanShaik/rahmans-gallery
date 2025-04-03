@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 
@@ -14,6 +14,7 @@ interface Memory {
 }
 
 export default function Contact() {
+  const form = useRef<HTMLFormElement>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -23,7 +24,7 @@ export default function Contact() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Initialize EmailJS (replace with your actual public key)
+  // Initialize EmailJS
   useEffect(() => {
     emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'KGyg8MIyzMnx7qIiY');
   }, []);
@@ -67,6 +68,23 @@ export default function Contact() {
     setSubmitStatus('idle');
 
     try {
+      // First, try to send the email
+      if (form.current) {
+        try {
+          const result = await emailjs.sendForm(
+            "service_k027bvr",
+            "template_mlnh9pb",
+            form.current,
+            "KGyg8MIyzMnx7qIiY"
+          );
+          console.log("Email sent successfully:", result);
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+          // Continue with database save even if email fails
+        }
+      }
+
+      // Then save to database
       const response = await fetch('/api/memories', {
         method: 'POST',
         headers: {
@@ -120,14 +138,15 @@ export default function Contact() {
               <p className="text-blue-100 text-sm">Your memories help preserve Professor Rahman&apos;s legacy</p>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form ref={form} onSubmit={handleSubmit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="name" className="block text-sm font-medium">
-                    Your Name
+                    Your Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
+                    name="name"
                     id="name"
                     required
                     value={name}
@@ -142,12 +161,12 @@ export default function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-medium">
-                    Your Email
+                    Your Email <span className="text-gray-400">(optional)</span>
                   </label>
                   <input
                     type="email"
+                    name="email"
                     id="email"
-                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={`block w-full px-3 py-2 rounded ${
@@ -162,9 +181,10 @@ export default function Contact() {
 
               <div className="space-y-2">
                 <label htmlFor="relation" className="block text-sm font-medium">
-                  Your Relation to Professor Rahman
+                  Your Relation to Professor Rahman <span className="text-gray-400">(optional)</span>
                 </label>
                 <select
+                  name="relation"
                   id="relation"
                   value={relation}
                   onChange={(e) => setRelation(e.target.value)}
@@ -185,9 +205,10 @@ export default function Contact() {
 
               <div className="space-y-2">
                 <label htmlFor="message" className="block text-sm font-medium">
-                  Your Message
+                  Your Message <span className="text-red-500">*</span>
                 </label>
                 <textarea
+                  name="message"
                   id="message"
                   required
                   rows={5}
@@ -201,6 +222,12 @@ export default function Contact() {
                   placeholder="Share your memories, thoughts, or tribute to Professor Rahman..."
                 />
               </div>
+
+              <input type="hidden" name="date" value={new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })} />
 
               <div>
                 <button

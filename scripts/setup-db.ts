@@ -1,34 +1,32 @@
 import { sql } from '@vercel/postgres';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
-// Load environment variables from .env.local
+// Load environment variables
 dotenv.config({ path: '.env.local' });
 
 async function setupDatabase() {
+  console.log('Setting up database...');
+  
   try {
-    console.log('Checking environment variables...');
-    if (!process.env.POSTGRES_URL) {
-      throw new Error('POSTGRES_URL environment variable is not set');
-    }
-    console.log('Environment variables found:', process.env.POSTGRES_URL);
+    // Drop existing table if it exists
+    await sql`DROP TABLE IF EXISTS memories`;
 
-    console.log('Reading schema file...');
-    const schemaPath = join(process.cwd(), 'schema.sql');
-    const schema = readFileSync(schemaPath, 'utf8');
-    console.log('Schema file read successfully');
+    // Create table with updated schema
+    await sql`
+      CREATE TABLE memories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255),
+        message TEXT NOT NULL,
+        relation VARCHAR(100),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
 
-    console.log('Connecting to database...');
-    await sql.query('SELECT NOW()');
-    console.log('Database connection successful');
-
-    console.log('Executing schema...');
-    await sql.query(schema);
     console.log('Database setup completed successfully');
   } catch (error) {
     console.error('Error setting up database:', error);
-    process.exit(1);
+    throw error;
   }
 }
 
