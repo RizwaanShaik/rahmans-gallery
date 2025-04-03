@@ -376,11 +376,11 @@ export default function CategoryGallery() {
             onClick={() => openModal(index)}
             className="transform transition-transform duration-300 hover:scale-102 focus:scale-102"
           >
-            <PhotoCard
-              src={photo.src}
-              alt={photo.alt}
-              description={photo.description}
-            />
+          <PhotoCard
+            src={photo.src}
+            alt={photo.alt}
+            description={photo.description}
+          />
           </div>
         ))}
       </div>
