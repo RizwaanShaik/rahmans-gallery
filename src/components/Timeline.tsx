@@ -31,7 +31,7 @@ const events: TimelineEvent[] = [
   },
   {
     year: "1992",
-    title: "Beginning of Academic Career",
+    title: "Beginning of Professional Career",
     description: "Joined JNTU College of Fine Arts as a Lecturer, marking the start of his influential teaching journey.",
     category: "career"
   },
@@ -94,14 +94,14 @@ export default function Timeline() {
 
   const getCategoryTextColor = (category: Category) => {
     const colors = {
-      'early-life': 'text-blue-700',
-      'education': 'text-green-700',
-      'career': 'text-purple-700',
-      'exhibition': 'text-amber-700',
-      'award': 'text-red-700',
-      'international': 'text-indigo-700'
+      'early-life': 'text-blue-800',
+      'education': 'text-green-800',
+      'career': 'text-purple-800',
+      'exhibition': 'text-amber-800',
+      'award': 'text-red-800',
+      'international': 'text-indigo-800'
     };
-    return colors[category] || 'text-gray-700';
+    return colors[category] || 'text-gray-800';
   };
 
   const getCategoryBgColor = (category: Category) => {
@@ -131,11 +131,11 @@ export default function Timeline() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 inline-block relative">
+        <h2 className="text-3xl font-bold text-gray-900 inline-block relative">
           Journey & Achievements
           <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-amber-500 rounded-full"></div>
         </h2>
-        <p className="mt-6 text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-6 text-gray-700 max-w-2xl mx-auto">
           Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India.
         </p>
       </div>
@@ -151,11 +151,11 @@ export default function Timeline() {
               {/* Event Content */}
               <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                 <div className={`p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 ${getCategoryBgColor(event.category)}`}>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-2 ${getCategoryTextColor(event.category)} bg-white`}>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-2 border ${getCategoryTextColor(event.category)} bg-white`}>
                     {getCategoryLabel(event.category)}
                   </span>
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">{event.title}</h3>
-                  <p className="text-gray-600">{event.description}</p>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">{event.title}</h3>
+                  <p className="text-gray-700">{event.description}</p>
                 </div>
               </div>
               
@@ -191,15 +191,15 @@ export default function Timeline() {
               {/* Content */}
               <div className={`p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 ${getCategoryBgColor(event.category)}`}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryTextColor(event.category)} bg-white`}>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getCategoryTextColor(event.category)} bg-white`}>
                     {getCategoryLabel(event.category)}
                   </span>
                   <span className="bg-gray-800 text-white px-2 py-1 rounded font-bold text-sm">
                     {event.year}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-800">{event.title}</h3>
-                <p className="text-sm text-gray-600">{event.description}</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">{event.title}</h3>
+                <p className="text-sm text-gray-700">{event.description}</p>
               </div>
             </div>
           ))}
