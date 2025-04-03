@@ -15,14 +15,14 @@ export default function About() {
         {/* Profile Image with elegant styling */}
         <div className="mb-12 sm:mb-16 relative w-[260px] h-[320px] mx-auto">
           <div className="relative w-full h-full overflow-hidden rounded-xl shadow-xl transform hover:scale-102 transition-transform duration-300">
-            <Image
+          <Image
               src="/images/about/thumbnails/IMG_0020.jpeg"
               alt="Professor Shaik Khaleel-ur-Rahman"
-              fill
+            fill
               className="object-cover"
               sizes="(max-width: 640px) 260px, 320px"
               priority
-            />
+          />
           </div>
           <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-amber-500 rounded-full -z-10"></div>
           <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-500 rounded-full -z-10"></div>
@@ -67,13 +67,25 @@ export default function About() {
                   After completing his Intermediate education in MPC (Mathematics, Physics, Chemistry), Rahman chose to diverge from conventional paths, 
                   pursuing photography at JNTU College of Fine Arts. This decision, though initially shocking to his family, would prove transformative.
                 </p>
-                <div className="mb-4 bg-green-50 p-4 rounded-lg">
+                <div className="mb-4 bg-green-50 p-4 sm:p-6 rounded-lg">
                   <h3 className="text-xl font-semibold mb-3 text-green-700">Educational Milestones</h3>
-                  <ul className="space-y-2 list-none">
-                    <li className="flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Diploma in Photography from JNTU College of Fine Arts (1983-1985)</li>
-                    <li className="flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Bachelor of Commerce from Osmania University (1986-1989)</li>
-                    <li className="flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Master&apos;s in Journalism and Mass Communication from Madurai Kamaraj University (2000)</li>
-                    <li className="flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Master of Fine Arts in Photography from JNAFAU (2008-2010)</li>
+                  <ul className="space-y-3 pl-1">
+                    <li className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">Diploma in Photography from JNTU College of Fine Arts (1983-1985)</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">Bachelor of Commerce from Osmania University (1986-1989)</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">Master&apos;s in Journalism and Mass Communication from Madurai Kamaraj University (2000)</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">Master of Fine Arts in Photography from JNAFAU (2008-2010)</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -303,4 +315,4 @@ export default function About() {
       </div>
     </div>
   );
-}
+} 
