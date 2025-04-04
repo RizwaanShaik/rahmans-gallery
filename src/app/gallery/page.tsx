@@ -41,7 +41,7 @@ const categories = [
   {
     id: 'macro',
     title: 'Macro',
-    image: `${s3BaseUrl}/categories/macro/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Macro/hero/hero.jpeg`,
     description: 'The hidden details of our world revealed through close-up photography',
   },
   {
@@ -65,25 +65,25 @@ const categories = [
   {
     id: 'clouds',
     title: 'Clouds',
-    image: `${s3BaseUrl}/categories/clouds/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Clouds/hero/hero.jpeg`,
     description: 'The ever-changing canvas of the sky and its dramatic formations',
   },
   {
     id: 'festivals',
     title: 'Festivals',
-    image: `${s3BaseUrl}/categories/festivals/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Festivals/hero/hero.jpeg`,
     description: 'Vibrant celebrations and cultural events capturing human expressions',
   },
   {
     id: 'hampi',
     title: 'Hampi',
-    image: `${s3BaseUrl}/categories/hampi/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Hampi/hero/hero.jpeg`,
     description: 'The ancient ruins and boulder-strewn landscape of this UNESCO site',
   },
   {
     id: 'hyderabad',
     title: 'Hyderabad',
-    image: `${s3BaseUrl}/categories/hyderabad/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Hyderabad/hero/hero.jpeg`,
     description: 'The city of pearls, with its unique blend of history and modernity',
   },
   {
@@ -119,7 +119,7 @@ const categories = [
   {
     id: 'rachakonda',
     title: 'Rachakonda',
-    image: `${s3BaseUrl}/categories/rachakonda/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/Rachakonda/hero/hero.jpeg`,
     description: 'The historic fort and its surrounding landscapes near Hyderabad',
   },
   {
@@ -131,7 +131,7 @@ const categories = [
   {
     id: 'rock-forms',
     title: 'Rock Forms',
-    image: `${s3BaseUrl}/categories/rockforms/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/rock forms/hero/hero.jpeg`,
     description: 'Natural sculptures shaped by time, weather, and geological forces',
   },
   {
