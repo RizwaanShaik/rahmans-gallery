@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 
+// S3 bucket base URL
+const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
+
 interface Memory {
   id: number;
   name: string;
@@ -300,7 +303,7 @@ export default function Contact() {
           {/* Decorative Image Column */}
           <div className="hidden lg:block relative rounded-xl overflow-hidden shadow-xl h-[600px]">
             <Image 
-              src="/images/wildlife/hero/hero.jpeg" 
+              src={`${s3BaseUrl}/categories/tombs/hero/hero.jpeg`}
               alt="Professor Rahman" 
               fill
               className="object-cover"
