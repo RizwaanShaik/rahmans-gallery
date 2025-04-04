@@ -15,6 +15,7 @@ interface Photo {
   originalSrc: string;
   alt: string;
   description: string;
+  downloadUrl: string;
 }
 
 // Map URL-friendly IDs to directory names
@@ -24,7 +25,7 @@ const categoryDirMap: { [key: string]: string } = {
   'b-and-w': 'bandw',
   'bidar': 'bidar',
   'clouds': 'clouds',
-  'featured': 'featured',
+  'featured': 'Featured',
   'festivals': 'festivals',
   'hampi': 'hampi',
   'heritage': 'heritage',
@@ -32,7 +33,7 @@ const categoryDirMap: { [key: string]: string } = {
   'kanhari-caves': 'kanharicaves',
   'kolkata-streets': 'kolkatastreets2001',
   'landscapes': 'landscapes',
-  'ladakh': 'ladakh',
+  'ladakh': 'Ladakh',
   'lanka': 'lanka',
   'lockdown': 'lockdown',
   'london': 'london',
@@ -47,6 +48,9 @@ const categoryDirMap: { [key: string]: string } = {
   'wildlife': 'wildlife'
 };
 
+// S3 bucket base URL
+const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
+
 // Get photos for a category
 const getPhotosByCategory = (categoryId: string): Photo[] => {
   console.log(`Loading photos for category: ${categoryId}`);
@@ -54,20 +58,22 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
   const dirName = categoryDirMap[categoryId] || categoryId;
   const photos: Photo[] = [];
 
-  // Function to create a photo object
+  // Function to create a photo object with S3 URLs
   const createPhotoObject = (baseName: string): Photo => {
-    const categoryPath = dirName.toLowerCase();
+    const categoryPath = dirName
     const uniqueId = `${categoryId}-${baseName}-${Math.random().toString(36).substring(2, 9)}`;
     
-    // Add fallback image for when the actual image might not exist
+    // Properly encode spaces and special characters in filenames for URLs
+    const encodedBaseName = encodeURIComponent(baseName);
     
     return {
       id: uniqueId,
-      src: `/images/${categoryPath}/thumbnails/${baseName}.jpeg`,
-      fullscreenSrc: `/images/${categoryPath}/fullscreen/${baseName}.jpeg`,
-      originalSrc: `/images/original/${categoryPath}/${baseName}.jpg`,
+      src: `${s3BaseUrl}/categories/${categoryPath}/thumbnails/${encodedBaseName}.jpeg`,
+      fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath}/fullscreen/${encodedBaseName}.jpeg`,
+      originalSrc: `${s3BaseUrl}/categories/${categoryPath}/original/${encodedBaseName}.jpeg`,
       alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-      description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim()
+      description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
+      downloadUrl: `${s3BaseUrl}/categories/${categoryPath}/original/${encodedBaseName}.jpeg`
     };
   };
 
@@ -122,7 +128,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       [
         'east meets west', 'end of the day fishing', 'everyday new sunrise', 'farm sweet farm', 'farmer', 'feeding the nation',
         'flying into the light', 'following shadows', 'for a last catch', 'forgotten fort', 'fountain of glory', 'freedom',
-        'glory of history', 'god&apos;s light', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero',
+        'glory of history', 'godslight', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero',
         'hidden landscape', 'history standing tall', 'history standing tall 1', 'history though the arch', 'innocent', 'into the divinity',
         'into the future', 'into the raising sun', 'lady luck', 'last costomer', 'last fight', 'last minute discussion',
         'leading into the history', 'leaf in pebbles', 'leave us alone', 'limited sunshine', 'live start fresh again', 'lone fighter',
@@ -371,21 +377,6 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       break;
   }
 
-  // Ensure we have at least 20 images for every category to make pagination worthwhile
-  if (photos.length < 20) {
-    // Add duplicates with unique IDs to pad the collection
-    const basePhotos = [...photos];
-    for (let i = 0; i < 3; i++) {
-      basePhotos.forEach(photo => {
-        const duplicatePhoto = { 
-          ...photo, 
-          id: `${photo.id}-duplicate-${i}-${Math.random().toString(36).substring(2, 9)}`
-        };
-        photos.push(duplicatePhoto);
-      });
-    }
-  }
-
   return photos;
 };
 
@@ -532,8 +523,20 @@ export default function CategoryGallery() {
   }, []);
 
   // Get a hero image from the category
-  const heroImage = allPhotosRef.current.find(photo => photo.id.includes('hero'))?.fullscreenSrc || 
-                   (displayedPhotos.length > 0 ? displayedPhotos[0].fullscreenSrc : '');
+  const getHeroImage = () => {
+    // First try to get the dedicated hero image
+    const heroFromPhotos = allPhotosRef.current.find(photo => photo.id.includes('hero'));
+    if (heroFromPhotos) return heroFromPhotos.fullscreenSrc;
+    
+    // If we have any displayed photos, use the first one
+    if (displayedPhotos.length > 0) return displayedPhotos[0].fullscreenSrc;
+    
+    // Last resort - construct a URL directly to the hero image
+    const dirName = categoryDirMap[categoryId] || categoryId;
+    return `${s3BaseUrl}/categories/${dirName}/fullscreen/hero.jpeg`;
+  };
+  
+  const heroImage = getHeroImage();
 
   // Calculate total pages
   const totalPages = Math.ceil(allPhotosRef.current.length / ITEMS_PER_PAGE);
@@ -737,7 +740,7 @@ export default function CategoryGallery() {
       <FullscreenModal
         isOpen={isModalOpen}
         currentImage={currentImage}
-        originalImage={displayedPhotos[currentIndex]?.originalSrc}
+        originalImage={displayedPhotos[currentIndex]?.downloadUrl}
         onClose={closeModal}
         onNext={nextImage}
         onPrev={prevImage}

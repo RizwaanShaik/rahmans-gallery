@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+// Update the base S3 URL
+const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
+
 interface FeaturedWork {
   id: string;
   title: string;
@@ -17,23 +20,23 @@ const featuredWorks: FeaturedWork[] = [
     title: 'Featured Collection',
     description: 'A curated selection of the finest photographs capturing the essence of nature, architecture, and culture.',
     year: 2023,
-    src: '/images/featured/hero/hero.jpeg',
-    category: 'featured'
+    src: `${s3BaseUrl}/categories/Featured/hero/hero.jpeg`,
+    category: 'Featured'
   },
   {
     id: '2',
     title: 'Ladakh',
     description: 'The breathtaking landscapes and rich cultural heritage of the Himalayan region captured through a unique lens.',
     year: 2018,
-    src: '/images/Ladakh/hero/hero.jpeg',
-    category: 'ladakh'
+    src: `${s3BaseUrl}/categories/Ladakh/hero/hero.jpeg`,
+    category: 'Ladakh'
   },
   {
     id: '3',
     title: 'Rajasthan',
     description: 'Vibrant colors, majestic forts, and timeless traditions of the royal state of Rajasthan.',
     year: 2019,
-    src: '/images/rajasthan/hero/hero.jpeg',
+    src: `${s3BaseUrl}/categories/Rajasthan/hero/hero.jpeg`,
     category: 'rajasthan'
   }
 ];

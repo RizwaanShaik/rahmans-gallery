@@ -5,13 +5,16 @@ import Link from 'next/link';
 import FeaturedCollection from '@/components/FeaturedCollection';
 import Timeline from '@/components/Timeline';
 
+// S3 bucket base URL
+const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center">
         <Image
-          src="/images/wildlife/hero/hero.jpeg"
+          src={`${s3BaseUrl}/categories/wildlife/hero/hero.jpeg`}
           alt="Hero background"
           fill
           className="object-cover"

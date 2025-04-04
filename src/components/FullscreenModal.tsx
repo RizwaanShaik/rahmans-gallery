@@ -171,7 +171,14 @@ export default function FullscreenModal({
 
   // Function to get the original image URL
   const getOriginalImageUrl = () => {
-    return originalImage ? originalImage.replace('/fullscreen/', '/original/') : null;
+    // Add a timestamp to ensure proper S3 access
+    const timestamp = new Date().getTime();
+    if (originalImage) {
+      const baseUrl = originalImage.replace('/fullscreen/', '/original/');
+      // Add timestamp as query parameter, preserving any existing parameters
+      return baseUrl.includes('?') ? `${baseUrl}&t=${timestamp}` : `${baseUrl}?t=${timestamp}`;
+    }
+    return null;
   };
 
   return (
