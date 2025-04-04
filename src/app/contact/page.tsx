@@ -181,7 +181,7 @@ export default function Contact() {
 
               <div className="space-y-2">
                 <label htmlFor="relation" className="block text-sm font-medium">
-                  Your Relation to Professor Rahman <span className="text-gray-400">(optional)</span>
+                  Your Relation to Prof. Rahman <span className="text-gray-400">(optional)</span>
                 </label>
                 <select
                   name="relation"

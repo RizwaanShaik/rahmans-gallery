@@ -16,7 +16,7 @@ export default function About() {
         <div className="mb-12 sm:mb-16 relative w-[260px] h-[320px] mx-auto">
           <div className="relative w-full h-full overflow-hidden rounded-xl shadow-xl transform hover:scale-102 transition-transform duration-300">
           <Image
-              src="/images/about/thumbnails/IMG_0020.jpeg"
+              src="/images/Profile.jpeg"
               alt="Professor Shaik Khaleel-ur-Rahman"
             fill
               className="object-cover"
