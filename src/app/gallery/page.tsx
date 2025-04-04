@@ -18,7 +18,7 @@ const categories = [
     id: 'b-and-w',
     title: 'Black & White',
     description: 'Monochrome photography',
-    image: '/images/b&w/hero/hero.jpeg',
+    image: '/images/bandw/hero/hero.jpeg',
   },
   {
     id: 'bidar',
