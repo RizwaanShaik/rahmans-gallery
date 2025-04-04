@@ -141,16 +141,16 @@ const categories = [
     image: '/images/thai/hero/hero.jpeg',
   },
   {
-    id: 'tumbs',
+    id: 'tombs',
     title: 'Tombs',
     description: 'Historical tombs and monuments',
-    image: '/images/tumbs/hero/hero.jpeg',
+    image: '/images/tombs/hero/hero.jpeg',
   },
   {
     id: 'warangal',
     title: 'Warangal',
     description: 'Heritage and culture of Warangal',
-    image: '/images/warangaL/hero/hero.jpeg',
+    image: '/images/warangal/hero/hero.jpeg',
   },
   {
     id: 'wildlife',
@@ -182,4 +182,4 @@ export default function Gallery() {
       </div>
     </div>
   );
-} 
+}
