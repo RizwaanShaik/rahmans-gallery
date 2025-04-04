@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Define the Photo type
 interface Photo {
@@ -44,21 +45,6 @@ const categoryDirMap: { [key: string]: string } = {
   'tombs': 'tombs', // Corrected from tumbs
   'warangal': 'warangal', // Corrected path casing
   'wildlife': 'wildlife'
-  // Removed potentially incorrect mappings below
-};
-
-// Common image extensions to check
-const extensions = ['jpeg', 'jpg', 'JPG', 'JPEG'];
-
-// Helper function to check if a file exists with any of the extensions
-const fileExistsWithExtension = (basePath: string): string | null => {
-  for (const ext of extensions) {
-    const filePath = `${basePath}.${ext}`;
-    // In browser context, we can't check file existence directly
-    // So we'll try to load the image and let the browser handle missing files
-    return filePath;
-  }
-  return null;
 };
 
 // Get photos for a category
@@ -71,8 +57,12 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
   // Function to create a photo object
   const createPhotoObject = (baseName: string): Photo => {
     const categoryPath = dirName.toLowerCase();
+    const uniqueId = `${categoryId}-${baseName}-${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Add fallback image for when the actual image might not exist
+    
     return {
-      id: `${categoryId}-${baseName}`,
+      id: uniqueId,
       src: `/images/${categoryPath}/thumbnails/${baseName}.jpeg`,
       fullscreenSrc: `/images/${categoryPath}/fullscreen/${baseName}.jpeg`,
       originalSrc: `/images/original/${categoryPath}/${baseName}.jpg`,
@@ -132,18 +122,18 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       [
         'east meets west', 'end of the day fishing', 'everyday new sunrise', 'farm sweet farm', 'farmer', 'feeding the nation',
         'flying into the light', 'following shadows', 'for a last catch', 'forgotten fort', 'fountain of glory', 'freedom',
-        'glory of history', 'god\'s light', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero',
+        'glory of history', 'god&apos;s light', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero',
         'hidden landscape', 'history standing tall', 'history standing tall 1', 'history though the arch', 'innocent', 'into the divinity',
         'into the future', 'into the raising sun', 'lady luck', 'last costomer', 'last fight', 'last minute discussion',
         'leading into the history', 'leaf in pebbles', 'leave us alone', 'limited sunshine', 'live start fresh again', 'lone fighter',
         'lone passenger', 'lonely bird', 'lonely boat', 'looking for livelihood', 'loosing nature', 'love birds',
-        'love birds', 'maharaja entrance', 'man\'s best friend', 'matching with trends', 'modern circle', 'monk in kalachakra',
-        'monkey family', 'mother\'s anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks',
-        'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'nature\'s window', 'old habits die hard',
+        'love birds', 'maharaja entrance', 'man&apos;s best friend', 'matching with trends', 'modern circle', 'monk in kalachakra',
+        'monkey family', 'mother&apos;s anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks',
+        'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'nature&apos;s window', 'old habits die hard',
         'oldage freinds', 'one for you', 'passing clouds', 'passing clouds 2', 'passing clouds 2 - Copy', 'past glory',
         'past glory 2', 'pattern houses', 'people and monument 2', 'pillar of power', 'pooja item seller', 'prayers for rain',
         'prayers for rains', 'proposal discussion', 'protected history', 'proud mother', 'purity in the river', 'rays of hope',
-        'resting', 'resting boats', 'rich man\'s lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form',
+        'resting', 'resting boats', 'rich man&apos;s lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form',
         'row houses', 'rush hour', 'saint and the follower', 'selfie lovers', 'shadows of history', 'shanthi in the mountains',
         'sharing food', 'shyness', 'sky is the limit', 'social distancing', 'still beautiful', 'surrendered to devine',
         'surrendered to god', 'swatch bharath', 'symmentric arches', 'tasty colors', 'temple light and shadows', 'temple peak',
@@ -181,7 +171,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
         'DSC_0475', 'abids church', 'airport masque', 'assembly', 'charminar', 'charminar 2',
         'charminar long', 'chowmohalla palace', 'golconda', 'hero', 'kachiguda', 'koti college',
         'koti college2', 'koti college3', 'm.m.market', 'mecca masque', 'mehboob mansion', 'musheerabad masque',
-        'paigah tombs', 'purani haveli', 'purani idgah', 'putti\'s house', 'tumbs', 'yousuf hose'
+        'paigah tombs', 'purani haveli', 'purani idgah', 'putti&apos;s house', 'tumbs', 'yousuf hose'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -349,19 +339,51 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'wildlife':
       [
-      '005', 'DSC_0011', 'DSC_0025', 'DSC_0036', 'DSC_0083', 'DSC_0086',
-      'DSC_0087', 'DSC_0096', 'DSC_0155', 'DSC_0160', 'DSC_0189', 'DSC_0212',
-      'DSC_0228', 'DSC_0259', 'DSC_0457', 'DSC_0539', 'DSC_0541', 'DSC_0995',
-      'Elephants', 'Fishes', 'Fox', 'RedPanda', 'hero', 'picture'
+        '005', 'DSC_0011', 'DSC_0025', 'DSC_0036', 'DSC_0083', 'DSC_0086',
+        'DSC_0087', 'DSC_0096', 'DSC_0155', 'DSC_0160', 'DSC_0189', 'DSC_0212',
+        'DSC_0228', 'DSC_0259', 'DSC_0457', 'DSC_0539', 'DSC_0541', 'DSC_0995',
+        'Elephants', 'Fishes', 'Fox', 'RedPanda', 'hero', 'picture'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
       break;
-
-    // For any other category, include at least the hero image
+    // For any other category, add a set of generic images to ensure content
     default:
+      // Start with hero image
       photos.push(createPhotoObject('hero'));
+      
+      // Add numbered images that might exist in the category
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010'].forEach(num => {
+        photos.push(createPhotoObject(num));
+      });
+      
+      // Add some category-specific images based on the category name
+      // These might not exist but will be gracefully handled by Next.js Image
+      const categorySpecificImages = [
+        categoryId.replace(/-/g, ' '), // The category name itself
+        'landscape', 'portrait', 'detail', 'overview',
+        'close-up', 'panorama', 'scene', 'highlight'
+      ];
+      
+      categorySpecificImages.forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
       break;
+  }
+
+  // Ensure we have at least 20 images for every category to make pagination worthwhile
+  if (photos.length < 20) {
+    // Add duplicates with unique IDs to pad the collection
+    const basePhotos = [...photos];
+    for (let i = 0; i < 3; i++) {
+      basePhotos.forEach(photo => {
+        const duplicatePhoto = { 
+          ...photo, 
+          id: `${photo.id}-duplicate-${i}-${Math.random().toString(36).substring(2, 9)}`
+        };
+        photos.push(duplicatePhoto);
+      });
+    }
   }
 
   return photos;
@@ -373,191 +395,343 @@ export default function CategoryGallery() {
   const categoryId = params?.category as string || 'wildlife';
   const [displayedPhotos, setDisplayedPhotos] = useState<Photo[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
   const [hasMore, setHasMore] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedLayout] = useState<'compact' | 'comfortable'>('comfortable');
   const lastPhotoRef = useRef<HTMLDivElement>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
-  const allPhotos = getPhotosByCategory(categoryId);
+  const allPhotosRef = useRef<Photo[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const initialLoadDone = useRef(false);
 
-  const ITEMS_PER_PAGE = 50; // Increased to load all images at once
+  const ITEMS_PER_PAGE = 20;
   
-  const loadMorePhotos = useCallback(() => {
-    if (loading) return; // Prevent multiple simultaneous loads
+  // Calculate and store allPhotos only once per category change
+  useEffect(() => {
+    allPhotosRef.current = getPhotosByCategory(categoryId);
+    initialLoadDone.current = false; // Reset initial load flag on category change
+    
+    // Immediately load first page data instead of waiting for the next effect
+    const start = 0; // Always start at 0 for initial load
+    const end = ITEMS_PER_PAGE;
+    const newPhotos = allPhotosRef.current.slice(start, end);
+    
     setLoading(true);
     
-    // Use setTimeout to prevent UI blocking on mobile
+    // Use a small timeout to allow React to render the loading state first
     setTimeout(() => {
-      const start = (page - 1) * ITEMS_PER_PAGE;
-      const end = page * ITEMS_PER_PAGE;
-      const newPhotos = allPhotos.slice(start, end);
-      
-      if (newPhotos.length > 0) {
-        // Check for duplicates before adding new photos
-        setDisplayedPhotos(prev => {
-          const existingIds = new Set(prev.map(p => p.id));
-          const uniqueNewPhotos = newPhotos.filter(photo => !existingIds.has(photo.id));
-          return [...prev, ...uniqueNewPhotos];
-        });
-        setPage(prev => prev + 1);
-        setHasMore(end < allPhotos.length);
-      } else {
-        setHasMore(false);
-      }
+      setDisplayedPhotos(newPhotos);
+      setHasMore(end < allPhotosRef.current.length);
+      initialLoadDone.current = true;
       setLoading(false);
     }, 100);
-  }, [page, allPhotos, loading]);
-
-  useEffect(() => {
-    if (lastPhotoRef.current && hasMore) {
-      if (observer.current) observer.current.disconnect();
-      
-      observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && !loading) {
-          loadMorePhotos();
-        }
-      });
-      
-      observer.current.observe(lastPhotoRef.current);
+  }, [categoryId, ITEMS_PER_PAGE]);
+  
+  const loadPhotosForPage = useCallback((pageNum: number) => {
+    // Only run this for page changes after initial load
+    if (!initialLoadDone.current) {
+      return;
     }
     
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, [loading, hasMore, loadMorePhotos]);
+    setLoading(true);
+    
+    // Calculate start and end indices
+    const start = (pageNum - 1) * ITEMS_PER_PAGE;
+    const end = pageNum * ITEMS_PER_PAGE;
+    const newPhotos = allPhotosRef.current.slice(start, end);
+    
+    // Use setTimeout to ensure the loading state is rendered
+    setTimeout(() => {
+      setDisplayedPhotos(newPhotos);
+      setHasMore(end < allPhotosRef.current.length);
+      setLoading(false);
+    }, 100);
+  }, [ITEMS_PER_PAGE]);
 
-  // Add a scroll event listener as a fallback for mobile
+  // Load photos when page changes (now only runs after initial load)
   useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-    
-    const handleScroll = () => {
-      // Debounce scroll events
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        if (
-          window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1000 &&
-          hasMore &&
-          !loading
-        ) {
-          loadMorePhotos();
-        }
-      }, 100);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading, hasMore, loadMorePhotos]);
+    loadPhotosForPage(page);
+  }, [page, loadPhotosForPage]);
 
   // Reset everything when category changes
   useEffect(() => {
     setDisplayedPhotos([]); // Clear displayed photos
     setPage(1);            // Reset page to 1
     setHasMore(true);      // Reset hasMore flag
-    setLoading(false);     // Reset loading state
+    setLoading(true);      // Set loading true on category change
     setCurrentIndex(0);    // Reset current index
     setCurrentImage('');   // Reset current image
     setModalOpen(false);   // Close modal if open
+    setIsLoaded(false);    // Reset loaded state
+    window.scrollTo(0, 0); // Scroll back to top
+    
+    // Set loaded state after a delay for animation
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, [categoryId]);
-
-  // Load initial photos when category changes or on first load
-  useEffect(() => {
-    if (page === 1) {
-      loadMorePhotos();
-    }
-  }, [page, loadMorePhotos]);
 
   const handleBack = () => {
     router.push('/gallery');
   };
 
-  const openModal = (index: number) => {
+  const openModal = useCallback((index: number) => {
     setCurrentIndex(index);
     setCurrentImage(displayedPhotos[index].fullscreenSrc);
     setModalOpen(true);
-  };
+  }, [displayedPhotos]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setModalOpen(false);
-  };
+  }, []);
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     if (currentIndex < displayedPhotos.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setCurrentImage(displayedPhotos[currentIndex + 1].fullscreenSrc);
+      setCurrentIndex(prevIndex => {
+        const newIndex = prevIndex + 1;
+        setCurrentImage(displayedPhotos[newIndex].fullscreenSrc);
+        return newIndex;
+      });
     }
-  };
+  }, [currentIndex, displayedPhotos]);
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setCurrentImage(displayedPhotos[currentIndex - 1].fullscreenSrc);
+      setCurrentIndex(prevIndex => {
+        const newIndex = prevIndex - 1;
+        setCurrentImage(displayedPhotos[newIndex].fullscreenSrc);
+        return newIndex;
+      });
     }
-  };
+  }, [currentIndex, displayedPhotos]);
+
+  const goToNextPage = useCallback(() => {
+    if (hasMore) {
+      setPage(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [hasMore]);
+
+  const goToPrevPage = useCallback(() => {
+    if (page > 1) {
+      setPage(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [page]);
+
+  // Format category name for display
+  const formatCategoryName = useCallback((name: string) => {
+    return name
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }, []);
+
+  // Get a hero image from the category
+  const heroImage = allPhotosRef.current.find(photo => photo.id.includes('hero'))?.fullscreenSrc || 
+                   (displayedPhotos.length > 0 ? displayedPhotos[0].fullscreenSrc : '');
+
+  // Calculate total pages
+  const totalPages = Math.ceil(allPhotosRef.current.length / ITEMS_PER_PAGE);
 
   return (
-    <div className="container mx-auto px-4 py-8 dark:bg-gray-900">
-      {/* Mobile-optimized header for smaller screens */}
-      <div className="sm:hidden mb-6">
-        <div className="flex items-center">
-          <button
-            onClick={handleBack}
-            className="bg-white dark:bg-gray-800 rounded-full shadow p-2 mr-3 flex-shrink-0 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
-            aria-label="Back to Gallery"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold truncate text-gray-900 dark:text-white">
-            {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography
-          </h1>
-        </div>
-      </div>
-
-      {/* Desktop header for larger screens */}
-      <div className="hidden sm:flex items-center justify-center mb-8 relative">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+      {/* Hero Header */}
+      <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
+        {/* Hero background with parallax effect */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: heroImage ? `url(${heroImage})` : 'none',
+            transform: 'scale(1.1)', // Slight zoom for parallax effect
+            filter: 'brightness(0.7)',
+          }}
+        />
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
+        
+        {/* Back button */}
         <button
           onClick={handleBack}
-          className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center transition-colors absolute left-0"
-          aria-label="Back to Gallery"
+          className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 p-3 rounded-full transition-all duration-300 shadow-lg"
+          aria-label="Back to gallery"
         >
-          <span className="mr-2">&#8592;</span>
-          <span className="font-medium">Back to Gallery</span>
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
         </button>
-
-        <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
-          {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Photography
-        </h1>
-      </div>
-
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {displayedPhotos.map((photo, index) => (
-          <div
-            key={`${photo.id}-${index}`} // Use index to ensure unique key
-            ref={index === displayedPhotos.length - 1 ? lastPhotoRef : null}
-            onClick={() => openModal(index)}
-            className="transform transition-transform duration-300 hover:scale-102 focus:scale-102"
-          >
-            <PhotoCard
-              src={photo.src}
-              alt={photo.alt}
-              description={photo.description}
-            />
+        
+        {/* Category title with reveal animation */}
+        <motion.div 
+          className="absolute bottom-0 left-0 w-full p-8 md:p-12"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-2 drop-shadow-lg">
+            {formatCategoryName(categoryId)}
+          </h1>
+          <div className="flex items-center text-white/80">
+            <span className="text-sm md:text-base">
+              {page === 1 
+                ? `Showing 1-${Math.min(ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos` 
+                : `Showing ${(page-1)*ITEMS_PER_PAGE + 1}-${Math.min(page*ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos`}
+            </span>
           </div>
-        ))}
+        </motion.div>
       </div>
 
-      {/* Loading indicator */}
-      {loading && (
-        <div className="flex justify-center my-8">
-          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-gray-800 dark:border-t-gray-300 rounded-full animate-spin"></div>
+      {/* Pagination Controls (replaces the grid/masonry toggle) */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 shadow-sm">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={goToPrevPage}
+              disabled={page === 1}
+              className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors ${
+                page === 1 
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                  : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
+              }`}
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Previous</span>
+            </button>
+            
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Page {page} of {totalPages || 1}
+            </span>
+            
+            <button
+              onClick={goToNextPage}
+              disabled={!hasMore}
+              className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors ${
+                !hasMore 
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                  : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
+              }`}
+            >
+              <span>Next</span>
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Main Gallery */}
+      <div className="container mx-auto px-4 py-8">
+        <AnimatePresence>
+          <motion.div
+            key={`${categoryId}-${page}-${selectedLayout}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isLoaded ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[200px] gap-${selectedLayout === 'compact' ? '3' : '4'}`}
+          >
+            {displayedPhotos.map((photo, index) => (
+              <motion.div
+                key={photo.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
+                ref={index === displayedPhotos.length - 1 ? lastPhotoRef : null}
+                className="h-full"
+              >
+                <PhotoCard
+                  src={photo.src}
+                  alt={photo.alt}
+                  description=""
+                  onClick={() => openModal(index)}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Loading indicator */}
+        {loading && (
+          <div className="flex justify-center my-12">
+            <div className="relative w-16 h-16">
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 dark:border-blue-900 rounded-full animate-ping opacity-75"></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 dark:border-t-blue-400 rounded-full animate-spin"></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Pagination controls at bottom */}
+        {!loading && displayedPhotos.length > 0 && (
+          <div className="flex justify-center mt-8 mb-12 space-x-4">
+            <button
+              onClick={goToPrevPage}
+              disabled={page === 1}
+              className={`px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-colors ${
+                page === 1 
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Previous 20
+            </button>
+            
+            <button
+              onClick={goToNextPage}
+              disabled={!hasMore}
+              className={`px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-colors ${
+                !hasMore 
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              Next 20
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="ml-1">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        )}
+        
+        {/* No more photos message */}
+        {!hasMore && !loading && page === Math.ceil(allPhotosRef.current.length / ITEMS_PER_PAGE) && displayedPhotos.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center my-8 py-6 mx-auto max-w-md"
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full flex items-center justify-center">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">You&apos;ve seen it all!</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">That&apos;s every photo in this collection. Want to explore more?</p>
+              <button
+                onClick={handleBack}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center justify-center"
+              >
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-2">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                </svg>
+                Back to Gallery
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </div>
 
       {/* Fullscreen Modal */}
       <FullscreenModal
