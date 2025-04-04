@@ -14,7 +14,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ src, alt, description }) => {
 
   return (
     <div 
-      className="group relative w-full cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] focus-within:scale-[1.02]"
+      className="group relative w-full h-auto cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] focus-within:scale-[1.02]"
       role="img"
       aria-label={detailedAlt}
       onMouseEnter={() => setIsHovered(true)}
@@ -23,7 +23,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ src, alt, description }) => {
       onBlur={() => setIsHovered(false)}
       tabIndex={0}
     >
-      <div className="relative w-full pt-[75%]">
+      <div className="relative aspect-[4/3] overflow-hidden">
         {/* Loading Skeleton */}
         {isLoading && (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse" />
@@ -38,7 +38,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ src, alt, description }) => {
                  (max-width: 768px) 50vw,
                  (max-width: 1024px) 33vw,
                  25vw"
-          className={`absolute inset-0 w-full h-full rounded-lg object-contain transition-all duration-500 ${
+          className={`rounded-lg object-cover transition-all duration-500 ${
             isLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
           } ${isHovered ? 'scale-110' : 'scale-100'}`}
           loading="lazy"
@@ -56,7 +56,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ src, alt, description }) => {
         />
 
         {/* Focus Ring */}
-        <div
+        <div 
           className={`absolute inset-0 ring-2 ring-offset-2 ring-blue-500 transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`} 
