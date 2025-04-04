@@ -15,197 +15,264 @@ interface Photo {
   description?: string;
 }
 
-// Import directly based on the category
+// Map URL-friendly IDs to directory names
+const categoryDirMap: { [key: string]: string } = {
+  'architecture': 'architecture',
+  'air-show': 'airshow',
+  'b-and-w': 'b&w',
+  'bidar': 'bidar',
+  'clouds': 'clouds',
+  'featured': 'featured',
+  'festivals': 'festivals',
+  'hampi': 'hampi',
+  'heritage': 'heritage',
+  'hyderabad': 'hyderabad',
+  'kanhari-caves': 'kanharicaves',
+  'kolkata-streets': 'kolkatastreets2001',
+  'landscapes': 'landscapes',
+  'ladakh': 'ladakh',
+  'lanka': 'lanka',
+  'lockdown': 'lockdown',
+  'london': 'london',
+  'macro': 'macro',
+  'rachakonda': 'rachakonda',
+  'rajasthan': 'rajasthan',
+  'rock-forms': 'rockforms',
+  'tadoba': 'tadoba',
+  'thai': 'thai',
+  'tumbs': 'tumbs',
+  'warangal': 'warangal',
+  'wildlife': 'wildlife'
+};
+
+// Get photos for a category
 const getPhotosByCategory = (categoryId: string): Photo[] => {
-  // In a real application, we would filter photos based on categoryId
   console.log(`Loading photos for category: ${categoryId}`);
   
-  // Return different photos based on category
+  const dirName = categoryDirMap[categoryId] || categoryId;
+  const photos: Photo[] = [];
+
+  // Common image extensions to check
+  const extensions = ['jpeg', 'jpg', 'JPG', 'JPEG'];
+
+  // Helper function to check if a file exists with any of the extensions
+  const fileExistsWithExtension = (basePath: string): string | null => {
+    for (const ext of extensions) {
+      const filePath = `${basePath}.${ext}`;
+      // In browser context, we can't check file existence directly
+      // So we'll try to load the image and let the browser handle missing files
+      return filePath;
+    }
+    return null;
+  };
+
+  // Function to create a photo object
+  const createPhotoObject = (baseName: string): Photo => {
+    const categoryPath = dirName.toLowerCase();
+    return {
+      id: `${categoryId}-${baseName}`,
+      src: `/images/${categoryPath}/thumbnails/${baseName}.jpeg`,
+      fullscreenSrc: `/images/${categoryPath}/fullscreen/${baseName}.jpeg`,
+      originalSrc: `/images/original/${categoryPath}/${baseName}.jpg`,
+      alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
+      description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim()
+    };
+  };
+
+  // Add specific images based on category
   switch (categoryId) {
     case 'wildlife':
-      return [
-        {
-          id: 'wildlife-1',
-          src: '/images/wildlife/thumbnails/RedPanda.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/RedPanda.jpeg',
-          originalSrc: '/images/original/wildlife/RedPanda.JPG',
-          alt: 'Red Panda',
-          description: 'A beautiful red panda captured in its natural habitat, showcasing its vibrant fur and expressive face.'
-        },
-        {
-          id: 'wildlife-2',
-          src: '/images/wildlife/thumbnails/DSC_0011.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0011.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0011.JPG',
-          alt: 'Wildlife Photo 3',
-        },
-        {
-          id: 'wildlife-3',
-          src: '/images/wildlife/thumbnails/DSC_0025.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0025.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0025.JPG',
-          alt: 'Wildlife Photo 4',
-        },
-        {
-          id: 'wildlife-4',
-          src: '/images/wildlife/thumbnails/DSC_0036.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0036.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0036.JPG',
-          alt: 'Wildlife Photo 5',
-        },
-        {
-          id: 'wildlife-5',
-          src: '/images/wildlife/thumbnails/DSC_0083.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0083.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0083.JPG',
-          alt: 'Wildlife Photo 6',
-        },
-        {
-          id: 'wildlife-6',
-          src: '/images/wildlife/thumbnails/DSC_0086.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0086.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0086.JPG',
-          alt: 'Wildlife Photo 7',
-        },
-        {
-          id: 'wildlife-7',
-          src: '/images/wildlife/thumbnails/DSC_0087.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0087.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0087.JPG',
-          alt: 'Wildlife Photo 8',
-        },
-        {
-          id: 'wildlife-8',
-          src: '/images/wildlife/thumbnails/DSC_0160.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0160.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0160.JPG',
-          alt: 'Wildlife Photo 9',
-        },
-        {
-          id: 'wildlife-9',
-          src: '/images/wildlife/thumbnails/DSC_0189.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0189.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0189.JPG',
-          alt: 'Wildlife Photo 10',
-        },
-        {
-          id: 'wildlife-10',
-          src: '/images/wildlife/thumbnails/DSC_0212.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0212.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0212.JPG',
-          alt: 'Wildlife Photo 11',
-        },
-        {
-          id: 'wildlife-11',
-          src: '/images/wildlife/thumbnails/DSC_0228.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0228.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0228.JPG',
-          alt: 'Wildlife Photo 12',
-        },
-        {
-          id: 'wildlife-12',
-          src: '/images/wildlife/thumbnails/DSC_0259.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0259.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0259.JPG',
-          alt: 'Wildlife Photo 13',
-        },
-        {
-          id: 'wildlife-13',
-          src: '/images/wildlife/thumbnails/DSC_0457.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0457.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0457.JPG',
-          alt: 'Wildlife Photo 14',
-        },
-        {
-          id: 'wildlife-14',
-          src: '/images/wildlife/thumbnails/DSC_0539.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0539.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0539.JPG',
-          alt: 'Wildlife Photo 15',
-        },
-        {
-          id: 'wildlife-15',
-          src: '/images/wildlife/thumbnails/DSC_0995.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/DSC_0995.jpeg',
-          originalSrc: '/images/original/wildlife/DSC_0995.JPG',
-          alt: 'Wildlife Photo 16',
-        },
-        {
-          id: 'wildlife-16',
-          src: '/images/wildlife/thumbnails/Elephants.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/Elephants.jpeg',
-          originalSrc: '/images/original/wildlife/Elephants.JPG',
-          alt: 'Elephants',
-        },
-        {
-          id: 'wildlife-17',
-          src: '/images/wildlife/thumbnails/Fishes.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/Fishes.jpeg',
-          originalSrc: '/images/original/wildlife/Fishes.JPG',
-          alt: 'Fishes',
-        },
-        {
-          id: 'wildlife-18',
-          src: '/images/wildlife/thumbnails/Fox.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/Fox.jpeg',
-          originalSrc: '/images/original/wildlife/Fox.JPG',
-          alt: 'Fox',
-        },
-        {
-          id: 'wildlife-19',
-          src: '/images/wildlife/thumbnails/picture.jpeg',
-          fullscreenSrc: '/images/wildlife/fullscreen/picture.jpeg',
-          originalSrc: '/images/original/wildlife/picture.JPG',
-          alt: 'Wildlife Picture',
-        },
-      ];
-    case 'portrait':
-      return [
-        {
-          id: 'portrait-1',
-          src: '/images/portrait/thumbnails/portrait1.jpeg',
-          fullscreenSrc: '/images/portrait/fullscreen/portrait1.jpeg',
-          originalSrc: '/images/original/portrait/portrait1.JPG',
-          alt: 'Portrait 1',
-        },
-        {
-          id: 'portrait-2',
-          src: '/images/portrait/thumbnails/portrait2.jpeg',
-          fullscreenSrc: '/images/portrait/fullscreen/portrait2.jpeg',
-          originalSrc: '/images/original/portrait/portrait2.JPG',
-          alt: 'Portrait 2',
-        },
-      ];
+      ['RedPanda', 'Fox', 'Elephants', 'Fishes', 'picture', 'DSC_0011', 'DSC_0025', 
+       'DSC_0036', 'DSC_0083', 'DSC_0086', 'DSC_0087', 'DSC_0096', 'DSC_0155', 
+       'DSC_0160', 'DSC_0189', 'DSC_0212', 'DSC_0228', 'DSC_0259', 'DSC_0457', 
+       'DSC_0539', 'DSC_0541', 'DSC_0995', '005'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'london':
+      ['DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007_2', 'DSC_0022',
+       'DSC_0030', 'DSC_0031', 'DSC_0033', 'DSC_0051', 'DSC_0068', 'DSC_0069',
+       'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110_2', 'DSC_0112',
+       'DSC_0113', 'DSC_0123', 'DSC_0133', 'DSC_0138', 'DSC_0141', 'DSC_0149',
+       'DSC_0159_2', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
+       'DSC_0225', 'DSC_0240', 'DSC_0246', 'DSC_0259', 'DSC_0266', 'DSC_0276',
+       'DSC_0285', 'DSC_0308', 'DSC_0342', 'DSC_0345', 'DSC_0370', 'DSC_0391',
+       'DSC_0444'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'heritage':
+      ['001 (1 of 1)', '003 (1 of 1)', '2020 (1 of 1)', '2525 (1 of 1)', 
+       'abids church', 'airport masque', 'assembly', 'charminar', 'charminar 2',
+       'charminar long', 'chowmohalla palace', 'DSC_0045', 'DSC_0289', 'DSC_0475',
+       'golconda', 'k.b.nagar', 'kachiguda', 'koti college', 'koti college2',
+       'koti college3', 'm.m.market', 'mecca masque', 'musheerabad masque',
+       'paigah tombs', 'purani haveli', 'purani idgah', 'putti\'s house',
+       'tumbs', 'yousuf hose', 'mehboob mansion'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
     case 'architecture':
-      return [
-        {
-          id: 'architecture-1',
-          src: '/images/architecture/thumbnails/hero.jpeg',
-          fullscreenSrc: '/images/architecture/fullscreen/hero.jpeg',
-          originalSrc: '/images/original/architecture/hero.JPG',
-          alt: 'Architecture Hero',
-        },
-      ];
-    case 'abstract':
-      return [
-        {
-          id: 'abstract-1',
-          src: '/images/abstract/thumbnails/abstract1.jpeg',
-          fullscreenSrc: '/images/abstract/fullscreen/abstract1.jpeg',
-          originalSrc: '/images/original/abstract/abstract1.JPG',
-          alt: 'Abstract 1',
-        },
-        {
-          id: 'abstract-2',
-          src: '/images/abstract/thumbnails/abstract2.jpeg',
-          fullscreenSrc: '/images/abstract/fullscreen/abstract2.jpeg',
-          originalSrc: '/images/original/abstract/abstract2.JPG',
-          alt: 'Abstract 2',
-        },
-      ];
+      ['hero'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'ladakh':
+      ['abstract', 'blossom', 'discipline', 'DSC_0007 copy', 'DSC_0011 copy',
+       'DSC_0023 copy', 'DSC_0031 copy', 'DSC_0039 copy', 'DSC_0050 copy', 
+       'DSC_0056 copy', 'DSC_0057 copy', 'DSC_0067 copy', 'DSC_0189 copy',
+       'DSC_0218 copy', 'DSC_0286 copy', 'DSC_0320 copy', 'DSC_0325 copy',
+       'DSC_0546 copy', 'DSC_0675 copy', 'DSC_0728 copy', 'DSC_0973 copy',
+       'purity', 'way to go', 'window world'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'macro':
+      ['01 (1 of 1)', '119 (1 of 1)', 'AAAA (1 of 1)', 'AJAY8601', 'DSC_0167',
+       'DSC_0413 copy', 'DSC_0432 (2) copy', 'DSC_0868 copy', 'DSC_1463 a copy', 
+       'DSC_1631', 'DSC_1690', '_H6A9162', '_H6A9381', '_MG_5440000', '_MG_5530'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'hampi':
+      ['001', '003', '004', '005', '006', '007', '008', '009', '010', '011'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'lanka':
+      ['DSC_0127', 'DSC_0132', 'DSC_0137', 'DSC_0217', 'DSC_0376', 'DSC_0465',
+       'DSC_0507', 'DSC_0767', 'DSC_0826'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'rajasthan':
+      ['01_8', '03', '03_2', '03_4', '05', '05_6', '07', '08_5', '11_4', '14_4',
+       '16_5', '18_4', '19a', '27_2', '46', 'DSC_0076', 'DSC_0132', 'DSC_0158',
+       'DSC_0184'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'rock-forms':
+      ['03', '04', '06', '08', '09', '10', '16', '17', '20', '22', '24', '25'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'thai':
+      ['001', 'DSC_0006', 'DSC_0020', 'DSC_0024', 'DSC_0027', 'DSC_0029', 'DSC_0030',
+       'DSC_0075 (2)', 'DSC_0075', 'DSC_0086', 'DSC_0116 (2)', 'DSC_0116', 'DSC_0170',
+       'DSC_0207', 'DSC_0328', 'DSC_0366', 'DSC_0449', 'DSC_0467', 'DSC_0481',
+       'DSC_0515', 'DSC_0539', 'DSC_0547', 'DSC_0561', 'DSC_0567', 'DSC_0744',
+       'DSC_0836', 'DSC_0845'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'air-show':
+      ['DSC_0001', 'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0005', 'DSC_0006',
+       'DSC_0007', 'DSC_0008', 'DSC_0009', 'DSC_0010', 'DSC_0011', 'DSC_0012'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'b-and-w':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'clouds':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015', '016'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'festivals':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015', '016', '017', '018'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'hyderabad':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015', '016', '017', '018', '019', '020'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'kanhari-caves':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'kolkata-streets':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015', '016', '017', '018', '019', '020'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'landscapes':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015', '016', '017', '018', '019', '020'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'lockdown':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'rachakonda':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'tadoba':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'tumbs':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    case 'warangal':
+      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
+       '011', '012', '013', '014', '015'].forEach(name => {
+        photos.push(createPhotoObject(name));
+      });
+      break;
+
+    // For any other category, include at least the hero image
     default:
-      return [];
+      photos.push(createPhotoObject('hero'));
   }
+
+  return photos;
 };
 
 export default function CategoryGallery() {
