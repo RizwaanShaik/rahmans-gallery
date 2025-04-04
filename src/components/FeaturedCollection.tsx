@@ -36,7 +36,7 @@ const featuredWorks: FeaturedWork[] = [
     title: 'Rajasthan',
     description: 'Vibrant colors, majestic forts, and timeless traditions of the royal state of Rajasthan.',
     year: 2019,
-    src: `${s3BaseUrl}/categories/Rajasthan/hero/hero.jpeg`,
+    src: `${s3BaseUrl}/categories/rajasthan/hero/hero.jpeg`,
     category: 'rajasthan'
   }
 ];
