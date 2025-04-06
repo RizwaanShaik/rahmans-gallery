@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import { downloadS3Image, formatS3ImageUrl } from '../utils/imageUtils';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -169,16 +170,88 @@ export default function FullscreenModal({
 
   if (!isOpen || !displayedImage) return null;
 
-  // Function to get the original image URL
+  // Function to get the original image URL - UPDATE to fix the path structure
   const getOriginalImageUrl = () => {
-    // Add a timestamp to ensure proper S3 access
-    const timestamp = new Date().getTime();
     if (originalImage) {
-      const baseUrl = originalImage.replace('/fullscreen/', '/original/');
-      // Add timestamp as query parameter, preserving any existing parameters
-      return baseUrl.includes('?') ? `${baseUrl}&t=${timestamp}` : `${baseUrl}?t=${timestamp}`;
+      console.log("Original image path:", originalImage);
+      
+      // Extract paths from the original image URL
+      // The thumbnail paths look like: /categories/Clouds/thumbnails/SKR_0922.jpeg
+      // The original paths should be: /categories/original/Clouds/SKR_0922.JPG
+      
+      const pathRegex = /\/categories\/([^\/]+)\/(thumbnails|fullscreen)\/([^\/]+)(\.\w+)/;
+      const match = originalImage.match(pathRegex);
+      
+      if (match) {
+        const [, category, folder, filename, extension] = match;
+        
+        // Handle file extension difference - originals are often .JPG (uppercase)
+        // First try to keep the original extension in case it matches
+        let originalExt = extension.toLowerCase() === '.jpeg' ? '.JPG' : extension;
+        
+        // CORRECTION: "original" comes before the category
+        const originalPath = `/categories/original/${category}/${filename}${originalExt}`;
+        console.log("Transformed to original path:", originalPath);
+        return formatS3ImageUrl(originalPath);
+      }
+      
+      console.log("Regex match failed, trying fallback method");
+      // Fallback to simple replacement - Ensure correct path structure
+      const baseUrl = originalImage
+        .replace(/(\/categories\/[^\/]+)\/thumbnails\//, '$1/original/') // Ensure /categories/ is kept
+        .replace(/(\/categories\/[^\/]+)\/fullscreen\//, '$1/original/'); // Ensure /categories/ is kept
+      
+      console.log("Fallback original path:", baseUrl);
+      return formatS3ImageUrl(baseUrl);
     }
     return null;
+  };
+
+  // Handle download button click - Simplified Logic
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!originalImage) return;
+
+    console.log("Starting download process for base URL:", originalImage);
+
+    // The originalImage prop *is* the intended base URL (potentially with wrong extension)
+    // Remove query string and timestamp if present
+    const baseUrl = originalImage.split('?')[0];
+    const filenameWithExt = baseUrl.substring(baseUrl.lastIndexOf('/') + 1);
+    const filename = filenameWithExt.substring(0, filenameWithExt.lastIndexOf('.'));
+    const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
+
+    // Decode filename in case it's already encoded
+    const decodedFilename = decodeURIComponent(filename);
+
+    // Generate list of possible file extensions to try
+    const possibleExtensions = ['.jpg', '.JPG', '.jpeg', '.JPEG']; // Add other common types if needed (e.g., .png, .PNG)
+
+    console.log(`Base path: ${basePath}, Decoded filename: ${decodedFilename}`);
+
+    // Try each extension
+    for (const ext of possibleExtensions) {
+      // Re-encode the filename part for the URL, keeping the path as is
+      const fullPath = `${basePath}${encodeURIComponent(decodedFilename)}${ext}`;
+      // Use formatS3ImageUrl WITHOUT timestamp, as downloadS3Image adds it
+      const urlToTry = formatS3ImageUrl(fullPath, false); 
+      const downloadFilename = `${decodedFilename}${ext}`;
+
+      console.log(`Trying to download: ${urlToTry} as ${downloadFilename}`);
+      const success = await downloadS3Image(urlToTry, downloadFilename);
+
+      if (success) {
+        console.log("Download successful!");
+        return; // Exit loop on success
+      }
+    }
+
+    // If we get here, all attempts failed
+    console.log("All download attempts failed. Opening the initially provided URL in a new tab as a last resort.");
+    // Open the originally provided URL (with timestamp added by formatS3ImageUrl)
+    window.open(formatS3ImageUrl(originalImage, true), '_blank');
   };
 
   return (
@@ -195,35 +268,38 @@ export default function FullscreenModal({
     >
       {/* Top Controls Bar */}
       <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 z-50 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
-        <a
-          href={getOriginalImageUrl() || ''}
-          download
-          onClick={(e) => e.stopPropagation()}
-          className={`${
-            highContrast 
-              ? 'bg-white text-black border-2 border-black' 
-              : 'bg-white/10 text-white hover:bg-white/20'
-          } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
-          aria-label="Download original quality image"
-          role="button"
-          title="Download original quality image"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
+        {originalImage ? (
+          <button
+            onClick={handleDownload}
+            className={`${
+              highContrast 
+                ? 'bg-white text-black border-2 border-black' 
+                : 'bg-white/10 text-white hover:bg-white/20'
+            } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
+            aria-label="Download original quality image"
+            title="Download original quality image"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
-            />
-          </svg>
-          <span className="hidden sm:inline">Download Original</span>
-        </a>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+              />
+            </svg>
+            <span className="hidden sm:inline">Download Original</span>
+          </button>
+        ) : (
+          <div className="px-3 py-2 opacity-50">
+            <span className="hidden sm:inline">No Original Available</span>
+          </div>
+        )}
 
         <button
           onClick={onClose}

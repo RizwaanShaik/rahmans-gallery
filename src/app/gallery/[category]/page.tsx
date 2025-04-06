@@ -68,12 +68,15 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
     
     return {
       id: uniqueId,
-      src: `${s3BaseUrl}/categories/${categoryPath}/thumbnails/${encodedBaseName}.jpeg`,
+      // Thumbnail and fullscreen paths seem correct based on what works
+      src: `${s3BaseUrl}/categories/${categoryPath}/thumbnails/${encodedBaseName}.jpeg`, 
       fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath}/fullscreen/${encodedBaseName}.jpeg`,
-      originalSrc: `${s3BaseUrl}/categories/${categoryPath}/original/${encodedBaseName}.jpeg`,
+      // Correct the original path structure: /original/category/filename
+      originalSrc: `${s3BaseUrl}/categories/original/${categoryPath}/${encodedBaseName}.jpeg`, 
       alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
       description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-      downloadUrl: `${s3BaseUrl}/categories/${categoryPath}/original/${encodedBaseName}.jpeg`
+      // Correct the download path structure
+      downloadUrl: `${s3BaseUrl}/categories/original/${categoryPath}/${encodedBaseName}.jpeg` 
     };
   };
 
