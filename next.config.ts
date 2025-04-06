@@ -3,7 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ['rahmansgallerybucket.s3.ap-south-1.amazonaws.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'rahmansgallerybucket.s3.ap-south-1.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   async headers() {
     return [

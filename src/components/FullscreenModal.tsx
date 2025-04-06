@@ -27,7 +27,7 @@ export default function FullscreenModal({
   highContrast = false,
   getNextImageSrc,
 }: FullscreenModalProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -171,43 +171,6 @@ export default function FullscreenModal({
   };
 
   if (!isOpen || !displayedImage) return null;
-
-  // Function to get the original image URL - UPDATE to fix the path structure
-  const getOriginalImageUrl = () => {
-    if (originalImage) {
-      console.log("Original image path:", originalImage);
-      
-      // Extract paths from the original image URL
-      // The thumbnail paths look like: /categories/Clouds/thumbnails/SKR_0922.jpeg
-      // The original paths should be: /categories/original/Clouds/SKR_0922.JPG
-      
-      const pathRegex = /\/categories\/([^\/]+)\/(thumbnails|fullscreen)\/([^\/]+)(\.\w+)/;
-      const match = originalImage.match(pathRegex);
-      
-      if (match) {
-        const [, category, folder, filename, extension] = match;
-        
-        // Handle file extension difference - originals are often .JPG (uppercase)
-        // First try to keep the original extension in case it matches
-        let originalExt = extension.toLowerCase() === '.jpeg' ? '.JPG' : extension;
-        
-        // CORRECTION: "original" comes before the category
-        const originalPath = `/categories/original/${category}/${filename}${originalExt}`;
-        console.log("Transformed to original path:", originalPath);
-        return formatS3ImageUrl(originalPath);
-      }
-      
-      console.log("Regex match failed, trying fallback method");
-      // Fallback to simple replacement - Ensure correct path structure
-      const baseUrl = originalImage
-        .replace(/(\/categories\/[^\/]+)\/thumbnails\//, '$1/original/') // Ensure /categories/ is kept
-        .replace(/(\/categories\/[^\/]+)\/fullscreen\//, '$1/original/'); // Ensure /categories/ is kept
-      
-      console.log("Fallback original path:", baseUrl);
-      return formatS3ImageUrl(baseUrl);
-    }
-    return null;
-  };
 
   // Handle download button click - Simplified Logic
   const handleDownload = async (e: React.MouseEvent) => {
