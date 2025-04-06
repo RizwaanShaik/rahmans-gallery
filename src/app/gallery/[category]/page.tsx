@@ -474,34 +474,60 @@ export default function CategoryGallery() {
   };
 
   const openModal = useCallback((index: number) => {
-    setCurrentIndex(index);
+    // Calculate global index by adding the current page offset
+    const globalIndex = (page - 1) * ITEMS_PER_PAGE + index;
+    setCurrentIndex(globalIndex);
     setCurrentImage(displayedPhotos[index].fullscreenSrc);
     setModalOpen(true);
-  }, [displayedPhotos]);
+  }, [displayedPhotos, page, ITEMS_PER_PAGE]);
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
   }, []);
 
   const nextImage = useCallback(() => {
-    if (currentIndex < displayedPhotos.length - 1) {
+    if (currentIndex < allPhotosRef.current.length - 1) {
       setCurrentIndex(prevIndex => {
         const newIndex = prevIndex + 1;
-        setCurrentImage(displayedPhotos[newIndex].fullscreenSrc);
+        // Calculate page and index within page
+        const pageForImage = Math.floor(newIndex / ITEMS_PER_PAGE) + 1;
+        const indexInPage = newIndex % ITEMS_PER_PAGE;
+        
+        // If we need to load a new page
+        if (pageForImage !== page) {
+          setPage(pageForImage);
+          // The image will be loaded after page change causes displayedPhotos to update
+          return newIndex;
+        }
+        
+        // Otherwise, just update the current image
+        setCurrentImage(displayedPhotos[indexInPage].fullscreenSrc);
         return newIndex;
       });
     }
-  }, [currentIndex, displayedPhotos]);
+  }, [currentIndex, displayedPhotos, page, ITEMS_PER_PAGE]);
 
   const prevImage = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex(prevIndex => {
         const newIndex = prevIndex - 1;
-        setCurrentImage(displayedPhotos[newIndex].fullscreenSrc);
+        // Calculate page and index within page
+        const pageForImage = Math.floor(newIndex / ITEMS_PER_PAGE) + 1;
+        const indexInPage = newIndex % ITEMS_PER_PAGE;
+        
+        // If we need to load a new page
+        if (pageForImage !== page) {
+          setPage(pageForImage);
+          // The image will be loaded after page change causes displayedPhotos to update
+          return newIndex;
+        }
+        
+        // Otherwise, just update the current image
+        setCurrentImage(displayedPhotos[indexInPage].fullscreenSrc);
         return newIndex;
       });
     }
-  }, [currentIndex, displayedPhotos]);
+  }, [currentIndex, displayedPhotos, page, ITEMS_PER_PAGE]);
 
   const goToNextPage = useCallback(() => {
     if (hasMore) {
@@ -516,6 +542,17 @@ export default function CategoryGallery() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [page]);
+
+  // Use useEffect to update current image when page changes and we're in modal view
+  useEffect(() => {
+    if (isModalOpen && displayedPhotos.length > 0) {
+      const indexInPage = currentIndex % ITEMS_PER_PAGE;
+      // Only update if the index is valid for the current page
+      if (indexInPage < displayedPhotos.length) {
+        setCurrentImage(displayedPhotos[indexInPage].fullscreenSrc);
+      }
+    }
+  }, [displayedPhotos, isModalOpen, currentIndex, ITEMS_PER_PAGE]);
 
   // Format category name for display
   const formatCategoryName = useCallback((name: string) => {
@@ -689,7 +726,7 @@ export default function CategoryGallery() {
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-1">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
-              Previous 20
+              Previous {ITEMS_PER_PAGE}
             </button>
             
             <button
@@ -701,7 +738,7 @@ export default function CategoryGallery() {
                   : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
             >
-              Next 20
+              Next {ITEMS_PER_PAGE}
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="ml-1">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -743,12 +780,28 @@ export default function CategoryGallery() {
       <FullscreenModal
         isOpen={isModalOpen}
         currentImage={currentImage}
-        originalImage={displayedPhotos[currentIndex]?.downloadUrl}
+        originalImage={displayedPhotos[currentIndex % ITEMS_PER_PAGE]?.downloadUrl}
         onClose={closeModal}
         onNext={nextImage}
         onPrev={prevImage}
-        totalImages={displayedPhotos.length}
+        totalImages={allPhotosRef.current.length}
         currentIndex={currentIndex}
+        getNextImageSrc={(index) => {
+          const nextIndex = index + 1;
+          if (nextIndex < allPhotosRef.current.length) {
+            const pageForNextImage = Math.floor(nextIndex / ITEMS_PER_PAGE) + 1;
+            const indexInNextPage = nextIndex % ITEMS_PER_PAGE;
+            
+            // If next image is on the current page
+            if (pageForNextImage === page && indexInNextPage < displayedPhotos.length) {
+              return displayedPhotos[indexInNextPage].fullscreenSrc;
+            }
+            // Otherwise try to get it from allPhotosRef
+            const nextPhoto = allPhotosRef.current[nextIndex];
+            return nextPhoto ? nextPhoto.fullscreenSrc : null;
+          }
+          return null;
+        }}
       />
     </div>
   );

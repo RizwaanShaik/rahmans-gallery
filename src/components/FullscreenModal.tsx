@@ -33,6 +33,7 @@ export default function FullscreenModal({
   const imageRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [nextImageLoading, setNextImageLoading] = useState(false);
 
   // Initialize displayed image
   useEffect(() => {
@@ -55,21 +56,22 @@ export default function FullscreenModal({
   // Update displayed image when current image changes
   useEffect(() => {
     if (currentImage) {
-      setIsLoading(true);
-      setDisplayedImage(currentImage);
+      setNextImageLoading(true);
+      // Keep the previous image visible until the new one loads
+      // setDisplayedImage will happen in the onLoad event
     }
   }, [currentImage]);
 
   const handleNext = useCallback(() => {
     if (currentIndex < totalImages - 1) {
-      setIsLoading(true);
+      setNextImageLoading(true);
       onNext();
     }
   }, [currentIndex, totalImages, onNext]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
-      setIsLoading(true);
+      setNextImageLoading(true);
       onPrev();
     }
   }, [currentIndex, onPrev]);
@@ -319,9 +321,9 @@ export default function FullscreenModal({
       {/* Main Image Container */}
       <div ref={imageRef} className="relative w-full h-full flex items-center justify-center p-4">
         {/* Loading Spinner */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className={`w-12 h-12 border-4 ${
+        {nextImageLoading && (
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className={`w-16 h-16 border-4 ${
               highContrast 
                 ? 'border-black/20 border-t-black' 
                 : 'border-white/20 border-t-white'
@@ -332,17 +334,17 @@ export default function FullscreenModal({
         <div className="relative">
           {displayedImage && (
             <Image
-              src={displayedImage}
+              src={currentImage}
               alt="Fullscreen view"
               width={1920}
               height={1080}
-              className={`max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300 ${
-                isLoading ? 'opacity-0' : 'opacity-100'
-              }`}
+              className="max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300"
               priority
               quality={100}
               onLoad={() => {
+                setNextImageLoading(false);
                 setIsLoading(false);
+                setDisplayedImage(currentImage);
               }}
               sizes="100vw"
             />
