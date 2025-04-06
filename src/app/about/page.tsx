@@ -1,49 +1,89 @@
+'use client';
+
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export default function About() {
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+  
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-4xl mx-auto">
-        {/* Header with decorative elements */}
-        <div className="relative mb-12 sm:mb-16 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 inline-block relative">
-            About Prof. S. K. Rahman
-            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-amber-500 rounded-full"></div>
-          </h1>
-        </div>
-        
-        {/* Profile Image with elegant styling */}
-        <div className="mb-12 sm:mb-16 relative w-[260px] h-[320px] mx-auto">
-          <div className="relative w-full h-full overflow-hidden rounded-xl shadow-xl transform hover:scale-102 transition-transform duration-300">
-          <Image
-              src="/images/Profile.jpeg"
-              alt="Professor Shaik Khaleel-ur-Rahman"
-            fill
-              className="object-cover"
-              sizes="(max-width: 640px) 260px, 320px"
-              priority
-          />
-          </div>
-          <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-amber-500 rounded-full -z-10"></div>
-          <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-500 rounded-full -z-10"></div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="container mx-auto px-5 sm:px-6 py-8 sm:py-16">
+        <div className="max-w-4xl mx-auto">
+          {/* Header with animated underline */}
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.5 }}
+            className="mb-10 sm:mb-16 text-center"
+          >
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 inline-block relative">
+              About Prof. S. K. Rahman
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="absolute -bottom-3 left-0 h-1 bg-amber-500 rounded-full"
+              ></motion.div>
+            </h1>
+          </motion.div>
+          
+          {/* Profile Image with elegant styling */}
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mb-12 sm:mb-16 relative max-w-xs mx-auto"
+          >
+            <div className="relative w-[260px] h-[320px] mx-auto rounded-xl overflow-hidden shadow-xl">
+              <Image
+                src="/images/Profile.jpeg"
+                alt="Professor Shaik Khaleel-ur-Rahman"
+                fill
+                className="object-cover transition-transform hover:scale-105 duration-700"
+                sizes="(max-width: 640px) 260px, 320px"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-amber-500 rounded-full -z-10"></div>
+            <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-500 rounded-full -z-10"></div>
+          </motion.div>
 
-        {/* Timeline-style content sections */}
-        <div className="prose prose-lg max-w-none">
           {/* Biography Quote */}
-          <blockquote className="mb-12 p-4 sm:p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg italic text-gray-700 text-center">
-           &quot;Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India.&quot;
-          </blockquote>
+          <motion.blockquote 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeIn}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mb-12 p-6 sm:p-8 bg-blue-50 border-l-4 border-blue-500 rounded-lg italic text-gray-700 text-center shadow-sm"
+          >
+            &quot;Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India.&quot;
+          </motion.blockquote>
 
           {/* Timeline Sections */}
-          <div className="relative border-l-2 border-gray-200 pl-5 sm:pl-8 ml-4 sm:ml-6">
+          <div className="relative border-l-2 border-gray-200 pl-6 sm:pl-8 ml-5 sm:ml-8">
             {/* Early Life */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">1</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">1</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-600">Early Life</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman spent his formative years in his village, 
                   where he developed a deep love for nature and rural surroundings. His father, Abdul Rahman, served as a Senior Accounts Officer in the A.G.&apos;s Office, Hyderabad. 
@@ -54,83 +94,103 @@ export default function About() {
                   like Bruce Lee, James Bond, and Indiana Jones. This early exposure to cinema would later influence his photographic style and storytelling approach.
                 </p>
               </div>
-            </section>
+            </motion.section>
 
             {/* Education */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">2</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">2</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-green-600">Education and Early Career</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   After completing his Intermediate education in MPC (Mathematics, Physics, Chemistry), Rahman chose to diverge from conventional paths, 
                   pursuing photography at JNTU College of Fine Arts. This decision, though initially shocking to his family, would prove transformative.
                 </p>
-                <div className="mb-4 bg-green-50 p-4 sm:p-6 rounded-lg">
+                <div className="mb-4 bg-green-50 p-5 rounded-xl">
                   <h3 className="text-xl font-semibold mb-3 text-green-700">Educational Milestones</h3>
                   <ul className="space-y-3 pl-1">
-                    <li className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700">Diploma in Photography from JNTU College of Fine Arts (1983-1985)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700">Bachelor of Commerce from Osmania University (1986-1989)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700">Master&apos;s in Journalism and Mass Communication from Madurai Kamaraj University (2000)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700">Master of Fine Arts in Photography from JNAFAU (2008-2010)</span>
-                    </li>
+                    {[
+                      "Diploma in Photography from JNTU College of Fine Arts (1983-1985)",
+                      "Bachelor of Commerce from Osmania University (1986-1989)",
+                      "Master's in Journalism and Mass Communication from Madurai Kamaraj University (2000)",
+                      "Master of Fine Arts in Photography from JNAFAU (2008-2010)"
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-gray-700">{item}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
-            </section>
+            </motion.section>
 
             {/* Career */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">3</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">3</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-purple-600">Professional Journey</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   Professor Rahman&apos;s career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons, 
                   and freelance fashion photographer for Impulse Advertising Agency. In 1992, he joined JNTU College of Fine Arts as a Lecturer, marking the beginning 
                   of his academic career.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="bg-purple-50 p-5 rounded-xl">
                     <h3 className="text-xl font-semibold mb-3 text-purple-700">Key Academic Positions</h3>
                     <ul className="space-y-2 list-none">
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Director of Academic and Planning</li>
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Registrar of JNAFAU</li>
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Controller of Examinations</li>
+                      {["Director of Academic and Planning", "Registrar of JNAFAU", "Controller of Examinations"].map((item, index) => (
+                        <li key={index} className="flex items-center">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> {item}
+                        </li>
+                      ))}
                     </ul>
                   </div>
-                  <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="bg-purple-50 p-5 rounded-xl">
                     <h3 className="text-xl font-semibold mb-3 text-purple-700">Departmental Roles</h3>
                     <ul className="space-y-2 list-none">
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Head of the Photography Department</li>
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Special Officer for University Hostel</li>
-                      <li className="flex items-center"><span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> Board of Studies Member</li>
+                      {["Head of the Photography Department", "Special Officer for University Hostel", "Board of Studies Member"].map((item, index) => (
+                        <li key={index} className="flex items-center">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> {item}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
               </div>
-            </section>
+            </motion.section>
 
             {/* Photography Expertise */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">4</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">4</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-amber-600">Photographic Journey</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   Coming from the tradition of small-format Analog Photography, Professor Rahman mastered black & white film processing and darkroom techniques. 
                   When digital technology emerged in the early 1990s, he embraced the change, starting with the Sony Mavica Floppy Disk storage camera.
@@ -140,45 +200,41 @@ export default function About() {
                   while his documentary work captured the essence of everyday life across India. His landscape photography revealed his deep connection with nature, 
                   while his architectural work preserved heritage structures for future generations.
                 </p>
-                <div className="mb-4 bg-amber-50 p-4 rounded-lg">
+                <div className="mb-4 bg-amber-50 p-5 rounded-xl">
                   <h3 className="text-xl font-semibold mb-3 text-amber-700">Areas of Specialization</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Fine Art</p>
-                      <p className="text-sm text-amber-700 mt-1">Abstract compositions exploring form and texture</p>
-                    </div>
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Documentary</p>
-                      <p className="text-sm text-amber-700 mt-1">Street life and cultural documentation</p>
-                    </div>
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Landscape</p>
-                      <p className="text-sm text-amber-700 mt-1">Natural vistas and environmental studies</p>
-                    </div>
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Architecture</p>
-                      <p className="text-sm text-amber-700 mt-1">Heritage structures and sacred spaces</p>
-                    </div>
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Advertising</p>
-                      <p className="text-sm text-amber-700 mt-1">Commercial and product photography</p>
-                    </div>
-                    <div className="bg-amber-100 p-3 rounded-lg">
-                      <p className="font-medium text-amber-800 text-center">Macro</p>
-                      <p className="text-sm text-amber-700 mt-1">Detailed studies of miniature subjects</p>
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      { title: "Fine Art", desc: "Abstract compositions exploring form and texture" },
+                      { title: "Documentary", desc: "Street life and cultural documentation" },
+                      { title: "Landscape", desc: "Natural vistas and environmental studies" },
+                      { title: "Architecture", desc: "Heritage structures and sacred spaces" },
+                      { title: "Advertising", desc: "Commercial and product photography" },
+                      { title: "Macro", desc: "Detailed studies of miniature subjects" }
+                    ].map((item, index) => (
+                      <div key={index} className="bg-amber-100 p-3 rounded-lg hover:shadow-sm transition-shadow duration-300 h-full">
+                        <p className="font-medium text-amber-800 text-center">{item.title}</p>
+                        <p className="text-sm text-amber-700 mt-1 text-center">{item.desc}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            </section>
+            </motion.section>
 
             {/* Exhibitions and Achievements */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">5</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">5</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-red-600">Exhibitions and Recognition</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <h3 className="text-xl font-semibold mb-3 text-red-700 flex items-center">
@@ -188,10 +244,14 @@ export default function About() {
                       Notable Exhibitions
                     </h3>
                     <ul className="space-y-2 list-none">
-                      <li className="p-2 bg-red-50 rounded-md">&ldquo;Deccan Rock Forms&rdquo; - Group Exhibition in Kolkata (2000)</li>
-                      <li className="p-2 bg-red-50 rounded-md">&ldquo;Nukkad&rdquo; - Solo Exhibition on Street Life of Calcutta (2001)</li>
-                      <li className="p-2 bg-red-50 rounded-md">&ldquo;Heritage Structures of Hyderabad&rdquo; - Solo Exhibition (2006)</li>
-                      <li className="p-2 bg-red-50 rounded-md">&ldquo;Colors of Rajasthan&rdquo; - Group Exhibition (2015)</li>
+                      {[
+                        "\"Deccan Rock Forms\" - Group Exhibition in Kolkata (2000)",
+                        "\"Nukkad\" - Solo Exhibition on Street Life of Calcutta (2001)",
+                        "\"Heritage Structures of Hyderabad\" - Solo Exhibition (2006)",
+                        "\"Colors of Rajasthan\" - Group Exhibition (2015)"
+                      ].map((item, index) => (
+                        <li key={index} className="p-2 bg-red-50 rounded-md hover:bg-red-100 transition-colors duration-300">{item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div>
@@ -202,92 +262,89 @@ export default function About() {
                       Awards and Recognition
                     </h3>
                     <ul className="space-y-2 list-none">
-                      <li className="p-2 bg-red-50 rounded-md">State Best Teacher Award from the Government of Andhra Pradesh (2012)</li>
-                      <li className="p-2 bg-red-50 rounded-md">Young Teacher Award (BOLT) from Singapore Tourism Board & Air India</li>
-                      <li className="p-2 bg-red-50 rounded-md">PESGCPC Grand Progress Award from PASCAL and GREEK School Photographic Club Cyprus (2019)</li>
+                      {[
+                        "State Best Teacher Award from the Government of Andhra Pradesh (2012)",
+                        "Young Teacher Award (BOLT) from Singapore Tourism Board & Air India",
+                        "PESGCPC Grand Progress Award from PASCAL and GREEK School Photographic Club Cyprus (2019)"
+                      ].map((item, index) => (
+                        <li key={index} className="p-2 bg-red-50 rounded-md hover:bg-red-100 transition-colors duration-300">{item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
               </div>
-            </section>
+            </motion.section>
 
             {/* International Experience */}
-            <section className="mb-12 relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">6</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="mb-12 relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">6</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-indigo-600">International Experience</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   Professor Rahman conducted photography projects and workshops across multiple countries, bringing his expertise to international audiences and enriching his own work through global perspectives:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-indigo-50 p-4 rounded-lg flex items-start">
-                    <div className="mr-3 mt-1 text-indigo-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
+                  {[
+                    { 
+                      country: "United Kingdom", 
+                      desc: "Visited Swansea Metropolitan University (2010) for academic collaboration and knowledge exchange" 
+                    },
+                    { 
+                      country: "Sri Lanka", 
+                      desc: "Conducted workshops on Temple Architecture & Travel Photography, focusing on the cultural heritage of the island" 
+                    },
+                    { 
+                      country: "Thailand", 
+                      desc: "Led workshops on Landscape & Travel Photography highlighting the techniques for capturing tropical landscapes" 
+                    },
+                    { 
+                      country: "Nepal", 
+                      desc: "Documented ancient temples and mountain landscapes (2013), creating a visual archive of religious architecture" 
+                    },
+                    { 
+                      country: "Saudi Arabia", 
+                      desc: "Conducted urban landscape photography project (2015) focusing on the contrast between traditional and modern architecture" 
+                    }
+                  ].map((item, index) => (
+                    <div key={index} className="bg-indigo-50 p-4 rounded-lg flex items-start group hover:bg-indigo-100 transition-colors duration-300">
+                      <div className="mr-3 mt-1 text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-indigo-700 group-hover:text-indigo-800 transition-colors duration-300">{item.country}</h3>
+                        <p className="text-gray-700 text-sm">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-indigo-700">United Kingdom</h3>
-                      <p className="text-gray-700 text-sm">Visited Swansea Metropolitan University (2010) for academic collaboration and knowledge exchange</p>
-                    </div>
-                  </div>
-                  <div className="bg-indigo-50 p-4 rounded-lg flex items-start">
-                    <div className="mr-3 mt-1 text-indigo-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-indigo-700">Sri Lanka</h3>
-                      <p className="text-gray-700 text-sm">Conducted workshops on Temple Architecture & Travel Photography, focusing on the cultural heritage of the island</p>
-                    </div>
-                  </div>
-                  <div className="bg-indigo-50 p-4 rounded-lg flex items-start">
-                    <div className="mr-3 mt-1 text-indigo-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-indigo-700">Thailand</h3>
-                      <p className="text-gray-700 text-sm">Led workshops on Landscape & Travel Photography highlighting the techniques for capturing tropical landscapes</p>
-                    </div>
-                  </div>
-                  <div className="bg-indigo-50 p-4 rounded-lg flex items-start">
-                    <div className="mr-3 mt-1 text-indigo-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-indigo-700">Nepal</h3>
-                      <p className="text-gray-700 text-sm">Documented ancient temples and mountain landscapes (2013), creating a visual archive of religious architecture</p>
-                    </div>
-                  </div>
-                  <div className="bg-indigo-50 p-4 rounded-lg flex items-start col-span-1 sm:col-span-2 md:col-span-1">
-                    <div className="mr-3 mt-1 text-indigo-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-indigo-700">Saudi Arabia</h3>
-                      <p className="text-gray-700 text-sm">Conducted urban landscape photography project (2015) focusing on the contrast between traditional and modern architecture</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </section>
+            </motion.section>
 
             {/* Legacy */}
-            <section className="relative">
-              <div className="absolute -left-14 top-0 w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-bold">7</span>
+            <motion.section 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              transition={{ duration: 0.5 }}
+              className="relative"
+            >
+              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-xs sm:text-base">7</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-teal-600">Legacy and Impact</h2>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <div className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <p className="mb-4 text-gray-700 leading-relaxed">
                   Throughout his career, Professor Rahman mentored numerous successful photographers and filmmakers. His students have excelled in various fields 
                   including Film Making, Advertising, Television, Sports Photography, and Education.
@@ -295,24 +352,40 @@ export default function About() {
                 <div className="mb-6 bg-teal-50 p-4 rounded-lg">
                   <h3 className="text-xl font-semibold mb-3 text-teal-700">Notable Alumni</h3>
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full">P G Vinda</span>
-                    <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full">Srikanth Naroj</span>
-                    <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full">Samala Bhaskar</span>
-                    <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full">Acharya Venu</span>
-                    <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full">Nachiket Katti (USA)</span>
+                    {["P G Vinda", "Srikanth Naroj", "Samala Bhaskar", "Acharya Venu", "Nachiket Katti (USA)"].map((name, index) => (
+                      <span key={index} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full hover:bg-teal-200 transition-colors duration-300">{name}</span>
+                    ))}
                   </div>
                 </div>
-                <div className="p-4 sm:p-5 border-t border-gray-200 mt-4 text-center">
+                <div className="p-5 sm:p-6 border-t border-gray-200 mt-4 text-center">
                   <p className="text-gray-700 italic">
                     Professor Shaik Khaleel-ur-Rahman passed away on May 25, 2021, leaving behind a rich legacy of photographic work, educational contributions, and 
                     a lasting impact on the field of photography education in India. His work continues to inspire new generations of photographers and visual artists.
                   </p>
                 </div>
               </div>
-            </section>
+            </motion.section>
           </div>
+          
+          {/* Back to top button */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="sticky bottom-8 flex justify-center mt-12"
+          >
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105"
+              aria-label="Back to top"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+          </motion.div>
         </div>
       </div>
     </div>
   );
-} 
+}
