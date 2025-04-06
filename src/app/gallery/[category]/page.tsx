@@ -64,7 +64,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
     const uniqueId = `${categoryId}-${baseName}-${Math.random().toString(36).substring(2, 9)}`;
     
     // Properly encode spaces and special characters in filenames for URLs
-    const encodedBaseName = encodeURIComponent(baseName);
+    //const encodedBaseName = encodeURIComponent(baseName);
     
     // Clean filenames by removing spaces and apostrophes for new S3 bucket naming
     // BUT keep parentheses intact
