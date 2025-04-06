@@ -34,27 +34,27 @@ export default function About() {
           </motion.div>
           
           {/* Profile Image with elegant styling */}
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            variants={fadeIn}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mb-12 sm:mb-16 relative max-w-xs mx-auto"
-          >
-            <div className="relative w-[260px] h-[320px] mx-auto rounded-xl overflow-hidden shadow-xl">
-              <Image
-                src="/images/Profile.jpeg"
-                alt="Professor Shaik Khaleel-ur-Rahman"
-                fill
-                className="object-cover transition-transform hover:scale-105 duration-700"
-                sizes="(max-width: 640px) 260px, 320px"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-            </div>
-            <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-amber-500 rounded-full -z-10"></div>
-            <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-500 rounded-full -z-10"></div>
-          </motion.div>
+          <div className="mb-12 sm:mb-16 relative max-w-xs mx-auto">
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={fadeIn}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="relative"
+            >
+              <div className="relative w-[260px] h-[320px] mx-auto rounded-xl overflow-hidden shadow-xl">
+                <Image
+                  src="/images/Profile.jpeg"
+                  alt="Professor Shaik Khaleel-ur-Rahman"
+                  fill
+                  className="object-cover transition-transform hover:scale-105 duration-700"
+                  sizes="(max-width: 640px) 260px, 320px"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+              </div>
+            </motion.div>
+          </div>
 
           {/* Biography Quote */}
           <motion.blockquote 
