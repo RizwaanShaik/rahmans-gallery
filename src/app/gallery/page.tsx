@@ -131,7 +131,7 @@ const categories = [
   {
     id: 'rock-forms',
     title: 'Rock Forms',
-    image: `${s3BaseUrl}/categories/rock forms/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/categories/rockforms/hero/hero.jpeg`,
     description: 'Natural sculptures shaped by time, weather, and geological forces',
   },
   {

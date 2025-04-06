@@ -190,19 +190,22 @@ export default function FullscreenModal({
 
     // Decode filename in case it's already encoded
     const decodedFilename = decodeURIComponent(filename);
+    
+    // Remove spaces and apostrophes but KEEP parentheses in the filename
+    const cleanFilename = decodedFilename.replace(/[ '\"](?!\([^)]*\))/g, "");
 
     // Generate list of possible file extensions to try
-    const possibleExtensions = ['.jpg', '.JPG', '.jpeg', '.JPEG']; // Add other common types if needed (e.g., .png, .PNG)
+    const possibleExtensions = ['.JPG', '.jpg', '.JPEG', '.jpeg']; // Try uppercase extensions first
 
-    console.log(`Base path: ${basePath}, Decoded filename: ${decodedFilename}`);
+    console.log(`Base path: ${basePath}, Clean filename: ${cleanFilename}`);
 
     // Try each extension
     for (const ext of possibleExtensions) {
-      // Re-encode the filename part for the URL, keeping the path as is
-      const fullPath = `${basePath}${encodeURIComponent(decodedFilename)}${ext}`;
+      // Use the clean filename without spaces and apostrophes but with parentheses
+      const fullPath = `${basePath}${cleanFilename}${ext}`;
       // Use formatS3ImageUrl WITHOUT timestamp, as downloadS3Image adds it
       const urlToTry = formatS3ImageUrl(fullPath, false); 
-      const downloadFilename = `${decodedFilename}${ext}`;
+      const downloadFilename = `${decodedFilename}${ext}`; // Keep original name for downloaded file
 
       console.log(`Trying to download: ${urlToTry} as ${downloadFilename}`);
       const success = await downloadS3Image(urlToTry, downloadFilename);
@@ -215,8 +218,18 @@ export default function FullscreenModal({
 
     // If we get here, all attempts failed
     console.log("All download attempts failed. Opening the initially provided URL in a new tab as a last resort.");
-    // Open the originally provided URL (with timestamp added by formatS3ImageUrl)
-    window.open(formatS3ImageUrl(originalImage, true), '_blank');
+    
+    // Clean the original URL too for the fallback, but keep parentheses
+    const cleanOriginalUrl = originalImage.split('?')[0];
+    const cleanPath = cleanOriginalUrl.substring(0, cleanOriginalUrl.lastIndexOf('/') + 1);
+    const cleanFilenameWithExt = cleanOriginalUrl.substring(cleanOriginalUrl.lastIndexOf('/') + 1);
+    const cleanExtension = cleanFilenameWithExt.substring(cleanFilenameWithExt.lastIndexOf('.'));
+    const cleanFilenameOnly = cleanFilenameWithExt.substring(0, cleanFilenameWithExt.lastIndexOf('.'));
+    // Remove spaces and apostrophes but keep parentheses
+    const finalCleanUrl = `${cleanPath}${cleanFilenameOnly.replace(/[ '\"](?!\([^)]*\))/g, "")}${cleanExtension}`;
+    
+    // Open the cleaned URL (with timestamp added by formatS3ImageUrl)
+    window.open(formatS3ImageUrl(finalCleanUrl, true), '_blank');
   };
 
   return (

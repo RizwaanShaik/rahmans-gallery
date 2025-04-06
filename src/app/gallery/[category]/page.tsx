@@ -40,7 +40,7 @@ const categoryDirMap: { [key: string]: string } = {
   'macro': 'Macro',
   'rachakonda': 'Rachakonda',
   'rajasthan': 'rajasthan',
-  'rock-forms': 'rock forms',
+  'rock-forms': 'rockforms',
   'tadoba': 'tadoba',
   'thai': 'thai',
   'tombs': 'tombs', // Corrected from tumbs
@@ -66,17 +66,21 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
     // Properly encode spaces and special characters in filenames for URLs
     const encodedBaseName = encodeURIComponent(baseName);
     
+    // Clean filenames by removing spaces and apostrophes for new S3 bucket naming
+    // BUT keep parentheses intact
+    const cleanedBaseName = baseName.replace(/[ '\"](?!\([^)]*\))/g, "");
+    
     return {
       id: uniqueId,
-      // Thumbnail and fullscreen paths seem correct based on what works
-      src: `${s3BaseUrl}/categories/${categoryPath}/thumbnails/${encodedBaseName}.jpeg`, 
-      fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath}/fullscreen/${encodedBaseName}.jpeg`,
-      // Correct the original path structure: /original/category/filename
-      originalSrc: `${s3BaseUrl}/categories/original/${categoryPath}/${encodedBaseName}.jpeg`, 
+      // Use cleaned filenames for S3 URLs
+      src: `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/thumbnails/${cleanedBaseName}.jpeg`, 
+      fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/fullscreen/${cleanedBaseName}.jpeg`,
+      // Use cleaned filenames for original path as well
+      originalSrc: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg`, 
       alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
       description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-      // Correct the download path structure
-      downloadUrl: `${s3BaseUrl}/categories/original/${categoryPath}/${encodedBaseName}.jpeg` 
+      // Use cleaned filenames for download URL
+      downloadUrl: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg` 
     };
   };
 
@@ -84,9 +88,9 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
   switch (categoryId) {
     case 'air-show':
       [
-      '003', '007', 'DSC_0334 copy', 'DSC_0346 copy', 'DSC_0367 copy', 'DSC_0591 copy',
-      'DSC_0779 copy', 'DSC_0784 copy', 'DSC_0808 copy', 'DSC_0891 copy', 'full circle', 'hero',
-      'mission possible', 'sky is the limit'
+      '003', '007', 'DSC_0334copy', 'DSC_0346copy', 'DSC_0367copy', 'DSC_0591copy',
+      'DSC_0779copy', 'DSC_0784copy', 'DSC_0808copy', 'DSC_0891copy', 'fullcircle', 'hero',
+      'missionpossible', 'skyisthelimit'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -102,8 +106,8 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'b-and-w':
       [
-      'Proposal discussion', 'beauty in dome', 'bridging the history', 'glory of history -', 'hero', 'leading the shadow - Copy',
-      'mysticcloudsCopy', 'people and monument', 'protecting monument', 'symmentry'
+      'Proposaldiscussion', 'beautyindome', 'bridgingthehistory', 'gloryofhistory-', 'hero', 'leadingtheshadow-Copy',
+      'mysticcloudsCopy', 'peopleandmonument', 'protectingmonument', 'symmentry'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -136,13 +140,13 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
         'into the future', 'into the raising sun', 'lady luck', 'last costomer', 'last fight', 'last minute discussion',
         'leading into the history', 'leaf in pebbles', 'leave us alone', 'limited sunshine', 'live start fresh again', 'lone fighter',
         'lone passenger', 'lonely bird', 'lonely boat', 'looking for livelihood', 'loosing nature', 'love birds',
-        'love birds', 'maharaja entrance', 'man&apos;s best friend', 'matching with trends', 'modern circle', 'monk in kalachakra',
-        'monkey family', 'mother&apos;s anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks',
-        'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'nature&apos;s window', 'old habits die hard',
+        'love birds', 'maharaja entrance', 'mansbestfriend', 'matching with trends', 'modern circle', 'monk in kalachakra',
+        'monkey family', 'mothers anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks',
+        'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'natures window', 'old habits die hard',
         'oldage freinds', 'one for you', 'passing clouds', 'passing clouds 2', 'passing clouds 2 - Copy', 'past glory',
         'past glory 2', 'pattern houses', 'people and monument 2', 'pillar of power', 'pooja item seller', 'prayers for rain',
         'prayers for rains', 'proposal discussion', 'protected history', 'proud mother', 'purity in the river', 'rays of hope',
-        'resting', 'resting boats', 'rich man&apos;s lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form',
+        'resting', 'resting boats', 'rich mans lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form',
         'row houses', 'rush hour', 'saint and the follower', 'selfie lovers', 'shadows of history', 'shanthi in the mountains',
         'sharing food', 'shyness', 'sky is the limit', 'social distancing', 'still beautiful', 'surrendered to devine',
         'surrendered to god', 'swatch bharath', 'symmentric arches', 'tasty colors', 'temple light and shadows', 'temple peak',
@@ -155,8 +159,8 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'festivals':
       [
-      '001', '005 (1 of 1)', '006 (1 of 1)', '007 (1 of 1)', '008 (1 of 1)', 'DSC_0018',
-      'DSC_0019', 'DSC_0020 (2)', 'DSC_0045', 'DSC_0131', 'DSC_0132', 'DSC_0138',
+      '001', '005(1of1)', '006(1of1)', '007(1of1)', '008(1of1)', 'DSC_0018',
+      'DSC_0019', 'DSC_0020(2)', 'DSC_0045', 'DSC_0131', 'DSC_0132', 'DSC_0138',
       'DSC_0206', 'DSC_0231', 'DSC_0239', 'DSC_0269', 'DSC_0483', 'DSC_0510',
       'DSC_0513', 'DSC_0570', 'DSC_0837', 'DSC_0867', 'DSC_0889', 'DSC_0937',
       'hero'
@@ -176,11 +180,11 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'heritage':
       [
-        '001 (1 of 1)', '003 (1 of 1)', '2020 (1 of 1)', '2525 (1 of 1)', 'DSC_0045', 'DSC_0289',
-        'DSC_0475', 'abids church', 'airport masque', 'assembly', 'charminar', 'charminar 2',
-        'charminar long', 'chowmohalla palace', 'golconda', 'hero', 'kachiguda', 'koti college',
-        'koti college2', 'koti college3', 'm.m.market', 'mecca masque', 'mehboob mansion', 'musheerabad masque',
-        'paigah tombs', 'purani haveli', 'purani idgah', 'putti&apos;s house', 'tumbs', 'yousuf hose'
+        '001(1of1)', '003(1of1)', '2020(1of1)', '2525(1of1)', 'DSC_0045', 'DSC_0289',
+        'DSC_0475', 'abidschurch', 'airportmasque', 'assembly', 'charminar', 'charminar2',
+        'charminarlong', 'chowmohallapalace', 'golconda', 'hero', 'kachiguda', 'koticollege',
+        'koticollege2', 'koticollege3', 'mmmarket', 'meccamasque', 'mehboobmansion', 'musheerabadmasque',
+        'paigahtombs', 'puranihaveli', 'puraniidgah', 'puttishouse', 'tumbs', 'yousufhose'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -216,11 +220,11 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'ladakh':
       [
-      'DSC_0007 copy', 'DSC_0011 copy', 'DSC_0023 copy', 'DSC_0031 copy', 'DSC_0039 copy', 'DSC_0050 copy',
-      'DSC_0056 copy', 'DSC_0057 copy', 'DSC_0067 copy', 'DSC_0189 copy', 'DSC_0218 copy', 'DSC_0286 copy',
-      'DSC_0320 copy', 'DSC_0325 copy', 'DSC_0546 copy', 'DSC_0675 copy', 'DSC_0728 copy', 'DSC_0973 copy',
-      'abstract', 'blossom', 'discipline', 'hero', 'purity', 'way to go',
-      'window world'
+      'DSC_0007copy', 'DSC_0011copy', 'DSC_0023copy', 'DSC_0031copy', 'DSC_0039copy', 'DSC_0050copy',
+      'DSC_0056copy', 'DSC_0057copy', 'DSC_0067copy', 'DSC_0189copy', 'DSC_0218copy', 'DSC_0286copy',
+      'DSC_0320copy', 'DSC_0325copy', 'DSC_0546copy', 'DSC_0675copy', 'DSC_0728copy', 'DSC_0973copy',
+      'abstract', 'blossom', 'discipline', 'hero', 'purity', 'waytogo',
+      'windowworld'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -228,7 +232,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'landscapes':
       [
-      '001', 'DSC_0064 (2)', 'DSC_0174', 'IMG_1077', 'hero'
+      '001', 'DSC_0064(2)', 'DSC_0174', 'IMG_1077', 'hero'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
       });
@@ -253,11 +257,11 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'london':
       [
-      'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007_2', 'DSC_0022',
+      'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007(2)', 'DSC_0022',
       'DSC_0030', 'DSC_0031', 'DSC_0033', 'DSC_0051', 'DSC_0068', 'DSC_0069',
-      'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110_2', 'DSC_0112',
+      'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110(2)', 'DSC_0112',
       'DSC_0113', 'DSC_0123', 'DSC_0133', 'DSC_0138', 'DSC_0141', 'DSC_0149',
-      'DSC_0159_2', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
+      'DSC_0159(2)', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
       'DSC_0225', 'DSC_0240', 'DSC_0246', 'DSC_0259', 'DSC_0266', 'DSC_0276',
       'DSC_0285', 'DSC_0308', 'DSC_0342', 'DSC_0345', 'DSC_0370', 'DSC_0391',
       'DSC_0444', 'hero'
@@ -268,8 +272,8 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'macro':
       [
-      '01 (1 of 1)', '119 (1 of 1)', 'AAAA (1 of 1)', 'AJAY8601', 'DSC_0167', 'DSC_0413 copy',
-      'DSC_0432 (2) copy', 'DSC_0868 copy', 'DSC_1463 a copy', 'DSC_1631', 'DSC_1690', '_H6A9162',
+      '01(1of1)', '119(1of1)', 'AAAA(1of1)', 'AJAY8601', 'DSC_0167', 'DSC_0413copy',
+      'DSC_0432(2)copy', 'DSC_0868copy', 'DSC_1463acopy', 'DSC_1631', 'DSC_1690', '_H6A9162',
       '_H6A9381', '_MG_5440000', '_MG_5530', 'hero'
       ].forEach(name => {
         photos.push(createPhotoObject(name));
@@ -295,7 +299,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       });
       break;
 
-    case 'rockforms':
+    case 'rock-forms':
       [
       '03', '04', '06', '08', '09', '10',
       '12', '17', '20', '22', '24', '25',
@@ -316,7 +320,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
     case 'thai':
       [
       '001', 'DSC_0006', 'DSC_0020', 'DSC_0024', 'DSC_0027', 'DSC_0029',
-      'DSC_0030', 'DSC_0075', 'DSC_0075 (2)', 'DSC_0086', 'DSC_0116', 'DSC_0116 (2)',
+      'DSC_0030', 'DSC_0075', 'DSC_0075(2)', 'DSC_0086', 'DSC_0116', 'DSC_0116(2)',
       'DSC_0170', 'DSC_0328', 'DSC_0366', 'DSC_0449', 'DSC_0467', 'DSC_0481',
       'DSC_0515', 'DSC_0539', 'DSC_0547', 'DSC_0561', 'DSC_0567', 'DSC_0718',
       'DSC_0744', 'DSC_0836', 'DSC_0845', 'hero'
@@ -573,7 +577,9 @@ export default function CategoryGallery() {
     
     // Last resort - construct a URL directly to the hero image
     const dirName = categoryDirMap[categoryId] || categoryId;
-    return `${s3BaseUrl}/categories/${dirName}/fullscreen/hero.jpeg`;
+    // Remove spaces and apostrophes from directory name
+    const cleanDirName = dirName.replace(/[ '\"](?!\([^)]*\))/g, "");
+    return `${s3BaseUrl}/categories/${cleanDirName}/fullscreen/hero.jpeg`;
   };
   
   const heroImage = getHeroImage();
