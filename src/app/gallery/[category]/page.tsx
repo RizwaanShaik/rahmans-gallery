@@ -199,7 +199,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       });
       break;
 
-    case 'kanharicaves':
+    case 'kanhari-caves':
       [
       'DSC_0657', 'DSC_0699', 'DSC_0716', 'DSC_0721', 'DSC_0734', 'DSC_0775',
       'DSC_0879', 'DSC_0904', 'hero'
@@ -208,7 +208,7 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
       });
       break;
 
-    case 'kolkatastreets2001':
+    case 'kolkata-streets':
       [
       '001', '24150021', '24150022', '24150023', '24150024', '24150025',
       '24150028', '24150034', '24150036', '24150041', '24150042', '24150043',
@@ -257,11 +257,11 @@ const getPhotosByCategory = (categoryId: string): Photo[] => {
 
     case 'london':
       [
-      'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007(2)', 'DSC_0022',
+      'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007_2', 'DSC_0022',
       'DSC_0030', 'DSC_0031', 'DSC_0033', 'DSC_0051', 'DSC_0068', 'DSC_0069',
-      'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110(2)', 'DSC_0112',
+      'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110_2', 'DSC_0112',
       'DSC_0113', 'DSC_0123', 'DSC_0133', 'DSC_0138', 'DSC_0141', 'DSC_0149',
-      'DSC_0159(2)', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
+      'DSC_0159_2', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
       'DSC_0225', 'DSC_0240', 'DSC_0246', 'DSC_0259', 'DSC_0266', 'DSC_0276',
       'DSC_0285', 'DSC_0308', 'DSC_0342', 'DSC_0345', 'DSC_0370', 'DSC_0391',
       'DSC_0444', 'hero'
