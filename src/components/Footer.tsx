@@ -10,10 +10,10 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="py-6 text-center border-t">
+    <footer className="py-6 text-center border-t border-gray-200 dark:border-gray-700"> {/* Added dark border */}
       <div className="container mx-auto px-4">
-        <p className="text-gray-600">© {year} Professor Rahman&apos;s Gallery. All rights reserved.</p>
+        <p className="text-gray-600 dark:text-gray-400">© {year} Professor Rahman's Gallery. All rights reserved.</p> {/* Added dark text */}
       </div>
     </footer>
   );
-} 
+}

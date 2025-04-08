@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 
@@ -17,13 +18,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-gray-50`}>
-        <Navigation />
-        <main className="min-h-screen pt-16">
-          {children}
-        </main>
-        <Footer />
+    <html lang="en" suppressHydrationWarning> {/* suppressHydrationWarning is recommended by next-themes */}
+      <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}> {/* Added dark mode background */}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>{/* Ensure no leading/trailing whitespace */}
+          <Navigation />
+          <main className="min-h-screen pt-16">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>{/* Ensure no leading/trailing whitespace */}
       </body>
     </html>
   );
