@@ -65,7 +65,7 @@ export default function About() {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mb-12 p-6 sm:p-8 bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg italic text-gray-700 dark:text-gray-300 text-center shadow-sm dark:shadow-md" /* Dark bg, border, text */
           >
-            "Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India."
+            &quot;Professor Shaik Khaleel-ur-Rahman (1966-2021) was a pioneering photographer, educator, and visionary who shaped the landscape of photography education in India.&quot;
           </motion.blockquote>
 
           {/* Timeline Sections */}
@@ -86,8 +86,8 @@ export default function About() {
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman spent his formative years in his village,
-                  where he developed a deep love for nature and rural surroundings. His father, Abdul Rahman, served as a Senior Accounts Officer in the A.G.'s Office, Hyderabad.
-                  The family's move from their peaceful rural setting to the bustling city of Hyderabad marked a significant transition in young Rahman's life.
+                  where he developed a deep love for nature and rural surroundings. His father, Abdul Rahman, served as a Senior Accounts Officer in the A.G.&apos;s Office, Hyderabad.
+                  The family&apos;s move from their peaceful rural setting to the bustling city of Hyderabad marked a significant transition in young Rahman&apos;s life.
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   During his teenage years, his father would give him 10 rupees on Sundays to watch movies independently, fostering a love for visual storytelling through films
@@ -148,7 +148,7 @@ export default function About() {
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
-                  Professor Rahman's career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons,
+                  Professor Rahman&apos;s career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons,
                   and freelance fashion photographer for Impulse Advertising Agency. In 1992, he joined JNTU College of Fine Arts as a Lecturer, marking the beginning
                   of his academic career.
                 </p>
