@@ -18,15 +18,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* suppressHydrationWarning is recommended by next-themes */}
-      <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}> {/* Added dark mode background */}
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>{/* Ensure no leading/trailing whitespace */}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navigation />
           <main className="min-h-screen pt-16">
             {children}
           </main>
           <Footer />
-        </ThemeProvider>{/* Ensure no leading/trailing whitespace */}
+        </ThemeProvider>
       </body>
     </html>
   );
