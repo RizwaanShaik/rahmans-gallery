@@ -192,12 +192,20 @@ export default function Gallery() {
     
     // Apply search query
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+      const query = searchQuery.toLowerCase().trim();
       result = result.filter(
-        category => 
-          category.title.toLowerCase().includes(query) || 
-          (category.description && category.description.toLowerCase().includes(query))
-      );
+        category => category.title.toLowerCase().includes(query)
+      ).sort((a, b) => {
+        // Prioritize matches at the beginning of the title
+        const aStartsWith = a.title.toLowerCase().startsWith(query);
+        const bStartsWith = b.title.toLowerCase().startsWith(query);
+        
+        if (aStartsWith && !bStartsWith) return -1;
+        if (!aStartsWith && bStartsWith) return 1;
+        
+        // If both start with or don't start with, maintain original order
+        return 0;
+      });
     }
     
     // Simulate loading state for smoother transitions

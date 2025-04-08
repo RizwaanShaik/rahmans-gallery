@@ -638,11 +638,11 @@ export default function CategoryGallery() {
       {/* Pagination Controls (replaces the grid/masonry toggle) */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <button
               onClick={goToPrevPage}
               disabled={page === 1}
-              className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors ${
+              className={`w-[130px] px-4 py-2.5 rounded-lg flex items-center justify-center space-x-2 transition-colors ${
                 page === 1 
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                   : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
@@ -651,23 +651,23 @@ export default function CategoryGallery() {
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
-              <span>Previous</span>
+              <span className="font-bold">Previous</span>
             </button>
             
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
               Page {page} of {totalPages || 1}
             </span>
             
             <button
               onClick={goToNextPage}
               disabled={!hasMore}
-              className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors ${
+              className={`w-[130px] px-4 py-2.5 rounded-lg flex items-center justify-center space-x-2 transition-colors ${
                 !hasMore 
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                   : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
               }`}
             >
-              <span>Next</span>
+              <span className="font-bold">Next</span>
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -718,12 +718,12 @@ export default function CategoryGallery() {
         )}
         
         {/* Pagination controls at bottom */}
-        {!loading && displayedPhotos.length > 0 && (
+        {totalPages > 1 && (
           <div className="flex justify-center mt-8 mb-12 space-x-4">
             <button
               onClick={goToPrevPage}
               disabled={page === 1}
-              className={`px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-colors ${
+              className={`w-[130px] px-4 py-2.5 rounded-lg flex items-center justify-center space-x-2 transition-colors font-bold ${
                 page === 1 
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                   : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -732,19 +732,19 @@ export default function CategoryGallery() {
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-1">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
-              Previous {ITEMS_PER_PAGE}
+              Previous
             </button>
             
             <button
               onClick={goToNextPage}
               disabled={!hasMore}
-              className={`px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-colors ${
+              className={`w-[130px] px-4 py-2.5 rounded-lg flex items-center justify-center space-x-2 transition-colors font-bold ${
                 !hasMore 
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                   : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
             >
-              Next {ITEMS_PER_PAGE}
+              Next
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="ml-1">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
