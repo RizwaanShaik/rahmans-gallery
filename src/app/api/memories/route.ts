@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { supabase } from '@/lib/supabase';
 
 // GET /api/memories
 export async function GET() {
   try {
-    const { rows } = await sql`
-      SELECT * FROM memories 
-      ORDER BY created_at DESC
-    `;
-    return NextResponse.json({ memories: rows });
+    const { data: memories, error } = await supabase
+      .from('memories')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase error in GET:', error);
+      throw error;
+    }
+
+    return NextResponse.json({ memories });
   } catch (error) {
     console.error('Error fetching memories:', error);
     return NextResponse.json(
@@ -21,28 +27,45 @@ export async function GET() {
 // POST /api/memories
 export async function POST(request: Request) {
   try {
-    const { name, email, message, relation } = await request.json();
+    const body = await request.json();
+    console.log('Received request body:', body);
+    
+    const { name, email, message, relation } = body;
 
     // Validate required fields
     if (!name || !message) {
+      console.error('Missing required fields:', { name, message });
       return NextResponse.json(
         { error: 'Name and message are required fields' },
         { status: 400 }
       );
     }
 
-    // Insert into database with optional fields
-    const { rows } = await sql`
-      INSERT INTO memories (name, email, message, relation)
-      VALUES (${name}, ${email || null}, ${message}, ${relation || null})
-      RETURNING *
-    `;
+    // Insert into database
+    const { data: memory, error } = await supabase
+      .from('memories')
+      .insert([
+        { 
+          name, 
+          email: email || null, 
+          message, 
+          relation: relation || null 
+        }
+      ])
+      .select()
+      .single();
 
-    return NextResponse.json({ memory: rows[0] });
+    if (error) {
+      console.error('Supabase error in POST:', error);
+      throw error;
+    }
+
+    console.log('Successfully created memory:', memory);
+    return NextResponse.json({ memory });
   } catch (error) {
     console.error('Error creating memory:', error);
     return NextResponse.json(
-      { error: 'Failed to create memory' },
+      { error: 'Failed to create memory', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
