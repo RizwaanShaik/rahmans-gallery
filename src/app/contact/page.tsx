@@ -140,8 +140,9 @@ export default function Contact() {
   };
 
   return (
-    <div className={`min-h-screen pt-16 ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
-      <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+      {/* Add some top padding to account for the fixed header */}
+      <div className="pt-16 max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="text-center mb-12"
           initial="hidden"
