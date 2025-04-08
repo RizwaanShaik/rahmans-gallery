@@ -20,16 +20,16 @@ const featuredWorks: FeaturedWork[] = [
     title: 'Featured Collection',
     description: 'A curated selection of the finest photographs capturing the essence of nature, architecture, and culture.',
     year: 2023,
-    src: `${s3BaseUrl}/categories/Featured/hero/hero.jpeg`,
-    category: 'Featured'
+    src: `${s3BaseUrl}/categories/featured/hero/hero.jpeg`,
+    category: 'featured'
   },
   {
     id: '2',
     title: 'Ladakh',
     description: 'The breathtaking landscapes and rich cultural heritage of the Himalayan region captured through a unique lens.',
     year: 2018,
-    src: `${s3BaseUrl}/categories/Ladakh/hero/hero.jpeg`,
-    category: 'Ladakh'
+    src: `${s3BaseUrl}/categories/ladakh/hero/hero.jpeg`,
+    category: 'ladakh'
   },
   {
     id: '3',
