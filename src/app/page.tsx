@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import FeaturedCollection from '@/components/FeaturedCollection';
 import Timeline from '@/components/Timeline';
-import AboutPreview from '@/components/AboutPreview';
 
 // S3 bucket base URL
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
@@ -26,16 +25,25 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
             Professor Rahman&apos;s Photography
           </h1>
-          <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed">
-            A legacy of capturing the extraordinary in nature and wildlife through the lens
+          <p className="text-base md:text-lg text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
+            Professor Shaik Khaleel-ur-Rahman was a distinguished photographer and educator who dedicated his life to the art of photography, inspiring countless students as the Director of Academic and Planning at JNAFAU College of Fine Arts.
           </p>
-          <Link
-            href="/gallery"
-            className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg 
-                     hover:bg-white/20 transition-all duration-300 text-lg font-medium"
-          >
-            Explore Gallery
-          </Link>
+          <div className="flex flex-col sm:flex-row sm:justify-center gap-4">
+            <Link
+              href="/gallery"
+              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg 
+                       hover:bg-white/20 transition-all duration-300 text-lg font-medium"
+            >
+              Explore Gallery
+            </Link>
+            <Link
+              href="/about"
+              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg
+                       hover:bg-white/20 transition-all duration-300 text-lg font-medium"
+            >
+              Read Full Biography
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -47,11 +55,6 @@ export default function Home() {
       {/* Timeline */}
       <section id="timeline" className="w-full py-16 bg-gray-50 dark:bg-gray-900">
         <Timeline />
-      </section>
-
-      {/* About Preview */}
-      <section className="w-full py-16 bg-white dark:bg-gray-900">
-        <AboutPreview />
       </section>
     </main>
   );

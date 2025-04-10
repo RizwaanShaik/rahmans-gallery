@@ -82,7 +82,7 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">1</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400">Early Life</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400">Early Life</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman spent his formative years in his village,
@@ -108,14 +108,14 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-green-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">2</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-green-600 dark:text-green-400">Education and Early Career</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-green-600 dark:text-green-400">Education and Early Career</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   After completing his Intermediate education in MPC (Mathematics, Physics, Chemistry), Rahman chose to diverge from conventional paths,
                   pursuing photography at JNTU College of Fine Arts. This decision, though initially shocking to his family, would prove transformative.
                 </p>
                 <div className="mb-4 bg-green-50 dark:bg-gray-700 p-5 rounded-xl"> {/* Dark bg */}
-                  <h3 className="text-xl font-semibold mb-3 text-green-700 dark:text-green-300">Educational Milestones</h3> {/* Dark text */}
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-green-700 dark:text-green-300">Educational Milestones</h3> {/* Dark text */}
                   <ul className="space-y-3 pl-1">
                     {[
                       "Diploma in Photography from JNTU College of Fine Arts (1983-1985)",
@@ -145,7 +145,7 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">3</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Professor Rahman&apos;s career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons,
@@ -154,21 +154,23 @@ export default function About() {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="bg-purple-50 dark:bg-gray-700 p-5 rounded-xl"> {/* Dark bg */}
-                    <h3 className="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">Key Academic Positions</h3> {/* Dark text */}
-                    <ul className="space-y-2 list-none text-gray-700 dark:text-gray-300"> {/* Dark text */}
+                    <h3 className="text-lg sm:text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">Key Academic Positions</h3> {/* Dark text */}
+                    <ul className="space-y-3 pl-1 text-gray-700 dark:text-gray-300"> {/* Dark text */}
                       {["Director of Academic and Planning", "Registrar of JNAFAU", "Controller of Examinations"].map((item, index) => (
-                        <li key={index} className="flex items-center">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> {item}
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></span>
+                          <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div className="bg-purple-50 dark:bg-gray-700 p-5 rounded-xl"> {/* Dark bg */}
-                    <h3 className="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">Departmental Roles</h3> {/* Dark text */}
-                    <ul className="space-y-2 list-none text-gray-700 dark:text-gray-300"> {/* Dark text */}
+                    <h3 className="text-lg sm:text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">Departmental Roles</h3> {/* Dark text */}
+                    <ul className="space-y-3 pl-1 text-gray-700 dark:text-gray-300"> {/* Dark text */}
                       {["Head of the Photography Department", "Special Officer for University Hostel", "Board of Studies Member"].map((item, index) => (
-                        <li key={index} className="flex items-center">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> {item}
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></span>
+                          <span>{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -189,7 +191,7 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">4</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-amber-600 dark:text-amber-400">Photographic Journey</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-amber-600 dark:text-amber-400">Photographic Journey</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Coming from the tradition of small-format Analog Photography, Professor Rahman mastered black & white film processing and darkroom techniques.
@@ -201,7 +203,7 @@ export default function About() {
                   while his architectural work preserved heritage structures for future generations.
                 </p>
                 <div className="mb-4 bg-amber-50 dark:bg-gray-700 p-5 rounded-xl"> {/* Dark bg */}
-                  <h3 className="text-xl font-semibold mb-3 text-amber-700 dark:text-amber-300">Areas of Specialization</h3> {/* Dark text */}
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-amber-700 dark:text-amber-300">Areas of Specialization</h3> {/* Dark text */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {[
                       { title: "Fine Art", desc: "Abstract compositions exploring form and texture" },
@@ -212,8 +214,8 @@ export default function About() {
                       { title: "Macro", desc: "Detailed studies of miniature subjects" }
                     ].map((item, index) => (
                       <div key={index} className="bg-amber-100 dark:bg-gray-600 p-3 rounded-lg hover:shadow-sm transition-shadow duration-300 h-full"> {/* Dark bg */}
-                        <p className="font-medium text-amber-800 dark:text-amber-200 text-center">{item.title}</p> {/* Dark text */}
-                        <p className="text-sm text-amber-700 dark:text-amber-300 mt-1 text-center">{item.desc}</p> {/* Dark text */}
+                        <p className="font-medium text-amber-800 dark:text-amber-200">{item.title}</p> {/* Dark text */}
+                        <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{item.desc}</p> {/* Dark text */}
                       </div>
                     ))}
                   </div>
@@ -233,13 +235,13 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">5</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-red-600 dark:text-red-400">Exhibitions and Recognition</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-red-600 dark:text-red-400">Exhibitions and Recognition</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <h3 className="text-xl font-semibold mb-3 text-red-700 dark:text-red-300 flex items-center"> {/* Dark text */}
+                    <h3 className="text-lg sm:text-xl font-semibold mb-3 text-red-700 dark:text-red-300 flex items-center"> {/* Dark text */}
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4V5h12v10z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4V5h12v10zm-4.793-6.707a1 1 0 00-1.414-1.414L9 8.586 7.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l3-3z" clipRule="evenodd" />
                       </svg>
                       Notable Exhibitions
                     </h3>
@@ -255,7 +257,7 @@ export default function About() {
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-3 text-red-700 dark:text-red-300 flex items-center"> {/* Dark text */}
+                    <h3 className="text-lg sm:text-xl font-semibold mb-3 text-red-700 dark:text-red-300 flex items-center"> {/* Dark text */}
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
@@ -287,7 +289,7 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">6</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">International Experience</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">International Experience</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Professor Rahman conducted photography projects and workshops across multiple countries, bringing his expertise to international audiences and enriching his own work through global perspectives:
@@ -343,14 +345,14 @@ export default function About() {
               <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">7</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-teal-600 dark:text-teal-400">Legacy and Impact</h2> {/* Dark text */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-teal-600 dark:text-teal-400">Legacy and Impact</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Throughout his career, Professor Rahman mentored numerous successful photographers and filmmakers. His students have excelled in various fields
                   including Film Making, Advertising, Television, Sports Photography, and Education.
                 </p>
                 <div className="mb-6 bg-teal-50 dark:bg-gray-700 p-4 rounded-lg"> {/* Dark bg */}
-                  <h3 className="text-xl font-semibold mb-3 text-teal-700 dark:text-teal-300">Notable Alumni</h3> {/* Dark text */}
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-teal-700 dark:text-teal-300">Notable Alumni</h3> {/* Dark text */}
                   <div className="flex flex-wrap gap-2">
                     {["P G Vinda", "Srikanth Naroj", "Samala Bhaskar", "Acharya Venu", "Nachiket Katti (USA)"].map((name, index) => (
                       <span key={index} className="bg-teal-100 dark:bg-gray-600 text-teal-800 dark:text-teal-200 px-3 py-1 rounded-full hover:bg-teal-200 dark:hover:bg-gray-500 transition-colors duration-300">{name}</span> /* Dark bg, text */
