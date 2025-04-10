@@ -79,7 +79,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">1</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400">Early Life</h2> {/* Dark text */}
@@ -105,7 +105,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-green-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">2</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-green-600 dark:text-green-400">Education and Early Career</h2> {/* Dark text */}
@@ -142,7 +142,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">3</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
@@ -188,7 +188,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">4</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-amber-600 dark:text-amber-400">Photographic Journey</h2> {/* Dark text */}
@@ -232,7 +232,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">5</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-red-600 dark:text-red-400">Exhibitions and Recognition</h2> {/* Dark text */}
@@ -286,7 +286,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="mb-12 relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">6</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">International Experience</h2> {/* Dark text */}
@@ -342,7 +342,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="absolute -left-11 sm:-left-14 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">7</span>
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-teal-600 dark:text-teal-400">Legacy and Impact</h2> {/* Dark text */}
@@ -391,3 +391,4 @@ export default function About() {
     </div>
   );
 }
+  
