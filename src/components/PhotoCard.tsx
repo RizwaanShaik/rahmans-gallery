@@ -22,7 +22,6 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
-  const isPortrait = imageAspectRatio ? imageAspectRatio < 0.8 : false;
   
   // Load image and calculate aspect ratio
   useEffect(() => {
@@ -99,8 +98,7 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
   return (
     <motion.div 
       ref={cardRef}
-      className={`relative w-full h-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 transition-all duration-300 
-        ${isPortrait ? 'row-span-2' : ''} 
+      className={`relative w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 transition-all duration-300 
         ${(isHovered || isTouched) ? 'z-10' : ''}
       `}
       onMouseEnter={handleMouseEnter}
@@ -117,13 +115,13 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
       aria-label={description || alt}
       tabIndex={0}
     >
-      <div className="relative overflow-hidden h-full">
-        {/* Loading Skeleton */}
+      <div className="relative overflow-hidden w-full" style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : '1' }}>
+        {/* Loading Skeleton - Use aspect ratio as well */}
         {isLoading && (
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse" style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : '1' }} />
         )}
         
-        {/* Main Image with parallax effect */}
+        {/* Main Image container - Remove h-full, parent now has aspect ratio */}
         <div 
           className="relative w-full h-full overflow-hidden"
           style={{ 

@@ -6,8 +6,9 @@ import { useParams } from 'next/navigation';
 import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Masonry } from 'masonic'; // Import from masonic
 
-// Define the Photo type
+// Define the Photo type (can be shared or moved to a types file)
 interface Photo {
   id: string;
   src: string;
@@ -18,374 +19,9 @@ interface Photo {
   downloadUrl: string;
 }
 
-// Map URL-friendly IDs to directory names
-const categoryDirMap: { [key: string]: string } = {
-  'architecture': 'architecture',
-  'air-show': 'airshow',
-  'b-and-w': 'bandw',
-  'bidar': 'bidar',
-  'clouds': 'clouds',
-  'featured': 'featured',
-  'festivals': 'festivals',
-  'hampi': 'hampi',
-  'heritage': 'heritage',
-  'hyderabad': 'hyderabad',
-  'kanhari-caves': 'kanharicaves',
-  'kolkata-streets': 'kolkatastreets2001',
-  'landscapes': 'landscapes',
-  'ladakh': 'ladakh',
-  'lanka': 'lanka',
-  'lockdown': 'lockdown',
-  'london': 'london',
-  'macro': 'macro',
-  'rachakonda': 'rachakonda',
-  'rajasthan': 'rajasthan',
-  'rock-forms': 'rockforms',
-  'tadoba': 'tadoba',
-  'thai': 'thai',
-  'tombs': 'tombs', // Corrected from tumbs
-  'warangal': 'warangal', // Corrected path casing
-  'wildlife': 'wildlife'
-};
-
-// S3 bucket base URL
-const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
-
-// Get photos for a category
-const getPhotosByCategory = (categoryId: string): Photo[] => {
-  console.log(`Loading photos for category: ${categoryId}`);
-  
-  const dirName = categoryDirMap[categoryId] || categoryId;
-  const photos: Photo[] = [];
-
-  // Function to create a photo object with S3 URLs
-  const createPhotoObject = (baseName: string): Photo => {
-    const categoryPath = dirName
-    const uniqueId = `${categoryId}-${baseName}-${Math.random().toString(36).substring(2, 9)}`;
-    
-    // Properly encode spaces and special characters in filenames for URLs
-    //const encodedBaseName = encodeURIComponent(baseName);
-    
-    // Clean filenames by removing spaces and apostrophes for new S3 bucket naming
-    // BUT keep parentheses intact
-    const cleanedBaseName = baseName.replace(/[ '\"](?!\([^)]*\))/g, "");
-    
-    return {
-      id: uniqueId,
-      // Use cleaned filenames for S3 URLs
-      src: `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/thumbnails/${cleanedBaseName}.jpeg`, 
-      fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/fullscreen/${cleanedBaseName}.jpeg`,
-      // Use cleaned filenames for original path as well
-      originalSrc: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg`, 
-      alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-      description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-      // Use cleaned filenames for download URL
-      downloadUrl: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg` 
-    };
-  };
-
-  // Add specific images based on category
-  switch (categoryId) {
-    case 'air-show':
-      [
-      '003', '007', 'DSC_0334copy', 'DSC_0346copy', 'DSC_0367copy', 'DSC_0591copy',
-      'DSC_0779copy', 'DSC_0784copy', 'DSC_0808copy', 'DSC_0891copy', 'fullcircle', 'hero',
-      'missionpossible', 'skyisthelimit'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'warangal': [ // Re-added the missing opening bracket
-      '003', '005', '006', '007', '008', '009',
-      '010', '011', '012', '013', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'b-and-w':
-      [
-      'Proposaldiscussion', 'beautyindome', 'bridgingthehistory', 'gloryofhistory-', 'hero', 'leadingtheshadow-Copy',
-      'mysticcloudsCopy', 'peopleandmonument', 'protectingmonument', 'symmentry'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'bidar':
-      [
-      '002', '003', '004', '005', '006-1', '007',
-      '008', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'clouds':
-      [
-      '001', 'SKR_0922', 'SKR_0925', 'SKR_0942', 'SKR_0952', 'SKR_1126',
-      'SKR_1262', 'SKR_1431', 'SKR_1500', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'featured':
-      [
-        'east meets west', 'end of the day fishing', 'everyday new sunrise', 'farm sweet farm', 'farmer', 'feeding the nation',
-        'flying into the light', 'following shadows', 'for a last catch', 'forgotten fort', 'fountain of glory', 'freedom',
-        'glory of history', 'godslight', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero',
-        'hidden landscape', 'history standing tall', 'history standing tall 1', 'history though the arch', 'innocent', 'into the divinity',
-        'into the future', 'into the raising sun', 'lady luck', 'last costomer', 'last fight', 'last minute discussion',
-        'leading into the history', 'leaf in pebbles', 'leave us alone', 'limited sunshine', 'live start fresh again', 'lone fighter',
-        'lone passenger', 'lonely bird', 'lonely boat', 'looking for livelihood', 'loosing nature', 'love birds',
-        'love birds', 'maharaja entrance', 'mansbestfriend', 'matching with trends', 'modern circle', 'monk in kalachakra',
-        'monkey family', 'mothers anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks',
-        'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'natures window', 'old habits die hard',
-        'oldage freinds', 'one for you', 'passing clouds', 'passing clouds 2', 'passing clouds 2 - Copy', 'past glory',
-        'past glory 2', 'pattern houses', 'people and monument 2', 'pillar of power', 'pooja item seller', 'prayers for rain',
-        'prayers for rains', 'proposal discussion', 'protected history', 'proud mother', 'purity in the river', 'rays of hope',
-        'resting', 'resting boats', 'rich mans lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form',
-        'row houses', 'rush hour', 'saint and the follower', 'selfie lovers', 'shadows of history', 'shanthi in the mountains',
-        'sharing food', 'shyness', 'sky is the limit', 'social distancing', 'still beautiful', 'surrendered to devine',
-        'surrendered to god', 'swatch bharath', 'symmentric arches', 'tasty colors', 'temple light and shadows', 'temple peak',
-        'tibal', 'traveller', 'travellors', 'trough the arch', 'twilight beauty', 'urban dhobhi ghat',
-        'urban landscape', 'urban relaxation', 'view from the top', 'village beauty', 'women at work', 'women freedom'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'festivals':
-      [
-      '001', '005(1of1)', '006(1of1)', '007(1of1)', '008(1of1)', 'DSC_0018',
-      'DSC_0019', 'DSC_0020(2)', 'DSC_0045', 'DSC_0131', 'DSC_0132', 'DSC_0138',
-      'DSC_0206', 'DSC_0231', 'DSC_0239', 'DSC_0269', 'DSC_0483', 'DSC_0510',
-      'DSC_0513', 'DSC_0570', 'DSC_0837', 'DSC_0867', 'DSC_0889', 'DSC_0937',
-      'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'hampi':
-      [
-      '001', '002', '003', '004', '005', '007',
-      '008', '009', '010', '011', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'heritage':
-      [
-        '001(1of1)', '003(1of1)', '2020(1of1)', '2525(1of1)', 'DSC_0045', 'DSC_0289',
-        'DSC_0475', 'abidschurch', 'airportmasque', 'assembly', 'charminar', 'charminar2',
-        'charminarlong', 'chowmohallapalace', 'golconda', 'hero', 'kachiguda', 'koticollege',
-        'koticollege2', 'koticollege3', 'mmmarket', 'meccamasque', 'mehboobmansion', 'musheerabadmasque',
-        'paigahtombs', 'puranihaveli', 'puraniidgah', 'puttishouse', 'tumbs', 'yousufhose'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'hyderabad':
-      [
-      'DSC_0012', 'SKR_1622', 'SKR_2274', 'SKR_2338', 'SKR_2409', 'SKR_2495',
-      'SKR_2545', 'SKR_2883-1', 'SKR_2992', 'SKR_3321', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'kanhari-caves':
-      [
-      'DSC_0657', 'DSC_0699', 'DSC_0716', 'DSC_0721', 'DSC_0734', 'DSC_0775',
-      'DSC_0879', 'DSC_0904', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'kolkata-streets':
-      [
-      '001', '24150021', '24150022', '24150023', '24150024', '24150025',
-      '24150028', '24150034', '24150036', '24150041', '24150042', '24150043',
-      '24150045', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'ladakh':
-      [
-      'DSC_0007copy', 'DSC_0011copy', 'DSC_0023copy', 'DSC_0031copy', 'DSC_0039copy', 'DSC_0050copy',
-      'DSC_0056copy', 'DSC_0057copy', 'DSC_0067copy', 'DSC_0189copy', 'DSC_0218copy', 'DSC_0286copy',
-      'DSC_0320copy', 'DSC_0325copy', 'DSC_0546copy', 'DSC_0675copy', 'DSC_0728copy', 'DSC_0973copy',
-      'abstract', 'blossom', 'discipline', 'hero', 'purity', 'waytogo',
-      'windowworld'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'landscapes':
-      [
-      '001', 'DSC_0064(2)', 'DSC_0174', 'IMG_1077', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'lanka':
-      [
-      'DSC_0132', 'DSC_0137', 'DSC_0217', 'DSC_0376', 'DSC_0441', 'DSC_0465',
-      'DSC_0507', 'DSC_0767', 'DSC_0826', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'lockdown':
-      [
-      'DSC_0150', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'london':
-      [
-      'DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007_2', 'DSC_0022',
-      'DSC_0030', 'DSC_0031', 'DSC_0033', 'DSC_0051', 'DSC_0068', 'DSC_0069',
-      'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110_2', 'DSC_0112',
-      'DSC_0113', 'DSC_0123', 'DSC_0133', 'DSC_0138', 'DSC_0141', 'DSC_0149',
-      'DSC_0159_2', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203',
-      'DSC_0225', 'DSC_0240', 'DSC_0246', 'DSC_0259', 'DSC_0266', 'DSC_0276',
-      'DSC_0285', 'DSC_0308', 'DSC_0342', 'DSC_0345', 'DSC_0370', 'DSC_0391',
-      'DSC_0444', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'macro':
-      [
-      '01(1of1)', '119(1of1)', 'AAAA(1of1)', 'AJAY8601', 'DSC_0167', 'DSC_0413copy',
-      'DSC_0432(2)copy', 'DSC_0868copy', 'DSC_1463acopy', 'DSC_1631', 'DSC_1690', '_H6A9162',
-      '_H6A9381', '_MG_5440000', '_MG_5530', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'rachakonda':
-      [
-      '003', '008', '009', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'rajasthan':
-      [
-      '01_8', '03', '03_2', '03_4', '05', '05_6',
-      '07', '08_5', '11_4', '14_4', '16_5', '18_4',
-      '27_2', '46', 'DSC_0076', 'DSC_0132', 'DSC_0158', 'DSC_0184',
-      'DSC_0501', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'rock-forms':
-      [
-      '03', '04', '06', '08', '09', '10',
-      '12', '17', '20', '22', '24', '25',
-      'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'tadoba':
-      [
-      '011', '012', '017', '024', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'thai':
-      [
-      '001', 'DSC_0006', 'DSC_0020', 'DSC_0024', 'DSC_0027', 'DSC_0029',
-      'DSC_0030', 'DSC_0075', 'DSC_0075(2)', 'DSC_0086', 'DSC_0116', 'DSC_0116(2)',
-      'DSC_0170', 'DSC_0328', 'DSC_0366', 'DSC_0449', 'DSC_0467', 'DSC_0481',
-      'DSC_0515', 'DSC_0539', 'DSC_0547', 'DSC_0561', 'DSC_0567', 'DSC_0718',
-      'DSC_0744', 'DSC_0836', 'DSC_0845', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'tombs': // Corrected from tumbs
-      [
-      'DSC_0432', 'DSC_0466', 'hero', 'x00', 'x01', 'x010',
-      'x011', 'x012', 'x013', 'x014', 'x015', 'x016',
-      'x017', 'x018', 'x02', 'x021', 'x022', 'x023',
-      'x024', 'x025', 'x026', 'x027', 'x028', 'x029',
-      'x03', 'x031', 'x04', 'x05', 'x06', 'x07',
-      'x09', 'x100'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'warangal':[ // Corrected path casing (no functional change needed here as it uses categoryId which is already lowercase)
-      '003', '005', '006', '007', '008', '009',
-      '010', '011', '012', '013', 'hero'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-
-    case 'wildlife':
-      [
-        '005', 'DSC_0011', 'DSC_0025', 'DSC_0036', 'DSC_0083', 'DSC_0086',
-        'DSC_0087', 'DSC_0096', 'DSC_0155', 'DSC_0160', 'DSC_0189', 'DSC_0212',
-        'DSC_0228', 'DSC_0259', 'DSC_0457', 'DSC_0539', 'DSC_0541', 'DSC_0995',
-        'Elephants', 'Fishes', 'Fox', 'RedPanda', 'hero', 'picture'
-      ].forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-    // For any other category, add a set of generic images to ensure content
-    default:
-      // Start with hero image
-      photos.push(createPhotoObject('hero'));
-      
-      // Add numbered images that might exist in the category
-      ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010'].forEach(num => {
-        photos.push(createPhotoObject(num));
-      });
-      
-      // Add some category-specific images based on the category name
-      // These might not exist but will be gracefully handled by Next.js Image
-      const categorySpecificImages = [
-        categoryId.replace(/-/g, ' '), // The category name itself
-        'landscape', 'portrait', 'detail', 'overview',
-        'close-up', 'panorama', 'scene', 'highlight'
-      ];
-      
-      categorySpecificImages.forEach(name => {
-        photos.push(createPhotoObject(name));
-      });
-      break;
-  }
-
-  return photos;
-};
+// Removed categoryDirMap
+// Removed s3BaseUrl (will be handled by API)
+// Removed getPhotosByCategory function
 
 export default function CategoryGallery() {
   const router = useRouter();
@@ -393,84 +29,119 @@ export default function CategoryGallery() {
   const categoryId = params?.category as string || 'wildlife';
   const [displayedPhotos, setDisplayedPhotos] = useState<Photo[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true); // Start with loading true
+  const [loading, setLoading] = useState(true); 
   const [hasMore, setHasMore] = useState(true);
+  const [categoryNotFound, setCategoryNotFound] = useState(false); 
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedLayout] = useState<'compact' | 'comfortable'>('comfortable');
   const lastPhotoRef = useRef<HTMLDivElement>(null);
-  const allPhotosRef = useRef<Photo[]>([]);
+  const allPhotosRef = useRef<Photo[]>([]); // Store all fetched photos
   const [isLoaded, setIsLoaded] = useState(false);
   const initialLoadDone = useRef(false);
 
   const ITEMS_PER_PAGE = 20;
   
-  // Calculate and store allPhotos only once per category change
+  // Fetch all photos for the category via API route
   useEffect(() => {
-    allPhotosRef.current = getPhotosByCategory(categoryId);
-    initialLoadDone.current = false; // Reset initial load flag on category change
-    
-    // Immediately load first page data instead of waiting for the next effect
-    const start = 0; // Always start at 0 for initial load
-    const end = ITEMS_PER_PAGE;
-    const newPhotos = allPhotosRef.current.slice(start, end);
-    
+    setCategoryNotFound(false);
     setLoading(true);
-    
-    // Use a small timeout to allow React to render the loading state first
-    setTimeout(() => {
-      setDisplayedPhotos(newPhotos);
-      setHasMore(end < allPhotosRef.current.length);
-      initialLoadDone.current = true;
-      setLoading(false);
-    }, 100);
-  }, [categoryId, ITEMS_PER_PAGE]);
+    setDisplayedPhotos([]); // Clear photos immediately
+    setPage(1); // Reset page
+    setHasMore(true);
+    allPhotosRef.current = []; // Clear previous category photos
+    initialLoadDone.current = false;
+    window.scrollTo(0, 0); // Scroll to top
+
+    const fetchPhotos = async () => {
+      try {
+        const response = await fetch(`/api/photos/${categoryId}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            setCategoryNotFound(true);
+          } else {
+            // Handle other fetch errors if needed
+            console.error('Failed to fetch photos:', response.statusText);
+            setCategoryNotFound(true); // Treat other errors as not found for now
+          }
+          setLoading(false);
+          setHasMore(false);
+          return;
+        }
+
+        const photosData: Photo[] = await response.json();
+        
+        if (photosData.length === 0) {
+           setCategoryNotFound(true); // Handle case where API returns empty array unexpectedly
+           setLoading(false);
+           setHasMore(false);
+           return;
+        }
+
+        allPhotosRef.current = photosData;
+        
+        // Load first page
+        const start = 0; 
+        const end = ITEMS_PER_PAGE;
+        const newPhotos = allPhotosRef.current.slice(start, end);
+        
+        setDisplayedPhotos(newPhotos);
+        setHasMore(end < allPhotosRef.current.length);
+        initialLoadDone.current = true;
+        
+      } catch (error) {
+        console.error('Error fetching photos:', error);
+        setCategoryNotFound(true); // Network error, etc.
+        setHasMore(false);
+      } finally {
+        setLoading(false); 
+        // Set loaded state after a delay for animation
+        const timer = setTimeout(() => {
+            setIsLoaded(true);
+        }, 100); // Shorter delay might be okay now
+        return () => clearTimeout(timer);
+      }
+    };
+
+    fetchPhotos();
+
+  }, [categoryId, ITEMS_PER_PAGE]); // Dependency array remains the same
   
+  // Load photos for the current page (triggered by page state change)
   const loadPhotosForPage = useCallback((pageNum: number) => {
-    // Only run this for page changes after initial load
-    if (!initialLoadDone.current) {
-      return;
+    if (!initialLoadDone.current || allPhotosRef.current.length === 0) {
+      return; // Don't load if initial fetch failed or hasn't happened
     }
     
     setLoading(true);
     
-    // Calculate start and end indices
     const start = (pageNum - 1) * ITEMS_PER_PAGE;
     const end = pageNum * ITEMS_PER_PAGE;
     const newPhotos = allPhotosRef.current.slice(start, end);
     
-    // Use setTimeout to ensure the loading state is rendered
+    // Use setTimeout to allow loading state to render
     setTimeout(() => {
       setDisplayedPhotos(newPhotos);
+      // Re-check hasMore based on the full list
       setHasMore(end < allPhotosRef.current.length);
       setLoading(false);
-    }, 100);
+    }, 100); 
   }, [ITEMS_PER_PAGE]);
 
-  // Load photos when page changes (now only runs after initial load)
+  // useEffect to load photos when page changes - NO CHANGE NEEDED HERE
   useEffect(() => {
     loadPhotosForPage(page);
   }, [page, loadPhotosForPage]);
 
-  // Reset everything when category changes
+  // useEffect to reset on category change - MOST LOGIC MOVED TO FETCH useEffect
   useEffect(() => {
-    setDisplayedPhotos([]); // Clear displayed photos
-    setPage(1);            // Reset page to 1
-    setHasMore(true);      // Reset hasMore flag
-    setLoading(true);      // Set loading true on category change
-    setCurrentIndex(0);    // Reset current index
-    setCurrentImage('');   // Reset current image
-    setModalOpen(false);   // Close modal if open
-    setIsLoaded(false);    // Reset loaded state
-    window.scrollTo(0, 0); // Scroll back to top
-    
-    // Set loaded state after a delay for animation
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 500);
-    
-    return () => clearTimeout(timer);
+    // Reset modal/UI state not directly tied to fetched data
+    setCurrentImage('');
+    setCurrentIndex(0);
+    setModalOpen(false);
+    setIsLoaded(false); // Reset animation flag
   }, [categoryId]);
 
   const handleBack = () => {
@@ -566,76 +237,114 @@ export default function CategoryGallery() {
       .join(' ');
   }, []);
 
-  // Get a hero image from the category
+  // Get a hero image - Modify to use allPhotosRef.current
   const getHeroImage = () => {
-    // First try to get the dedicated hero image
+    if (categoryNotFound || allPhotosRef.current.length === 0) {
+      return null; // No hero if category not found or empty
+    }
     const heroFromPhotos = allPhotosRef.current.find(photo => photo.id.includes('hero'));
     if (heroFromPhotos) return heroFromPhotos.fullscreenSrc;
     
-    // If we have any displayed photos, use the first one
-    if (displayedPhotos.length > 0) return displayedPhotos[0].fullscreenSrc;
-    
-    // Last resort - construct a URL directly to the hero image
-    const dirName = categoryDirMap[categoryId] || categoryId;
-    // Remove spaces and apostrophes from directory name
-    const cleanDirName = dirName.replace(/[ '\"](?!\([^)]*\))/g, "");
-    return `${s3BaseUrl}/categories/${cleanDirName}/fullscreen/hero.jpeg`;
+    // If no hero image specifically, use the first image from the fetched list
+    return allPhotosRef.current[0].fullscreenSrc;
   };
   
   const heroImage = getHeroImage();
 
-  // Calculate total pages
+  // Calculate total pages - Use allPhotosRef.current
   const totalPages = Math.ceil(allPhotosRef.current.length / ITEMS_PER_PAGE);
+
+  // Render function for each item in Masonic grid
+  const MasonryCard = ({ data, index }: { data: Photo, index: number }) => (
+    <motion.div
+      key={data.id} // Use photo id as key
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
+      className="h-full" // Ensure motion div takes full height
+    >
+      <PhotoCard
+        src={data.src}
+        alt={data.alt}
+        description=""
+        onClick={() => openModal(index)} // Pass the index within the *current page* display
+      />
+    </motion.div>
+  );
+
+  // Conditional Render for Not Found
+  if (categoryNotFound) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center text-center px-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <svg className="w-16 h-16 mx-auto mb-4 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-3">Category Not Found</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">Sorry, we couldn&apos;t find the photo category &quot;{formatCategoryName(categoryId)}&quot;.</p>
+          <button
+            onClick={handleBack} // Reuse existing back handler
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center justify-center"
+          >
+             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-2">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+             </svg>
+            Back to Gallery
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
       {/* Hero Header */}
-      <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
-        {/* Hero background with parallax effect */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: heroImage ? `url(${heroImage})` : 'none',
-            transform: 'scale(1.1)', // Slight zoom for parallax effect
-            filter: 'brightness(0.7)',
-          }}
-        />
-        
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
-        
-        {/* Back button */}
-        <button
-          onClick={handleBack}
-          className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 p-3 rounded-full transition-all duration-300 shadow-lg"
-          aria-label="Back to gallery"
-        >
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </button>
-        
-        {/* Category title with reveal animation */}
-        <motion.div 
-          className="absolute bottom-0 left-0 w-full p-8 md:p-12"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-2 drop-shadow-lg">
-            {formatCategoryName(categoryId)}
-          </h1>
-          <div className="flex items-center text-white/80">
-            <span className="text-sm md:text-base">
-              {page === 1 
-                ? `Showing 1-${Math.min(ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos` 
-                : `Showing ${(page-1)*ITEMS_PER_PAGE + 1}-${Math.min(page*ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos`}
-            </span>
-          </div>
-        </motion.div>
-      </div>
+      {heroImage && (
+         <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
+           <div 
+             className="absolute inset-0 bg-cover bg-center"
+             style={{
+               backgroundImage: `url(${heroImage})`,
+               transform: 'scale(1.1)', 
+               filter: 'brightness(0.7)',
+             }}
+           />
+           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
+           {/* Back button */}
+           <button
+            onClick={handleBack}
+            className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 p-3 rounded-full transition-all duration-300 shadow-lg"
+            aria-label="Back to gallery"
+           >
+             <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+             </svg>
+           </button>
+           {/* Category title */}
+           <motion.div 
+            className="absolute bottom-0 left-0 w-full p-8 md:p-12"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+           >
+             <h1 className="text-4xl md:text-6xl font-bold text-white mb-2 drop-shadow-lg">
+               {formatCategoryName(categoryId)}
+             </h1>
+             {/* Updated photo count display logic */}
+             <div className="flex items-center text-white/80">
+               <span className="text-sm md:text-base">
+                 {allPhotosRef.current.length > 0 ? (
+                   page === 1 
+                     ? `Showing 1-${Math.min(ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos` 
+                     : `Showing ${(page-1)*ITEMS_PER_PAGE + 1}-${Math.min(page*ITEMS_PER_PAGE, allPhotosRef.current.length)} of ${allPhotosRef.current.length} photos`
+                 ) : (
+                   `0 photos`
+                 )}
+               </span>
+             </div>
+           </motion.div>
+         </div>
+      )}
 
-      {/* Pagination Controls (replaces the grid/masonry toggle) */}
+      {/* Pagination Controls (Top) */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -678,47 +387,30 @@ export default function CategoryGallery() {
 
       {/* Main Gallery */}
       <div className="container mx-auto px-4 py-8">
-        <AnimatePresence>
-          <motion.div
-            key={`${categoryId}-${page}-${selectedLayout}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isLoaded ? 1 : 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[200px] gap-${selectedLayout === 'compact' ? '3' : '4'}`}
-          >
-            {displayedPhotos.map((photo, index) => (
-              <motion.div
-                key={photo.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
-                ref={index === displayedPhotos.length - 1 ? lastPhotoRef : null}
-                className="h-full"
-              >
-                <PhotoCard
-                  src={photo.src}
-                  alt={photo.alt}
-                  description=""
-                  onClick={() => openModal(index)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-        
-        {/* Loading indicator */}
+        {/* Loading Skeleton - Adjusted for potentially varying heights */}
         {loading && (
-          <div className="flex justify-center my-12">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 dark:border-blue-900 rounded-full animate-ping opacity-75"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 dark:border-t-blue-400 rounded-full animate-spin"></div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+              <div key={index} className="bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse h-[250px]"></div> // Slightly taller skeleton
+            ))}
           </div>
+        )}
+        {/* Photo Grid using Masonic (only render if not loading and category found) */}
+        {!loading && !categoryNotFound && (
+           <AnimatePresence>
+              <Masonry
+                key={`${categoryId}-${page}`} // Force re-render on category/page change
+                items={displayedPhotos} // Pass the currently displayed photos
+                columnWidth={250} // Base column width - adjust as needed
+                columnGutter={16} // Gap between columns (equiv. gap-4)
+                render={MasonryCard} // Use the render function defined above
+                overscanBy={5} // Render items slightly outside viewport for smoother scrolling
+              />
+           </AnimatePresence>
         )}
         
         {/* Pagination controls at bottom */}
-        {totalPages > 1 && (
+        {!loading && totalPages > 1 && (
           <div className="flex justify-center mt-8 mb-12 space-x-4">
             <button
               onClick={goToPrevPage}
@@ -753,7 +445,7 @@ export default function CategoryGallery() {
         )}
         
         {/* No more photos message */}
-        {!hasMore && !loading && page === Math.ceil(allPhotosRef.current.length / ITEMS_PER_PAGE) && displayedPhotos.length > 0 && (
+        {!hasMore && !loading && !categoryNotFound && page === totalPages && displayedPhotos.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -783,32 +475,22 @@ export default function CategoryGallery() {
       </div>
 
       {/* Fullscreen Modal */}
-      <FullscreenModal
-        isOpen={isModalOpen}
-        currentImage={currentImage}
-        originalImage={displayedPhotos[currentIndex % ITEMS_PER_PAGE]?.downloadUrl}
-        onClose={closeModal}
-        onNext={nextImage}
-        onPrev={prevImage}
-        totalImages={allPhotosRef.current.length}
-        currentIndex={currentIndex}
-        getNextImageSrc={(index) => {
-          const nextIndex = index + 1;
-          if (nextIndex < allPhotosRef.current.length) {
-            const pageForNextImage = Math.floor(nextIndex / ITEMS_PER_PAGE) + 1;
-            const indexInNextPage = nextIndex % ITEMS_PER_PAGE;
-            
-            // If next image is on the current page
-            if (pageForNextImage === page && indexInNextPage < displayedPhotos.length) {
-              return displayedPhotos[indexInNextPage].fullscreenSrc;
-            }
-            // Otherwise try to get it from allPhotosRef
-            const nextPhoto = allPhotosRef.current[nextIndex];
-            return nextPhoto ? nextPhoto.fullscreenSrc : null;
-          }
-          return null;
-        }}
-      />
+      {!categoryNotFound && (
+        <FullscreenModal
+          isOpen={isModalOpen}
+          currentImage={currentImage}
+          originalImage={allPhotosRef.current[currentIndex]?.downloadUrl} 
+          onClose={closeModal}
+          onNext={nextImage}
+          onPrev={prevImage}
+          totalImages={allPhotosRef.current.length} 
+          currentIndex={currentIndex}
+          getNextImageSrc={(index) => {
+            const nextIndex = index + 1;
+            return allPhotosRef.current[nextIndex]?.fullscreenSrc || null;
+          }}
+        />
+      )}
     </div>
   );
 }

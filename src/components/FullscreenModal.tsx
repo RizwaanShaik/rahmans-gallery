@@ -246,39 +246,43 @@ export default function FullscreenModal({
     >
       {/* Top Controls Bar */}
       <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 z-50 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
-        {originalImage ? (
-          <button
-            onClick={handleDownload}
-            className={`${
-              highContrast 
-                ? 'bg-white text-black border-2 border-black' 
-                : 'bg-white/10 text-white hover:bg-white/20'
-            } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
-            aria-label="Download original quality image"
-            title="Download original quality image"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
+        {/* Left side: Download button */}
+        <div className="flex items-center gap-4">
+          {originalImage ? (
+            <button
+              onClick={handleDownload}
+              className={`${
+                highContrast 
+                  ? 'bg-white text-black border-2 border-black' 
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
+              aria-label="Download original quality image"
+              title="Download original quality image"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
-              />
-            </svg>
-            <span className="hidden sm:inline">Download Original</span>
-          </button>
-        ) : (
-          <div className="px-3 py-2 opacity-50">
-            <span className="hidden sm:inline">No Original Available</span>
-          </div>
-        )}
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+                />
+              </svg>
+              <span className="hidden sm:inline">Download Original</span>
+            </button>
+          ) : (
+             <div className="px-3 py-2 opacity-50">
+               <span className="hidden sm:inline">No Original Available</span>
+             </div>
+          )}
+        </div>
 
+        {/* Right side: Close button */}
         <button
           onClick={onClose}
           className={`${
@@ -314,7 +318,7 @@ export default function FullscreenModal({
               alt="Fullscreen view"
               width={1920}
               height={1080}
-              className="max-w-full max-h-[calc(100vh-100px)] object-contain transition-opacity duration-300"
+              className="max-w-full max-h-[calc(100vh-160px)] object-contain transition-opacity duration-300"
               priority
               quality={100}
               onLoad={() => {
