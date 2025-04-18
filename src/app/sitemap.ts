@@ -29,7 +29,7 @@ const categories = [
   { id: 'warangal' }
 ];
 
-const baseUrl = 'https://www.skrahman.art'
+const baseUrl = 'https://skrahman.art'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
