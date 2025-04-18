@@ -1,4 +1,6 @@
+"use client"; // Mark as Client Component for framer-motion
 import React from 'react';
+import { motion } from 'framer-motion'; // Import motion
 
 interface TimelineEvent {
   year: string;
@@ -152,6 +154,19 @@ export default function Timeline() {
     return labels[category] || category;
   };
 
+  // Animation Variants for timeline items
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center mb-12">
@@ -171,7 +186,14 @@ export default function Timeline() {
         
         <div className="space-y-12">
           {events.map((event, index) => (
-            <div key={index} className={`relative flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+            <motion.div // Wrap event container with motion.div
+              key={index} 
+              className={`relative flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }} // Trigger once when 30% visible
+              variants={itemVariants} // Apply animation variants
+            >
               {/* Event Content */}
               <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                 <div className={`p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 dark:border-gray-700 ${getCategoryBgColor(event.category)}`}>
@@ -194,7 +216,7 @@ export default function Timeline() {
                   {event.year}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -206,7 +228,14 @@ export default function Timeline() {
         
         <div className="space-y-8">
           {events.map((event, index) => (
-            <div key={index} className="relative pl-12">
+            <motion.div // Wrap event container with motion.div
+              key={index} 
+              className="relative pl-12"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }} // Trigger once when 30% visible
+              variants={itemVariants} // Apply animation variants
+            >
               {/* Circle on timeline */}
               <div className="absolute left-4 top-6 transform -translate-x-1/2 w-6 h-6 rounded-full border-4 border-white dark:border-gray-900 shadow-sm flex items-center justify-center">
                 <div className={`w-4 h-4 rounded-full ${getCategoryColor(event.category)}`}></div>
@@ -225,7 +254,7 @@ export default function Timeline() {
                 <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">{event.title}</h3>
                 <p className="text-sm text-gray-700 dark:text-gray-300">{event.description}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
