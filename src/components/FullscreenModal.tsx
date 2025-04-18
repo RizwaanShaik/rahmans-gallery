@@ -172,64 +172,71 @@ export default function FullscreenModal({
 
   if (!isOpen || !displayedImage) return null;
 
-  // Handle download button click - Simplified Logic
+  // Handle download button click - Optimized with HEAD requests
   const handleDownload = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!originalImage) return;
 
-    console.log("Starting download process for base URL:", originalImage);
+    console.log("Starting optimized download process for base URL:", originalImage);
 
-    // The originalImage prop *is* the intended base URL (potentially with wrong extension)
-    // Remove query string and timestamp if present
     const baseUrl = originalImage.split('?')[0];
     const filenameWithExt = baseUrl.substring(baseUrl.lastIndexOf('/') + 1);
     const filename = filenameWithExt.substring(0, filenameWithExt.lastIndexOf('.'));
     const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
-
-    // Decode filename in case it's already encoded
     const decodedFilename = decodeURIComponent(filename);
-    
-    // Remove spaces and apostrophes but KEEP parentheses in the filename
     const cleanFilename = decodedFilename.replace(/[ '\"](?!\([^)]*\))/g, "");
 
-    // Generate list of possible file extensions to try
-    const possibleExtensions = ['.JPG', '.jpg', '.JPEG', '.jpeg']; // Try uppercase extensions first
+    const possibleExtensions = ['.JPG', '.jpg', '.JPEG', '.jpeg'];
 
     console.log(`Base path: ${basePath}, Clean filename: ${cleanFilename}`);
 
-    // Try each extension
+    let foundUrl = false;
     for (const ext of possibleExtensions) {
-      // Use the clean filename without spaces and apostrophes but with parentheses
       const fullPath = `${basePath}${cleanFilename}${ext}`;
-      // Use formatS3ImageUrl WITHOUT timestamp, as downloadS3Image adds it
-      const urlToTry = formatS3ImageUrl(fullPath, false); 
-      const downloadFilename = `${decodedFilename}${ext}`; // Keep original name for downloaded file
+      // Check URL without timestamp first (assuming S3 allows HEAD on base object)
+      const urlToCheck = formatS3ImageUrl(fullPath, false); 
+      const downloadFilename = `${decodedFilename}${ext}`;
 
-      console.log(`Trying to download: ${urlToTry} as ${downloadFilename}`);
-      const success = await downloadS3Image(urlToTry, downloadFilename);
-
-      if (success) {
-        console.log("Download successful!");
-        return; // Exit loop on success
+      console.log(`Checking HEAD for: ${urlToCheck}`);
+      try {
+        const response = await fetch(urlToCheck, { method: 'HEAD' });
+        
+        if (response.ok) {
+          console.log(`HEAD request successful for ${urlToCheck}. Proceeding with download.`);
+          // If HEAD is ok, attempt download with the same URL
+          const success = await downloadS3Image(urlToCheck, downloadFilename);
+          if (success) {
+            console.log("Download initiated successfully!");
+            foundUrl = true;
+            return; // Exit loop and function on successful download initiation
+          } else {
+            console.warn(`Download function failed for confirmed URL: ${urlToCheck}`);
+            // Optional: Could try the next extension even if download func fails, but less likely needed
+          }
+        } else {
+          console.log(`HEAD request failed for ${urlToCheck} with status: ${response.status}`);
+        }
+      } catch (headError) {
+        console.error(`Error during HEAD request for ${urlToCheck}:`, headError);
+        // Continue to next extension if HEAD request itself fails network-wise
       }
     }
 
-    // If we get here, all attempts failed
-    console.log("All download attempts failed. Opening the initially provided URL in a new tab as a last resort.");
-    
-    // Clean the original URL too for the fallback, but keep parentheses
-    const cleanOriginalUrl = originalImage.split('?')[0];
-    const cleanPath = cleanOriginalUrl.substring(0, cleanOriginalUrl.lastIndexOf('/') + 1);
-    const cleanFilenameWithExt = cleanOriginalUrl.substring(cleanOriginalUrl.lastIndexOf('/') + 1);
-    const cleanExtension = cleanFilenameWithExt.substring(cleanFilenameWithExt.lastIndexOf('.'));
-    const cleanFilenameOnly = cleanFilenameWithExt.substring(0, cleanFilenameWithExt.lastIndexOf('.'));
-    // Remove spaces and apostrophes but keep parentheses
-    const finalCleanUrl = `${cleanPath}${cleanFilenameOnly.replace(/[ '\"](?!\([^)]*\))/g, "")}${cleanExtension}`;
-    
-    // Open the cleaned URL (with timestamp added by formatS3ImageUrl)
-    window.open(formatS3ImageUrl(finalCleanUrl, true), '_blank');
+    // Fallback if no URL was confirmed via HEAD or download failed
+    if (!foundUrl) {
+      console.log("All HEAD checks/download attempts failed. Opening the initially provided URL in a new tab as a last resort.");
+      // Clean the original URL for the fallback, similar to before
+      const cleanOriginalUrl = originalImage.split('?')[0];
+      const cleanPath = cleanOriginalUrl.substring(0, cleanOriginalUrl.lastIndexOf('/') + 1);
+      const cleanFilenameWithExt = cleanOriginalUrl.substring(cleanOriginalUrl.lastIndexOf('/') + 1);
+      const cleanExtension = cleanFilenameWithExt.substring(cleanFilenameWithExt.lastIndexOf('.'));
+      const cleanFilenameOnly = cleanFilenameWithExt.substring(0, cleanFilenameWithExt.lastIndexOf('.'));
+      const finalCleanUrl = `${cleanPath}${cleanFilenameOnly.replace(/[ '\"](?!\([^)]*\))/g, "")}${cleanExtension}`;
+      // Open the *formatted* cleaned URL (with timestamp) as the final fallback
+      window.open(formatS3ImageUrl(finalCleanUrl, true), '_blank');
+    }
   };
 
   return (
