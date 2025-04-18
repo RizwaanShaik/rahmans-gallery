@@ -82,7 +82,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">1</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400">Early Life</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400">Early Life</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Born on March 23, 1966, in Rantachintala, Guntur district, Professor Shaik Khaleel-ur-Rahman spent his formative years in his village,
@@ -108,7 +108,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-green-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">2</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-green-600 dark:text-green-400">Education and Early Career</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-green-600 dark:text-green-400">Education and Early Career</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   After completing his Intermediate education in MPC (Mathematics, Physics, Chemistry), Rahman chose to diverge from conventional paths,
@@ -145,7 +145,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">3</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-purple-600 dark:text-purple-400">Professional Journey</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Professor Rahman&apos;s career began with diverse roles including assistant cameraman at Chaitanya Movies, photo lab printer at Raja Deen Dayal & Sons,
@@ -191,7 +191,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">4</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-amber-600 dark:text-amber-400">Photographic Journey</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-amber-600 dark:text-amber-400">Photographic Journey</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Coming from the tradition of small-format Analog Photography, Professor Rahman mastered black & white film processing and darkroom techniques.
@@ -235,13 +235,13 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">5</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-red-600 dark:text-red-400">Exhibitions and Recognition</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-red-600 dark:text-red-400">Exhibitions and Recognition</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <h3 className="text-lg sm:text-xl font-semibold mb-3 text-red-700 dark:text-red-300 flex items-center"> {/* Dark text */}
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4V5h12v10zm-4.793-6.707a1 1 0 00-1.414-1.414L9 8.586 7.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l3-3z" clipRule="evenodd" />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                       </svg>
                       Notable Exhibitions
                     </h3>
@@ -289,7 +289,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">6</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">International Experience</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">International Experience</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Professor Rahman conducted photography projects and workshops across multiple countries, bringing his expertise to international audiences and enriching his own work through global perspectives:
@@ -345,7 +345,7 @@ export default function About() {
               <div className="absolute -left-12 sm:-left-16 top-0 w-7 h-7 sm:w-9 sm:h-9 bg-teal-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xs sm:text-base">7</span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-teal-600 dark:text-teal-400">Legacy and Impact</h2> {/* Dark text */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-teal-600 dark:text-teal-400">Legacy and Impact</h2> {/* Dark text */}
               <div className="bg-white dark:bg-gray-800 p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-md dark:shadow-gray-700 dark:hover:shadow-gray-600 transition-all duration-300 border border-gray-100 dark:border-gray-700"> {/* Dark bg, shadow, border */}
                 <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed"> {/* Dark text */}
                   Throughout his career, Professor Rahman mentored numerous successful photographers and filmmakers. His students have excelled in various fields
