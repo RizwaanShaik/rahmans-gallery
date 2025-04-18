@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -42,8 +42,6 @@ const featuredWorks: FeaturedWork[] = [
 ];
 
 export default function FeaturedCollection() {
-  const [selectedWork, setSelectedWork] = useState<FeaturedWork | null>(null);
-
   return (
     <div className="container mx-auto px-4 mt-16">
       <div className="text-center mb-12">
@@ -95,49 +93,6 @@ export default function FeaturedCollection() {
           </Link>
         ))}
       </div>
-
-      {/* Modal for selected work */}
-      {selectedWork && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90"
-          onClick={() => setSelectedWork(null)}
-        >
-          <div
-            className="relative max-w-5xl w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative aspect-[16/9]">
-              <Image
-                src={selectedWork.src}
-                alt={selectedWork.title}
-                fill
-                className="object-contain"
-                sizes="100vw"
-                priority
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {selectedWork.title}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                {selectedWork.description}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {selectedWork.year}
-                </span>
-                <button
-                  onClick={() => setSelectedWork(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 

@@ -10,7 +10,7 @@ interface TimelineEvent {
 // Define a type for category keys
 type Category = 'early-life' | 'education' | 'career' | 'exhibition' | 'award' | 'international';
 
-const events: TimelineEvent[] = [
+const allEvents: TimelineEvent[] = [
   {
     year: "1966",
     title: "Birth of a Visionary",
@@ -23,36 +23,36 @@ const events: TimelineEvent[] = [
     description: "Pursued photography at JNTU College of Fine Arts, diverging from conventional career paths.",
     category: "education"
   },
-  {
-    year: "1986-89",
-    title: "Bachelor of Commerce",
-    description: "Completed B.Com degree from Osmania University while nurturing his passion for photography.",
-    category: "education"
-  },
+  // {
+  //   year: "1986-89",
+  //   title: "Bachelor of Commerce",
+  //   description: "Completed B.Com degree from Osmania University while nurturing his passion for photography.",
+  //   category: "education"
+  // },
   {
     year: "1992",
     title: "Beginning of Professional Career",
     description: "Joined JNTU College of Fine Arts as a Lecturer, marking the start of his influential teaching journey.",
     category: "career"
   },
-  {
-    year: "2000",
-    title: "Master's in Journalism",
-    description: "Completed Master's in Journalism and Mass Communication from Madurai Kamaraj University.",
-    category: "education"
-  },
+  // {
+  //   year: "2000",
+  //   title: "Master's in Journalism",
+  //   description: "Completed Master's in Journalism and Mass Communication from Madurai Kamaraj University.",
+  //   category: "education"
+  // },
   {
     year: "2001",
     title: "\"Nukkad\" Exhibition",
     description: "Solo exhibition on Street Life of Calcutta, showcasing his documentary photography skills.",
     category: "exhibition"
   },
-  {
-    year: "2006",
-    title: "Heritage Structures Exhibition",
-    description: "Solo exhibition featuring architectural photography of historical buildings in Hyderabad.",
-    category: "exhibition"
-  },
+  // {
+  //   year: "2006",
+  //   title: "Heritage Structures Exhibition",
+  //   description: "Solo exhibition featuring architectural photography of historical buildings in Hyderabad.",
+  //   category: "exhibition"
+  // },
   {
     year: "2008-10",
     title: "Master of Fine Arts",
@@ -65,12 +65,12 @@ const events: TimelineEvent[] = [
     description: "Recognized by the Government of Andhra Pradesh for excellence in teaching.",
     category: "award"
   },
-  {
-    year: "2019",
-    title: "PESGCPC Grand Progress Award",
-    description: "Honored by PASCAL and GREEK School Photographic Club Cyprus for his contributions to photography.",
-    category: "award"
-  },
+  // {
+  //   year: "2019",
+  //   title: "PESGCPC Grand Progress Award",
+  //   description: "Honored by PASCAL and GREEK School Photographic Club Cyprus for his contributions to photography.",
+  //   category: "award"
+  // },
   {
     year: "2021",
     title: "Legacy Lives On",
@@ -78,6 +78,14 @@ const events: TimelineEvent[] = [
     category: "early-life"
   }
 ];
+
+// Filtered events for display
+const events = allEvents.filter(event => 
+  event.title !== "Bachelor of Commerce" &&
+  event.title !== "Master's in Journalism" &&
+  event.title !== "Heritage Structures Exhibition" &&
+  event.title !== "PESGCPC Grand Progress Award"
+);
 
 export default function Timeline() {
   const getCategoryColor = (category: Category) => {

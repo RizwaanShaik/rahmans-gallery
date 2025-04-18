@@ -1,9 +1,14 @@
-"use client";
-
 import Image from 'next/image';
 import Link from 'next/link';
 import FeaturedCollection from '@/components/FeaturedCollection';
 import Timeline from '@/components/Timeline';
+import type { Metadata } from 'next';
+
+// Homepage Specific Metadata
+export const metadata: Metadata = {
+  title: "Professor Rahman's Photography Gallery | Home",
+  description: "Explore the stunning photographic work of Professor Shaik Khaleel-ur-Rahman, showcasing diverse collections from wildlife to heritage. Discover the legacy of a master photographer and educator.",
+};
 
 // S3 bucket base URL
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
@@ -52,9 +57,16 @@ export default function Home() {
         <FeaturedCollection />
       </section>
 
-      {/* Timeline */}
+      {/* Timeline Section */}
       <section id="timeline" className="w-full py-16 bg-gray-50 dark:bg-gray-900">
+        {/* Timeline component (includes its own title/container) */}
         <Timeline />
+        {/* Link to full About page */}
+        <div className="text-center mt-12 container mx-auto px-4">
+          <Link href="/about" className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-lg">
+            See the full journey &rarr;
+          </Link>
+        </div>
       </section>
     </main>
   );
