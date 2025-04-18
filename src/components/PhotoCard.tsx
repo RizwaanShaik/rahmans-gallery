@@ -115,13 +115,14 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
       aria-label={description || alt}
       tabIndex={0}
     >
-      <div className="relative overflow-hidden w-full" style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : '1' }}>
-        {/* Loading Skeleton - Use aspect ratio as well */}
+      <div 
+        className="relative overflow-hidden w-full aspect-square"
+        style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : undefined }}
+      >
         {isLoading && (
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse" style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : '1' }} />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse aspect-square" style={{ aspectRatio: imageAspectRatio ? `${imageAspectRatio}` : undefined }} />
         )}
         
-        {/* Main Image container - Remove h-full, parent now has aspect ratio */}
         <div 
           className="relative w-full h-full overflow-hidden"
           style={{ 
@@ -148,7 +149,6 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
           />
         </div>
 
-        {/* Animated Gradient Overlay */}
         <div 
           className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
           style={{ 
@@ -159,7 +159,6 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
           }}
         />
         
-        {/* Interactive shine effect */}
         <div 
           className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 transition-opacity duration-300 pointer-events-none"
           style={{ 
@@ -171,7 +170,6 @@ const PhotoCard: React.FC<PhotoCardProps> = memo(({
           }}
         />
         
-        {/* Corner indicators */}
         <div 
           className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center pointer-events-none"
           style={{ 
