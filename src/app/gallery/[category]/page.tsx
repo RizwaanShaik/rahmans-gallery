@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
-import PhotoCard from '@/components/PhotoCard';
 import FullscreenModal from '@/components/FullscreenModal';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type Masonry from 'masonry-layout';
-import type * as ImagesLoaded from 'imagesloaded';
 
 interface Photo {
   id: string;
@@ -17,6 +15,11 @@ interface Photo {
   alt: string;
   description: string;
   downloadUrl: string;
+}
+
+// Type guard for Masonry instance
+function isMasonryInstance(obj: Masonry | null): obj is Masonry {
+  return obj !== null;
 }
 
 const MASONRY_ITEM_SELECTOR = 'grid-item';
@@ -38,6 +41,7 @@ export default function CategoryGallery() {
   const gridRef = useRef<HTMLDivElement>(null);
   const masonryRef = useRef<Masonry | null>(null);
   const masonryLibRef = useRef<typeof Masonry | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const imagesLoadedLibRef = useRef<any>(null);
   const observerTarget = useRef(null);
   const loadedCountRef = useRef<number>(0);
@@ -77,7 +81,10 @@ export default function CategoryGallery() {
       imagesLoadedLib(gridRef.current).on('always', () => {
         // Delay initial layout slightly
         requestAnimationFrame(() => {
-          masonryRef.current!.layout();
+          const masonry = masonryRef.current;
+          if (masonry) {
+            masonry.layout!();
+          }
         });
       });
     }
@@ -93,7 +100,10 @@ export default function CategoryGallery() {
     window.scrollTo(0, 0);
 
     if (masonryRef.current) {
-      masonryRef.current.destroy();
+      const masonry = masonryRef.current;
+      if (isMasonryInstance(masonry)) {
+        masonry.destroy!();
+      }
       masonryRef.current = null;
     }
 
@@ -141,7 +151,10 @@ export default function CategoryGallery() {
 
     return () => {
       if (masonryRef.current) {
-        masonryRef.current.destroy();
+        const masonry = masonryRef.current;
+        if (isMasonryInstance(masonry)) {
+          masonry.destroy!();
+        }
         masonryRef.current = null;
       }
     };
@@ -152,9 +165,16 @@ export default function CategoryGallery() {
       if (!masonryRef.current) {
          initializeMasonry();
       } else {
-        if (imagesLoadedLibRef.current) {
+        if (imagesLoadedLibRef.current && gridRef.current) {
           imagesLoadedLibRef.current(gridRef.current).on('always', () => {
-            masonryRef.current!.layout();
+            if (masonryRef.current) {
+              requestAnimationFrame(() => {
+                const masonry = masonryRef.current;
+                if (isMasonryInstance(masonry)) {
+                  masonry.layout!();
+                }
+              });
+            }
           });
         }
       }
@@ -173,6 +193,8 @@ export default function CategoryGallery() {
     if (loadingMore || !hasMore || loadingInitial || !libsLoaded || !gridRef.current || !masonryRef.current || !imagesLoadedLibRef.current || !masonryLibRef.current) return;
 
     const imagesLoadedLib = imagesLoadedLibRef.current;
+    const masonry = masonryRef.current;
+    const gridElement = gridRef.current;
 
     setLoadingMore(true);
 
@@ -206,20 +228,43 @@ export default function CategoryGallery() {
         newElements.push(photoDiv);
     });
 
-    newElements.forEach(el => gridRef.current?.appendChild(el));
+    newElements.forEach(el => gridElement?.appendChild(el));
 
-    imagesLoadedLib!(newElements).on('always', () => {
-        masonryRef.current!.appended(newElements);
+    if (imagesLoadedLib && isMasonryInstance(masonry)) {
+      imagesLoadedLib(newElements).on('always', () => {
+        masonry.appended!(newElements);
         newElements.forEach(el => { el.style.opacity = '1'; });
+        
         requestAnimationFrame(() => {
-            masonryRef.current!.layout();
+          const currentMasonry = masonryRef.current;
+          if (isMasonryInstance(currentMasonry)) {
+            currentMasonry.layout!();
+          }
         });
+        
         loadedCountRef.current += nextPhotos.length;
         setHasMore(loadedCountRef.current < allPhotosRef.current.length);
         setLoadingMore(false);
-    });
-
-  }, [hasMore, loadingMore, loadingInitial, libsLoaded, ITEMS_PER_LOAD]);
+      });
+    } else {
+      // Fallback if imagesLoaded is not available
+      if (isMasonryInstance(masonry)) {
+        masonry.appended!(newElements);
+      }
+      newElements.forEach(el => { el.style.opacity = '1'; });
+      
+      requestAnimationFrame(() => {
+        const currentMasonry = masonryRef.current;
+        if (isMasonryInstance(currentMasonry)) {
+          currentMasonry.layout!();
+        }
+      });
+      
+      loadedCountRef.current += nextPhotos.length;
+      setHasMore(loadedCountRef.current < allPhotosRef.current.length);
+      setLoadingMore(false);
+    }
+  }, [hasMore, loadingMore, loadingInitial, libsLoaded, ITEMS_PER_LOAD, openModal]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
