@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
-import { URL } from 'url'; // Import URL for parsing if needed (often available globally)
+import { NextResponse, NextRequest } from 'next/server';
 
-// Define the Photo type (can be shared or redefined here)
+// Define the Photo type
 interface Photo {
   id: string;
   src: string;
@@ -93,37 +92,24 @@ const createPhotoObject = (baseName: string, categoryId: string, dirName: string
   };
 };
 
-export async function GET(
-  request: Request,
-  { params }: { params: { category: string } }
-) {
-  let categoryId = '';
-  try {
-    const requestUrl = new URL(request.url);
-    const pathSegments = requestUrl.pathname.split('/').filter(Boolean);
-    categoryId = pathSegments[pathSegments.length - 1];
-    if (!categoryId && params) {
-      categoryId = params.category;
-    }
-
-    if (!categoryId) {
-       console.error('[API Route] Could not determine categoryId from URL or params');
-       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
-    }
+export async function GET(request: NextRequest) {
+  // Extract category from the URL path
+  const pathname = request.nextUrl.pathname;
+  const categoryId = pathname.split('/').pop() || '';
   
-    const dirName = categoryDirMap[categoryId];
-    const photoNames = categoryPhotosData[categoryId];
+  const folderName = categoryDirMap[categoryId];
 
-    if (!dirName || !photoNames) {
-      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
-    }
-
-    const photos: Photo[] = photoNames.map(name => createPhotoObject(name, categoryId, dirName));
-
-    return NextResponse.json(photos);
-
-  } catch (error) {
-    console.error(`[API Route] Error processing category ${categoryId || 'unknown'}:`, error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  if (!folderName) {
+    return NextResponse.json({ error: 'Invalid category' }, { status: 404 });
   }
+
+  const photoNames = categoryPhotosData[categoryId];
+  if (!photoNames) {
+    return NextResponse.json({ error: 'No photos found' }, { status: 404 });
+  }
+
+  const photos: Photo[] = photoNames.map(name => createPhotoObject(name, categoryId, folderName));
+
+  console.log(`[API Route] Successfully fetched ${photos.length} photos for category: ${categoryId}`);
+  return NextResponse.json(photos);
 } 

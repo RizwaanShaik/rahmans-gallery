@@ -35,10 +35,7 @@ export default function CategoryGallery() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedLayout] = useState<'compact' | 'comfortable'>('comfortable');
-  const lastPhotoRef = useRef<HTMLDivElement>(null);
   const allPhotosRef = useRef<Photo[]>([]); // Store all fetched photos
-  const [isLoaded, setIsLoaded] = useState(false);
   const initialLoadDone = useRef(false);
 
   const ITEMS_PER_PAGE = 20;
@@ -97,11 +94,6 @@ export default function CategoryGallery() {
         setHasMore(false);
       } finally {
         setLoading(false); 
-        // Set loaded state after a delay for animation
-        const timer = setTimeout(() => {
-            setIsLoaded(true);
-        }, 100); // Shorter delay might be okay now
-        return () => clearTimeout(timer);
       }
     };
 
@@ -141,7 +133,6 @@ export default function CategoryGallery() {
     setCurrentImage('');
     setCurrentIndex(0);
     setModalOpen(false);
-    setIsLoaded(false); // Reset animation flag
   }, [categoryId]);
 
   const handleBack = () => {
