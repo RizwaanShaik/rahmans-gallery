@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { downloadS3Image, formatS3ImageUrl } from '../utils/imageUtils';
+import { motion } from 'framer-motion';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -240,7 +241,7 @@ export default function FullscreenModal({
   };
 
   return (
-    <div 
+    <motion.div
       ref={modalRef}
       className={`fixed inset-0 ${highContrast ? 'bg-white' : 'bg-black bg-opacity-95'} z-50 flex flex-col items-center justify-center`}
       onTouchStart={handleTouchStart}
@@ -248,8 +249,13 @@ export default function FullscreenModal({
       onTouchEnd={handleTouchEnd}
       role="dialog"
       aria-modal="true"
-      aria-label="Image viewer"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
       tabIndex={-1}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       {/* Top Controls Bar */}
       <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 z-50 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
@@ -384,6 +390,6 @@ export default function FullscreenModal({
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
