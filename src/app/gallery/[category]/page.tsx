@@ -68,7 +68,7 @@ export default function CategoryGallery() {
       const msnry = new MasonryLib(gridRef.current, {
         itemSelector: `.${MASONRY_ITEM_SELECTOR}`,
         columnWidth: '.grid-sizer',
-        gutter: 16,
+        gutter: 0,
         percentPosition: true,
         transitionDuration: 0
       });
@@ -190,7 +190,7 @@ export default function CategoryGallery() {
 
     nextPhotos.forEach(photo => {
         const photoDiv = document.createElement('div');
-        photoDiv.className = `${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border`;
+        photoDiv.className = `${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2`;
         photoDiv.style.opacity = '0';
         photoDiv.style.transition = 'opacity 0.5s ease-in-out';
         photoDiv.innerHTML = `
@@ -365,10 +365,10 @@ export default function CategoryGallery() {
         )}
 
         {!loadingInitial && displayedPhotos.length > 0 && (
-          <div ref={gridRef} className="masonry-grid">
+          <div ref={gridRef} className="masonry-grid -m-2">
             <div className="grid-sizer w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"></div>
             {displayedPhotos.map((photo, index) => (
-               <div key={photo.id} className={`${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border`}>
+               <div key={photo.id} className={`${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2`}>
                    <img
                      src={photo.src}
                      alt={photo.alt}
