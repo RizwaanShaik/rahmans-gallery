@@ -161,16 +161,23 @@ export default function CategoryGallery() {
   }, [categoryId, ITEMS_PER_LOAD]);
 
   useEffect(() => {
-    if (libsLoaded && !loadingInitial && displayedPhotos.length > 0 && gridRef.current) {
+    if (libsLoaded && !loadingInitial && gridRef.current) {
+      const gridElement = gridRef.current;
+      const imagesLoadedLib = imagesLoadedLibRef.current;
+
       if (!masonryRef.current) {
+         console.log("[Layout Effect] Masonry not initialized. Calling initializeMasonry().");
          initializeMasonry();
       } else {
-        if (imagesLoadedLibRef.current && gridRef.current) {
-          imagesLoadedLibRef.current(gridRef.current).on('always', () => {
+        if (imagesLoadedLib && gridElement && displayedPhotos.length > 0) {
+          console.log("[Layout Effect] Masonry exists. Re-running imagesLoaded for grid update...");
+          imagesLoadedLib(gridElement).on('always', () => {
+            console.log("[Layout Effect] imagesLoaded 'always' callback fired.");
             if (masonryRef.current) {
               requestAnimationFrame(() => {
                 const masonry = masonryRef.current;
                 if (isMasonryInstance(masonry)) {
+                  console.log("[Layout Effect] Calling masonry.layout() inside requestAnimationFrame.");
                   masonry.layout!();
                 }
               });
