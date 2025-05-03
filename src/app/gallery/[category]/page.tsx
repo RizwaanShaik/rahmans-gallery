@@ -295,7 +295,7 @@ export default function CategoryGallery() {
   }, [categoryId]);
 
   const handleBack = () => {
-    router.push('/gallery');
+    router.back();
   };
 
   const closeModal = useCallback(() => {

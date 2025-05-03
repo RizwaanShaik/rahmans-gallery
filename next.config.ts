@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    scrollRestoration: false,
+  },
   async headers() {
     return [
       {

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -176,6 +176,35 @@ export default function Gallery() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const GALLERY_SCROLL_KEY = 'galleryScrollPos';
+
+  // Function to save scroll position, called onClick
+  const saveScrollPosition = () => {
+    sessionStorage.setItem(GALLERY_SCROLL_KEY, String(window.scrollY));
+    console.log(`[Link Click] Saved scroll position: ${window.scrollY}`);
+  };
+
+  // Restore scroll position on initial mount
+  useEffect(() => {
+    console.log("[Mount Effect] Component mounted. Attempting to restore scroll.");
+    const savedPosition = sessionStorage.getItem(GALLERY_SCROLL_KEY);
+    if (savedPosition) {
+        const position = parseInt(savedPosition, 10);
+        console.log(`[Mount Effect] Restoring scroll position to: ${position}`);
+        // Add a small delay to allow rendering before scrolling
+        const timeoutId = setTimeout(() => {
+            console.log(`[Mount Effect] Executing scrollTo(${position}) inside setTimeout`);
+            window.scrollTo({ top: position, behavior: 'instant' });
+        }, 100); // Delay by 100ms (adjust if needed)
+
+        // Cleanup function to clear timeout if component unmounts quickly
+        return () => clearTimeout(timeoutId);
+    } else {
+      console.log("[Mount Effect] No saved scroll position found.");
+    }
+     // Run only once on component mount
+  }, []);
+
   // Filter categories based on active filter and search query
   useEffect(() => {
     setIsLoading(true);
@@ -208,11 +237,9 @@ export default function Gallery() {
       });
     }
     
-    // Simulate loading state for smoother transitions
-    setTimeout(() => {
-      setFilteredCategories(result);
-      setIsLoading(false);
-    }, 300);
+    // Update state synchronously (remove setTimeout)
+    setFilteredCategories(result);
+    setIsLoading(false);
   }, [activeFilter, searchQuery]);
 
   return (
@@ -370,6 +397,7 @@ export default function Gallery() {
                 <Link 
                   href={`/gallery/${category.id}`}
                   className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-end block"
+                  onClick={saveScrollPosition}
                 >
                   <div className="absolute inset-0">
                     <Image
@@ -378,7 +406,7 @@ export default function Gallery() {
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      priority={index < 8} // Prioritize more images for mobile
+                      priority={index < 8} // Prioritize the first 8 images for LCP
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
                   </div>
