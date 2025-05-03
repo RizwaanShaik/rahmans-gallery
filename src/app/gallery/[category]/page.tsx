@@ -161,23 +161,16 @@ export default function CategoryGallery() {
   }, [categoryId, ITEMS_PER_LOAD]);
 
   useEffect(() => {
-    if (libsLoaded && !loadingInitial && gridRef.current) {
-      const gridElement = gridRef.current;
-      const imagesLoadedLib = imagesLoadedLibRef.current;
-
+    if (libsLoaded && !loadingInitial && displayedPhotos.length > 0 && gridRef.current) {
       if (!masonryRef.current) {
-         console.log("[Layout Effect] Masonry not initialized. Calling initializeMasonry().");
          initializeMasonry();
       } else {
-        if (imagesLoadedLib && gridElement && displayedPhotos.length > 0) {
-          console.log("[Layout Effect] Masonry exists. Re-running imagesLoaded for grid update...");
-          imagesLoadedLib(gridElement).on('always', () => {
-            console.log("[Layout Effect] imagesLoaded 'always' callback fired.");
+        if (imagesLoadedLibRef.current && gridRef.current) {
+          imagesLoadedLibRef.current(gridRef.current).on('always', () => {
             if (masonryRef.current) {
               requestAnimationFrame(() => {
                 const masonry = masonryRef.current;
                 if (isMasonryInstance(masonry)) {
-                  console.log("[Layout Effect] Calling masonry.layout() inside requestAnimationFrame.");
                   masonry.layout!();
                 }
               });
@@ -231,7 +224,7 @@ export default function CategoryGallery() {
                  openModal(globalIndex);
              }
         });
-        tempContainer.appendChild(photoDiv);
+        tempContainer.appendChild(photoDiv); // Use temp container, although maybe not strictly needed here
         newElements.push(photoDiv);
     });
 
@@ -240,7 +233,7 @@ export default function CategoryGallery() {
     if (imagesLoadedLib && isMasonryInstance(masonry)) {
       imagesLoadedLib(newElements).on('always', () => {
         masonry.appended!(newElements);
-        newElements.forEach(el => { el.style.opacity = '1'; });
+        newElements.forEach(el => { el.style.opacity = '1'; }); // Fade in
         
         requestAnimationFrame(() => {
           const currentMasonry = masonryRef.current;
@@ -254,19 +247,14 @@ export default function CategoryGallery() {
         setLoadingMore(false);
       });
     } else {
-      // Fallback if imagesLoaded is not available
+      // Fallback if imagesLoaded is not available (simplified)
       if (isMasonryInstance(masonry)) {
         masonry.appended!(newElements);
       }
       newElements.forEach(el => { el.style.opacity = '1'; });
-      
       requestAnimationFrame(() => {
-        const currentMasonry = masonryRef.current;
-        if (isMasonryInstance(currentMasonry)) {
-          currentMasonry.layout!();
-        }
+         if (isMasonryInstance(masonry)) masonry.layout!();
       });
-      
       loadedCountRef.current += nextPhotos.length;
       setHasMore(loadedCountRef.current < allPhotosRef.current.length);
       setLoadingMore(false);

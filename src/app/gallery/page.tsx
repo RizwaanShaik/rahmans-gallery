@@ -175,6 +175,7 @@ export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isReadyToShow, setIsReadyToShow] = useState(false);
 
   const GALLERY_SCROLL_KEY = 'galleryScrollPos';
 
@@ -195,12 +196,17 @@ export default function Gallery() {
         const timeoutId = setTimeout(() => {
             console.log(`[Mount Effect] Executing scrollTo(${position}) inside setTimeout`);
             window.scrollTo({ top: position, behavior: 'instant' });
+            // Now that scroll is set, allow the page to fade in
+            setIsReadyToShow(true);
+            console.log("[Mount Effect] Set isReadyToShow = true after scroll.");
         }, 100); // Delay by 100ms (adjust if needed)
 
         // Cleanup function to clear timeout if component unmounts quickly
         return () => clearTimeout(timeoutId);
     } else {
-      console.log("[Mount Effect] No saved scroll position found.");
+      console.log("[Mount Effect] No saved scroll position found. Fading in immediately.");
+      // No scroll to restore, fade in right away
+      setIsReadyToShow(true);
     }
      // Run only once on component mount
   }, []);
@@ -243,7 +249,13 @@ export default function Gallery() {
   }, [activeFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isReadyToShow ? 1 : 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+    >
       <div className="container mx-auto px-4 py-8 md:py-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -458,6 +470,6 @@ export default function Gallery() {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
