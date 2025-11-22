@@ -13,7 +13,7 @@ const allCategoryDefinitions = {
   'bidar': {
     id: 'bidar',
     title: 'Bidar',
-    image: `${s3BaseUrl}/bidar/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Bidar/hero/hero.jpeg`,
     description: 'Ancient city in Karnataka with rich historical and architectural significance',
   },
   'warangal': {

@@ -149,7 +149,7 @@ export const downloadS3Image = async (
     console.log('Successfully fetched image blob:', blob.type, blob.size);
     
     let downloadUrl: string;
-    let downloadFilename = filename || decodeURIComponent(url.split('/').pop()?.split('?')[0] || 'download');
+    const downloadFilename = filename || decodeURIComponent(url.split('/').pop()?.split('?')[0] || 'download');
     
     if (addWatermark) {
       try {
