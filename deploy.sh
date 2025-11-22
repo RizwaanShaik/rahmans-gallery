@@ -27,11 +27,27 @@ git clone https://github.com/RizwaanShaik/rahmans-gallery.git .
 # Install dependencies
 npm install
 
-# Build the application
+# Create .env.production file with Supabase credentials
+cat > .env.production << 'ENVEOF'
+NEXT_PUBLIC_SUPABASE_URL=https://yobsydzqblekahndatnh.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=NwILBXKVRdv3A85K3vdz6Cj4NZEOPqi0bn7GxbNKb0zSgD+VWUE+RjPIXg2PuTqbEYkAQN7+xcAtqsEfPDEUcw==
+ENVEOF
+
+# Build the application (environment variables are bundled at build time for NEXT_PUBLIC_*)
 npm run build
 
-# Configure PM2 to start the application
-pm2 start npm --name "rahmans-gallery" -- start
+# Create logs directory for PM2
+mkdir -p logs
+
+# Configure PM2 to start the application using ecosystem config if it exists
+if [ -f "ecosystem.config.js" ]; then
+    pm2 start ecosystem.config.js
+else
+    # Fallback to direct npm start with environment variables
+    NEXT_PUBLIC_SUPABASE_URL=https://yobsydzqblekahndatnh.supabase.co \
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=NwILBXKVRdv3A85K3vdz6Cj4NZEOPqi0bn7GxbNKb0zSgD+VWUE+RjPIXg2PuTqbEYkAQN7+xcAtqsEfPDEUcw== \
+    pm2 start npm --name "rahmans-gallery" -- start
+fi
 
 # Save PM2 process list and configure it to start on boot
 pm2 save

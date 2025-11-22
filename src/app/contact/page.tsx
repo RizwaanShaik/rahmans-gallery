@@ -167,7 +167,7 @@ export default function Contact() {
             variants={fadeInUp}
           >
             <Image 
-              src={`${s3BaseUrl}/Tombs/hero/hero.jpeg`}
+              src={`${s3BaseUrl}/Wildlife/hero/Wildlife_006_hero.jpeg`}
               alt="Professor Rahman" 
               fill
               priority
@@ -381,7 +381,7 @@ export default function Contact() {
             variants={fadeInUp}
           >
             <Image 
-              src={`${s3BaseUrl}/Tombs/hero/hero.jpeg`}
+              src={`${s3BaseUrl}/Wildlife/hero/Wildlife_006_hero.jpeg`}
               alt="Prof. Rahman" 
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
