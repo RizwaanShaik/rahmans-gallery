@@ -193,8 +193,8 @@ const mainCategories = categorySections.map(section => ({
   subcategories: getCategoriesForSection(section.categories)
 }));
 
-// All categories (for search/filter functionality)
-const allCategories = Object.values(allCategoryDefinitions);
+// Type for category definitions
+type CategoryType = typeof allCategoryDefinitions[keyof typeof allCategoryDefinitions];
 
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -277,7 +277,7 @@ export default function Gallery() {
     if (!searchQuery) return [];
     
       const query = searchQuery.toLowerCase().trim();
-    const matches: Array<{ mainCategory: string; subcategory: typeof allCategories[0] }> = [];
+    const matches: Array<{ mainCategory: string; subcategory: CategoryType }> = [];
     
     mainCategories.forEach(mainCat => {
       mainCat.subcategories.forEach(sub => {
@@ -538,7 +538,7 @@ export default function Gallery() {
               <svg className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">No collections found matching "{searchQuery}"</p>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">No collections found matching &quot;{searchQuery}&quot;</p>
               <p className="text-gray-500 dark:text-gray-500 text-sm mb-6">Try searching for:</p>
               <div className="flex flex-wrap justify-center gap-2 mb-6">
                 {['Places', 'Heritage', 'Wildlife', 'Macro', 'Culture'].map((suggestion) => (

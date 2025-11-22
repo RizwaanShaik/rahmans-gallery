@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import FullscreenModal from '@/components/FullscreenModal';
 import { motion } from 'framer-motion';
 import type Masonry from 'masonry-layout';
@@ -579,37 +580,40 @@ export default function CategoryGallery() {
                    pointerEvents: imagesReadyToShow ? 'auto' : 'none'
                  }}
                >
-                   <img
-                     src={photo.src}
-                     alt={photo.alt}
-                     className="block w-full h-auto rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 touch-manipulation"
-                     onClick={() => openModal(index)}
-                     style={{ touchAction: 'manipulation' }}
-                     loading={index < 20 ? "eager" : "lazy"}
-                     decoding="async"
-                     onLoad={(e) => {
-                       // Ensure image has natural dimensions before triggering layout
-                       const img = e.currentTarget;
-                       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-                         // Debounce to avoid excessive calls
-                         if (imagesLoadedTimeoutRef.current) {
-                           clearTimeout(imagesLoadedTimeoutRef.current);
-                         }
-                         imagesLoadedTimeoutRef.current = setTimeout(() => {
-                           if (masonryRef.current && isMasonryInstance(masonryRef.current) && imagesLoadedLibRef.current && gridRef.current) {
-                             // Use imagesLoaded to check all images, then recalculate
-                             imagesLoadedLibRef.current(gridRef.current).on('always', () => {
-                               requestAnimationFrame(() => {
-                                 if (masonryRef.current && isMasonryInstance(masonryRef.current)) {
-                                   masonryRef.current.layout!();
-                                 }
-                               });
-                             });
+                   <div className="relative w-full rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 touch-manipulation" onClick={() => openModal(index)} style={{ touchAction: 'manipulation' }}>
+                     <Image
+                       src={photo.src}
+                       alt={photo.alt}
+                       width={400}
+                       height={600}
+                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                       className="w-full h-auto object-cover rounded-lg"
+                       priority={index < 20}
+                       loading={index < 20 ? "eager" : "lazy"}
+                       onLoad={(e) => {
+                         // Ensure image has natural dimensions before triggering layout
+                         const img = e.currentTarget;
+                         if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+                           // Debounce to avoid excessive calls
+                           if (imagesLoadedTimeoutRef.current) {
+                             clearTimeout(imagesLoadedTimeoutRef.current);
                            }
-                         }, 100);
-                       }
-                     }}
-                   />
+                           imagesLoadedTimeoutRef.current = setTimeout(() => {
+                             if (masonryRef.current && isMasonryInstance(masonryRef.current) && imagesLoadedLibRef.current && gridRef.current) {
+                               // Use imagesLoaded to check all images, then recalculate
+                               imagesLoadedLibRef.current(gridRef.current).on('always', () => {
+                                 requestAnimationFrame(() => {
+                                   if (masonryRef.current && isMasonryInstance(masonryRef.current)) {
+                                     masonryRef.current.layout!();
+                                   }
+                                 });
+                               });
+                             }
+                           }, 100);
+                         }
+                       }}
+                     />
+                   </div>
                </motion.div>
             ))}
           </div>
