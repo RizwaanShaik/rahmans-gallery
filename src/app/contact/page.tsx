@@ -177,7 +177,7 @@ export default function Contact() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <blockquote className="italic text-base">
-                  &quot; “Passion gives you purpose; confidence gives you the courage to live it.”&quot;
+                  &quot;Passion gives you purpose; confidence gives you the courage to live it.&quot;
                 </blockquote>
                 <p className="mt-1 text-sm text-gray-300">- Prof. Rahman</p>
               </div>
@@ -297,7 +297,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full flex justify-center items-center min-h-[52px] py-4 px-6 border border-transparent rounded-lg text-base font-medium text-white transition-all shadow-lg touch-manipulation active:scale-95
+                  className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md text-base font-medium text-white transition-colors shadow-sm
                     ${isSubmitting 
                       ? 'bg-gray-400 cursor-not-allowed' 
                       : isDarkMode 
@@ -381,8 +381,8 @@ export default function Contact() {
             variants={fadeInUp}
           >
             <Image 
-              src={`${s3BaseUrl}/tombs/hero/hero.jpeg`}
-              alt="Professor Rahman" 
+              src={`${s3BaseUrl}/Tombs/hero/hero.jpeg`}
+              alt="Prof. Rahman" 
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
@@ -390,7 +390,7 @@ export default function Contact() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-8">
               <blockquote className="italic text-xl text-white mb-3">
-                &quot;Photography is the story I fail to put into words.&quot;
+                &quot;Passion gives you purpose; confidence gives you the courage to live it.&quot;
               </blockquote>
               <p className="text-gray-300">- Professor Rahman</p>
             </div>
