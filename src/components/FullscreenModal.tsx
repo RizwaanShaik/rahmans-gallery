@@ -35,6 +35,7 @@ export default function FullscreenModal({
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [nextImageLoading, setNextImageLoading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Initialize displayed image
   useEffect(() => {
@@ -178,8 +179,9 @@ export default function FullscreenModal({
     e.preventDefault();
     e.stopPropagation();
 
-    if (!originalImage) return;
+    if (!originalImage || isDownloading) return;
 
+    setIsDownloading(true);
     console.log("Starting optimized download process for base URL:", originalImage);
 
     const baseUrl = originalImage.split('?')[0];
@@ -206,10 +208,11 @@ export default function FullscreenModal({
         
         if (response.ok) {
           console.log(`HEAD request successful for ${urlToCheck}. Proceeding with download.`);
-          // If HEAD is ok, attempt download with the same URL
-          const success = await downloadS3Image(urlToCheck, downloadFilename);
+          // If HEAD is ok, attempt download with watermark
+          const success = await downloadS3Image(urlToCheck, downloadFilename, true, "Prof. Rahman's Gallery");
+          setIsDownloading(false);
           if (success) {
-            console.log("Download initiated successfully!");
+            console.log("Download initiated successfully with watermark!");
             foundUrl = true;
             return; // Exit loop and function on successful download initiation
           } else {
@@ -228,6 +231,7 @@ export default function FullscreenModal({
     // Fallback if no URL was confirmed via HEAD or download failed
     if (!foundUrl) {
       console.log("All HEAD checks/download attempts failed. Opening the initially provided URL in a new tab as a last resort.");
+      setIsDownloading(false);
       // Clean the original URL for the fallback, similar to before
       const cleanOriginalUrl = originalImage.split('?')[0];
       const cleanPath = cleanOriginalUrl.substring(0, cleanOriginalUrl.lastIndexOf('/') + 1);
@@ -264,29 +268,39 @@ export default function FullscreenModal({
           {originalImage ? (
             <button
               onClick={handleDownload}
+              disabled={isDownloading}
               className={`${
                 highContrast 
                   ? 'bg-white text-black border-2 border-black' 
                   : 'bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
-              } min-w-[48px] min-h-[48px] px-4 py-3 rounded-lg transition-all flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base touch-manipulation active:scale-95`}
-              aria-label="Download original quality image"
-              title="Download original quality image"
+              } min-w-[48px] min-h-[48px] px-4 py-3 rounded-lg transition-all flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base touch-manipulation active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
+              aria-label={isDownloading ? "Adding watermark..." : "Download original quality image with watermark"}
+              title="Download original quality image with watermark"
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
-                />
-              </svg>
-              <span className="hidden sm:inline">Download Original</span>
+              {isDownloading ? (
+                <>
+                  <div className={`w-5 h-5 border-2 ${highContrast ? 'border-black/20 border-t-black' : 'border-white/20 border-t-white'} rounded-full animate-spin`}></div>
+                  <span className="hidden sm:inline">Adding Watermark...</span>
+                </>
+              ) : (
+                <>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-5 w-5" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" 
+                    />
+                  </svg>
+                  <span className="hidden sm:inline">Download Original</span>
+                </>
+              )}
             </button>
           ) : (
              <div className="px-3 py-2 opacity-50">
