@@ -37,6 +37,8 @@ export default function CategoryGallery() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [masonryReady, setMasonryReady] = useState(false);
+  const [imagesReadyToShow, setImagesReadyToShow] = useState(false);
   const allPhotosRef = useRef<Photo[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
   const masonryRef = useRef<Masonry | null>(null);
@@ -45,6 +47,7 @@ export default function CategoryGallery() {
   const imagesLoadedLibRef = useRef<any>(null);
   const observerTarget = useRef(null);
   const loadedCountRef = useRef<number>(0);
+  const imagesLoadedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const ITEMS_PER_LOAD = 20;
 
@@ -69,23 +72,66 @@ export default function CategoryGallery() {
       const MasonryLib = masonryLibRef.current;
       const imagesLoadedLib = imagesLoadedLibRef.current;
 
-      const msnry = new MasonryLib(gridRef.current, {
-        itemSelector: `.${MASONRY_ITEM_SELECTOR}`,
-        columnWidth: '.grid-sizer',
-        gutter: 0,
-        percentPosition: true,
-        transitionDuration: 0
-      });
-      masonryRef.current = msnry;
+      const createMasonryInstance = () => {
+        if (!gridRef.current || masonryRef.current || !MasonryLib) return;
+        
+        const msnry = new MasonryLib(gridRef.current, {
+          itemSelector: `.${MASONRY_ITEM_SELECTOR}`,
+          columnWidth: '.grid-sizer',
+          gutter: 0,
+          percentPosition: true,
+          transitionDuration: 0
+        });
+        masonryRef.current = msnry;
 
-      imagesLoadedLib(gridRef.current).on('always', () => {
-        // Delay initial layout slightly
+        // Initial layout after masonry is created
         requestAnimationFrame(() => {
-          const masonry = masonryRef.current;
-          if (masonry) {
-            masonry.layout!();
+          requestAnimationFrame(() => {
+            if (masonryRef.current) {
+              masonryRef.current.layout!();
+              // Mark masonry as ready, then fade in images smoothly
+              setMasonryReady(true);
+              // Small delay before showing images for smooth transition
+              setTimeout(() => {
+                setImagesReadyToShow(true);
+              }, 100);
+            }
+          });
+        });
+      };
+
+      // Wait for ALL images to be loaded with dimensions before initializing masonry
+      const instance = imagesLoadedLib(gridRef.current);
+      
+      instance.on('always', () => {
+        // Verify all images have dimensions before proceeding
+        const images = gridRef.current?.querySelectorAll('img') || [];
+        let allHaveDimensions = true;
+        
+        images.forEach((img: HTMLImageElement) => {
+          if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) {
+            allHaveDimensions = false;
           }
         });
+
+        if (!allHaveDimensions && images.length > 0) {
+          // Some images still loading, wait a bit more and check again
+          setTimeout(() => {
+            if (!gridRef.current || masonryRef.current) return;
+            const retryInstance = imagesLoadedLib(gridRef.current);
+            retryInstance.on('always', () => {
+              setTimeout(() => {
+                createMasonryInstance();
+              }, 50);
+            });
+          }, 150);
+          return;
+        }
+
+        // All images loaded, initialize masonry
+        setTimeout(() => {
+          createMasonryInstance();
+        }, 50);
       });
     }
   }, [libsLoaded]);
@@ -96,6 +142,8 @@ export default function CategoryGallery() {
     setLoadingMore(false);
     setDisplayedPhotos([]);
     setHasMore(true);
+    setMasonryReady(false);
+    setImagesReadyToShow(false);
     allPhotosRef.current = [];
     window.scrollTo(0, 0);
 
@@ -150,6 +198,9 @@ export default function CategoryGallery() {
     fetchPhotos();
 
     return () => {
+      if (imagesLoadedTimeoutRef.current) {
+        clearTimeout(imagesLoadedTimeoutRef.current);
+      }
       if (masonryRef.current) {
         const masonry = masonryRef.current;
         if (isMasonryInstance(masonry)) {
@@ -163,23 +214,48 @@ export default function CategoryGallery() {
   useEffect(() => {
     if (libsLoaded && !loadingInitial && displayedPhotos.length > 0 && gridRef.current) {
       if (!masonryRef.current) {
-         initializeMasonry();
+        // Initialize masonry only after images are loaded
+        initializeMasonry();
       } else {
+        // Recalculate layout when displayedPhotos changes - wait for images to load
         if (imagesLoadedLibRef.current && gridRef.current) {
           imagesLoadedLibRef.current(gridRef.current).on('always', () => {
-            if (masonryRef.current) {
-              requestAnimationFrame(() => {
-                const masonry = masonryRef.current;
-                if (isMasonryInstance(masonry)) {
-                  masonry.layout!();
-                }
-              });
-            }
+            // Wait a bit for images to have dimensions
+            setTimeout(() => {
+              if (masonryRef.current) {
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    const masonry = masonryRef.current;
+                    if (isMasonryInstance(masonry)) {
+                      masonry.layout!();
+                      // After layout recalculation, ensure images are visible
+                      if (!imagesReadyToShow) {
+                        setImagesReadyToShow(true);
+                      }
+                    }
+                  });
+                });
+              }
+            }, 50);
           });
         }
       }
     }
   }, [loadingInitial, displayedPhotos, initializeMasonry, libsLoaded]);
+
+  // Handle window resize to recalculate masonry layout
+  useEffect(() => {
+    const handleResize = () => {
+      if (masonryRef.current && isMasonryInstance(masonryRef.current)) {
+        requestAnimationFrame(() => {
+          masonryRef.current?.layout!();
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const openModal = useCallback((index: number) => {
     if (index >= 0 && index < allPhotosRef.current.length) {
@@ -210,11 +286,11 @@ export default function CategoryGallery() {
     const tempContainer = document.createElement('div');
     const newElements: HTMLElement[] = [];
 
-    nextPhotos.forEach(photo => {
+    nextPhotos.forEach((photo, idx) => {
         const photoDiv = document.createElement('div');
         photoDiv.className = `${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2`;
         photoDiv.style.opacity = '0';
-        photoDiv.style.transition = 'opacity 0.5s ease-in-out';
+        photoDiv.style.transition = `opacity 0.6s ease-out ${idx * 0.03}s`;
         photoDiv.innerHTML = `
             <img src="${photo.src}" alt="${photo.alt}" class="block w-full h-auto rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105" />
         `;
@@ -224,7 +300,7 @@ export default function CategoryGallery() {
                  openModal(globalIndex);
              }
         });
-        tempContainer.appendChild(photoDiv); // Use temp container, although maybe not strictly needed here
+        tempContainer.appendChild(photoDiv);
         newElements.push(photoDiv);
     });
 
@@ -233,13 +309,21 @@ export default function CategoryGallery() {
     if (imagesLoadedLib && isMasonryInstance(masonry)) {
       imagesLoadedLib(newElements).on('always', () => {
         masonry.appended!(newElements);
-        newElements.forEach(el => { el.style.opacity = '1'; }); // Fade in
         
+        // Wait for masonry layout before fading in
         requestAnimationFrame(() => {
-          const currentMasonry = masonryRef.current;
-          if (isMasonryInstance(currentMasonry)) {
-            currentMasonry.layout!();
-          }
+          requestAnimationFrame(() => {
+            const currentMasonry = masonryRef.current;
+            if (isMasonryInstance(currentMasonry)) {
+              currentMasonry.layout!();
+              // Fade in images after layout is calculated
+              setTimeout(() => {
+                newElements.forEach(el => { 
+                  el.style.opacity = '1'; 
+                });
+              }, 50);
+            }
+          });
         });
         
         loadedCountRef.current += nextPhotos.length;
@@ -251,9 +335,15 @@ export default function CategoryGallery() {
       if (isMasonryInstance(masonry)) {
         masonry.appended!(newElements);
       }
-      newElements.forEach(el => { el.style.opacity = '1'; });
       requestAnimationFrame(() => {
-         if (isMasonryInstance(masonry)) masonry.layout!();
+        requestAnimationFrame(() => {
+          if (isMasonryInstance(masonry)) {
+            masonry.layout!();
+            setTimeout(() => {
+              newElements.forEach(el => { el.style.opacity = '1'; });
+            }, 50);
+          }
+        });
       });
       loadedCountRef.current += nextPhotos.length;
       setHasMore(loadedCountRef.current < allPhotosRef.current.length);
@@ -408,14 +498,50 @@ export default function CategoryGallery() {
           <div ref={gridRef} className="masonry-grid -m-2">
             <div className="grid-sizer w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"></div>
             {displayedPhotos.map((photo, index) => (
-               <div key={photo.id} className={`${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2`}>
+               <motion.div 
+                 key={photo.id} 
+                 className={`${MASONRY_ITEM_SELECTOR} w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2`}
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: imagesReadyToShow ? 1 : 0 }}
+                 transition={{ 
+                   duration: 0.6, 
+                   delay: index * 0.03,
+                   ease: "easeOut"
+                 }}
+                 style={{ 
+                   opacity: imagesReadyToShow ? 1 : 0,
+                   pointerEvents: imagesReadyToShow ? 'auto' : 'none'
+                 }}
+               >
                    <img
                      src={photo.src}
                      alt={photo.alt}
                      className="block w-full h-auto rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105"
                      onClick={() => openModal(index)}
+                     onLoad={(e) => {
+                       // Ensure image has natural dimensions before triggering layout
+                       const img = e.currentTarget;
+                       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+                         // Debounce to avoid excessive calls
+                         if (imagesLoadedTimeoutRef.current) {
+                           clearTimeout(imagesLoadedTimeoutRef.current);
+                         }
+                         imagesLoadedTimeoutRef.current = setTimeout(() => {
+                           if (masonryRef.current && isMasonryInstance(masonryRef.current) && imagesLoadedLibRef.current && gridRef.current) {
+                             // Use imagesLoaded to check all images, then recalculate
+                             imagesLoadedLibRef.current(gridRef.current).on('always', () => {
+                               requestAnimationFrame(() => {
+                                 if (masonryRef.current && isMasonryInstance(masonryRef.current)) {
+                                   masonryRef.current.layout!();
+                                 }
+                               });
+                             });
+                           }
+                         }, 100);
+                       }
+                     }}
                    />
-               </div>
+               </motion.div>
             ))}
           </div>
         )}
