@@ -11,66 +11,57 @@ interface Photo {
   downloadUrl: string;
 }
 
-// Map URL-friendly IDs to directory names
+// Map URL-friendly IDs to directory names (updated to match new folder structure)
 const categoryDirMap: { [key: string]: string } = {
-  'architecture': 'architecture',
-  'air-show': 'airshow',
-  'b-and-w': 'bandw',
-  'bidar': 'bidar',
-  'clouds': 'clouds',
-  'featured': 'featured',
-  'festivals': 'festivals',
-  'hampi': 'hampi',
-  'heritage': 'heritage',
-  'hyderabad': 'hyderabad',
-  'kanhari-caves': 'kanharicaves',
-  'kolkata-streets': 'kolkatastreets2001',
-  'landscapes': 'landscapes',
-  'ladakh': 'ladakh',
-  'lanka': 'lanka',
-  'lockdown': 'lockdown',
-  'london': 'london',
-  'macro': 'macro',
-  'rachakonda': 'rachakonda',
-  'rajasthan': 'rajasthan',
-  'rock-forms': 'rockforms',
-  'tadoba': 'tadoba',
-  'thai': 'thai',
-  'tombs': 'tombs',
-  'warangal': 'warangal',
-  'wildlife': 'wildlife'
+  'air-show': 'Aviation',
+  'b-and-w': 'Black',
+  'bidar': 'Bidar',
+  'landscapes': 'Landscapes',
+  'featured': 'Featured',
+  'culture': 'Culture',
+  'hampi': 'Hampi',
+  'heritage': 'Heritage',
+  'hyderabad': 'Hyderabad',
+  'kanhari-caves': 'KanhariCaves',
+  'kolkata-streets': 'Kolkata',
+  'ladakh': 'Ladakh',
+  'london': 'London',
+  'macro': 'Macro',
+  'rajasthan': 'Rajasthan',
+  'rock-forms': 'RockFormations',
+  'thai': 'Thailand',
+  'tombs': 'Tombs',
+  'warangal': 'Warangal',
+  'wildlife': 'Wildlife',
+  'portraits': 'Portraits'
 };
 
-// S3 bucket base URL
+// S3 bucket base URL (no categories/ prefix - direct folder structure)
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
 
-// Structure to hold filenames for each category (replace switch logic)
+// Structure to hold filenames for each category (updated to match new naming: Category_001, Category_002, etc.)
+// Note: Base names without extension - extensions are added in createPhotoObject
 const categoryPhotosData: { [key: string]: string[] } = {
-  'air-show': ['003', '007', 'DSC_0334copy', 'DSC_0346copy', 'DSC_0367copy', 'DSC_0591copy', 'DSC_0779copy', 'DSC_0784copy', 'DSC_0808copy', 'DSC_0891copy', 'fullcircle', 'hero', 'missionpossible', 'skyisthelimit'],
-  'warangal': ['003', '005', '006', '007', '008', '009', '010', '011', '012', '013', 'hero'],
-  'b-and-w': ['Proposaldiscussion', 'beautyindome', 'bridgingthehistory', 'gloryofhistory-', 'hero', 'leadingtheshadow-Copy', 'mysticcloudsCopy', 'peopleandmonument', 'protectingmonument', 'symmentry'],
-  'bidar': ['002', '003', '004', '005', '006-1', '007', '008', 'hero'],
-  'clouds': ['001', 'SKR_0922', 'SKR_0925', 'SKR_0942', 'SKR_0952', 'SKR_1126', 'SKR_1262', 'SKR_1431', 'SKR_1500', 'hero'],
-  'featured': ['east meets west', 'end of the day fishing', 'everyday new sunrise', 'farm sweet farm', 'farmer', 'feeding the nation', 'flying into the light', 'following shadows', 'for a last catch', 'forgotten fort', 'fountain of glory', 'freedom', 'glory of history', 'godslight', 'happiness of a full meal', 'happy mother and child', 'heritage vs modern', 'hero', 'hidden landscape', 'history standing tall', 'history standing tall 1', 'history though the arch', 'innocent', 'into the divinity', 'into the future', 'into the raising sun', 'lady luck', 'last costomer', 'last fight', 'last minute discussion', 'leading into the history', 'leaf in pebbles', 'leave us alone', 'limited sunshine', 'live start fresh again', 'lone fighter', 'lone passenger', 'lonely bird', 'lonely boat', 'looking for livelihood', 'loosing nature', 'love birds', 'maharaja entrance', 'mansbestfriend', 'matching with trends', 'modern circle', 'monk in kalachakra', 'monkey family', 'mothers anxiety', 'mountain river', 'mystic clouds', 'mystique ladakh', 'mystique rocks', 'nature at its best', 'nature at its best 1', 'nature at its best 2', 'nature through rocky window', 'natures window', 'old habits die hard', 'oldage freinds', 'one for you', 'passing clouds', 'passing clouds 2', 'passing clouds 2 - Copy', 'past glory', 'past glory 2', 'pattern houses', 'people and monument 2', 'pillar of power', 'pooja item seller', 'prayers for rain', 'prayers for rains', 'proposal discussion', 'protected history', 'proud mother', 'purity in the river', 'rays of hope', 'resting', 'resting boats', 'rich mans lexury', 'rivers of babylon', 'rivers of mountain', 'rocky form', 'row houses', 'rush hour', 'saint and the follower', 'selfie lovers', 'shadows of history', 'shanthi in the mountains', 'sharing food', 'shyness', 'sky is the limit', 'social distancing', 'still beautiful', 'surrendered to devine', 'surrendered to god', 'swatch bharath', 'symmentric arches', 'tasty colors', 'temple light and shadows', 'temple peak', 'tibal', 'traveller', 'travellors', 'trough the arch', 'twilight beauty', 'urban dhobhi ghat', 'urban landscape', 'urban relaxation', 'view from the top', 'village beauty', 'women at work', 'women freedom'],
-  'festivals': ['001', '005(1of1)', '006(1of1)', '007(1of1)', '008(1of1)', 'DSC_0018', 'DSC_0019', 'DSC_0020(2)', 'DSC_0045', 'DSC_0131', 'DSC_0132', 'DSC_0138', 'DSC_0206', 'DSC_0231', 'DSC_0239', 'DSC_0269', 'DSC_0483', 'DSC_0510', 'DSC_0513', 'DSC_0570', 'DSC_0837', 'DSC_0867', 'DSC_0889', 'DSC_0937', 'hero'],
-  'hampi': ['001', '002', '003', '004', '005', '007', '008', '009', '010', '011', 'hero'],
-  'heritage': ['001(1of1)', '003(1of1)', '2020(1of1)', '2525(1of1)', 'DSC_0045', 'DSC_0289', 'DSC_0475', 'abidschurch', 'airportmasque', 'assembly', 'charminar', 'charminar2', 'charminarlong', 'chowmohallapalace', 'golconda', 'hero', 'kachiguda', 'koticollege', 'koticollege2', 'koticollege3', 'mmmarket', 'meccamasque', 'mehboobmansion', 'musheerabadmasque', 'paigahtombs', 'puranihaveli', 'puraniidgah', 'puttishouse', 'tumbs', 'yousufhose'],
-  'hyderabad': ['DSC_0012', 'SKR_1622', 'SKR_2274', 'SKR_2338', 'SKR_2409', 'SKR_2495', 'SKR_2545', 'SKR_2883-1', 'SKR_2992', 'SKR_3321', 'hero'],
-  'kanhari-caves': ['DSC_0657', 'DSC_0699', 'DSC_0716', 'DSC_0721', 'DSC_0734', 'DSC_0775', 'DSC_0879', 'DSC_0904', 'hero'],
-  'kolkata-streets': ['001', '24150021', '24150022', '24150023', '24150024', '24150025', '24150028', '24150034', '24150036', '24150041', '24150042', '24150043', '24150045', 'hero'],
-  'ladakh': ['DSC_0007copy', 'DSC_0011copy', 'DSC_0023copy', 'DSC_0031copy', 'DSC_0039copy', 'DSC_0050copy', 'DSC_0056copy', 'DSC_0057copy', 'DSC_0067copy', 'DSC_0189copy', 'DSC_0218copy', 'DSC_0286copy', 'DSC_0320copy', 'DSC_0325copy', 'DSC_0546copy', 'DSC_0675copy', 'DSC_0728copy', 'DSC_0973copy', 'abstract', 'blossom', 'discipline', 'hero', 'purity', 'waytogo', 'windowworld'],
-  'landscapes': ['001', 'DSC_0064(2)', 'DSC_0174', 'IMG_1077', 'hero'],
-  'lanka': ['DSC_0132', 'DSC_0137', 'DSC_0217', 'DSC_0376', 'DSC_0441', 'DSC_0465', 'DSC_0507', 'DSC_0767', 'DSC_0826', 'hero'],
-  'lockdown': ['DSC_0150', 'hero'],
-  'london': ['DSC_0002', 'DSC_0003', 'DSC_0004', 'DSC_0007', 'DSC_0007_2', 'DSC_0022', 'DSC_0030', 'DSC_0031', 'DSC_0033', 'DSC_0051', 'DSC_0068', 'DSC_0069', 'DSC_0072', 'DSC_0087', 'DSC_0091', 'DSC_0099', 'DSC_0110_2', 'DSC_0112', 'DSC_0113', 'DSC_0123', 'DSC_0133', 'DSC_0138', 'DSC_0141', 'DSC_0149', 'DSC_0159_2', 'DSC_0178', 'DSC_0189', 'DSC_0197', 'DSC_0199', 'DSC_0203', 'DSC_0225', 'DSC_0240', 'DSC_0246', 'DSC_0259', 'DSC_0266', 'DSC_0276', 'DSC_0285', 'DSC_0308', 'DSC_0342', 'DSC_0345', 'DSC_0370', 'DSC_0391', 'DSC_0444', 'hero'],
-  'macro': ['01(1of1)', '119(1of1)', 'AAAA(1of1)', 'AJAY8601', 'DSC_0167', 'DSC_0413copy', 'DSC_0432(2)copy', 'DSC_0868copy', 'DSC_1463acopy', 'DSC_1631', 'DSC_1690', '_H6A9162', '_H6A9381', '_MG_5440000', '_MG_5530', 'hero'],
-  'rachakonda': ['003', '008', '009', 'hero'],
-  'rajasthan': ['01_8', '03', '03_2', '03_4', '05', '05_6', '07', '08_5', '11_4', '14_4', '16_5', '18_4', '27_2', '46', 'DSC_0076', 'DSC_0132', 'DSC_0158', 'DSC_0184', 'DSC_0501', 'hero'],
-  'rock-forms': ['03', '04', '06', '08', '09', '10', '12', '17', '20', '22', '24', '25', 'hero'],
-  'tadoba': ['011', '012', '017', '024', 'hero'],
-  'thai': ['001', 'DSC_0006', 'DSC_0020', 'DSC_0024', 'DSC_0027', 'DSC_0029', 'DSC_0030', 'DSC_0075', 'DSC_0075(2)', 'DSC_0086', 'DSC_0116', 'DSC_0116(2)', 'DSC_0170', 'DSC_0328', 'DSC_0366', 'DSC_0449', 'DSC_0467', 'DSC_0481', 'DSC_0515', 'DSC_0539', 'DSC_0547', 'DSC_0561', 'DSC_0567', 'DSC_0718', 'DSC_0744', 'DSC_0836', 'DSC_0845', 'hero'],
-  'tombs': ['DSC_0432', 'DSC_0466', 'hero', 'x00', 'x01', 'x010', 'x011', 'x012', 'x013', 'x014', 'x015', 'x016', 'x017', 'x018', 'x02', 'x021', 'x022', 'x023', 'x024', 'x025', 'x026', 'x027', 'x028', 'x029', 'x03', 'x031', 'x04', 'x05', 'x06', 'x07', 'x09', 'x100'],
-  'wildlife': ['005', 'DSC_0011', 'DSC_0025', 'DSC_0036', 'DSC_0083', 'DSC_0086', 'DSC_0087', 'DSC_0096', 'DSC_0155', 'DSC_0160', 'DSC_0189', 'DSC_0212', 'DSC_0228', 'DSC_0259', 'DSC_0457', 'DSC_0539', 'DSC_0541', 'DSC_0995', 'Elephants', 'Fishes', 'Fox', 'RedPanda', 'hero', 'picture']
+  'air-show': ['Aviation_001', 'Aviation_002', 'Aviation_003', 'Aviation_004', 'Aviation_005', 'Aviation_006', 'Aviation_007', 'Aviation_008', 'Aviation_009', 'Aviation_010', 'Aviation_011', 'Aviation_012', 'Aviation_013', 'hero'],
+  'warangal': ['Warangal_001', 'Warangal_002', 'Warangal_003', 'Warangal_004', 'Warangal_005', 'Warangal_006', 'Warangal_007', 'Warangal_008', 'Warangal_009', 'Warangal_010', 'hero'],
+  'b-and-w': ['Black_001', 'Black_002', 'Black_003', 'Black_004', 'Black_005', 'Black_006', 'Black_007', 'Black_008', 'Black_009', 'Black_010', 'Black_011', 'Black_012', 'hero'],
+  'bidar': ['Bidar_001', 'Bidar_002', 'Bidar_003', 'Bidar_004', 'Bidar_005', 'Bidar_006', 'Bidar_007', 'hero'],
+  'landscapes': ['Landscapes_001', 'Landscapes_002', 'Landscapes_003', 'Landscapes_004', 'Landscapes_005', 'Landscapes_006', 'Landscapes_007', 'Landscapes_008', 'Landscapes_009', 'Landscapes_010', 'Landscapes_011', 'Landscapes_012', 'Landscapes_013', 'Landscapes_014', 'Landscapes_015', 'Landscapes_016', 'Landscapes_017', 'Landscapes_018', 'Landscapes_019', 'hero'],
+  'featured': ['Featured_001', 'Featured_002', 'Featured_003', 'Featured_004', 'Featured_005', 'Featured_006', 'Featured_007', 'Featured_008', 'Featured_009', 'Featured_010', 'Featured_011', 'Featured_012', 'Featured_013', 'Featured_014', 'Featured_015', 'Featured_016', 'Featured_017', 'Featured_018', 'Featured_019', 'Featured_020', 'Featured_021', 'Featured_022', 'Featured_023', 'Featured_024', 'Featured_025', 'hero'],
+  'culture': ['Culture_001', 'Culture_002', 'Culture_003', 'Culture_004', 'Culture_005', 'Culture_006', 'Culture_007', 'Culture_008', 'Culture_009', 'Culture_010', 'Culture_011', 'Culture_012', 'Culture_013', 'Culture_014', 'Culture_015', 'Culture_016', 'Culture_017', 'Culture_018', 'Culture_019', 'hero'],
+  'hampi': ['Hampi_001', 'Hampi_002', 'Hampi_003', 'Hampi_004', 'Hampi_005', 'Hampi_006', 'Hampi_007', 'Hampi_008', 'Hampi_009', 'Hampi_010', 'hero'],
+  'heritage': ['Heritage_001', 'Heritage_002', 'Heritage_003', 'Heritage_004', 'Heritage_005', 'Heritage_006', 'Heritage_007', 'Heritage_008', 'hero'],
+  'hyderabad': ['Hyderabad_001', 'Hyderabad_002', 'Hyderabad_003', 'Hyderabad_004', 'Hyderabad_005', 'Hyderabad_006', 'Hyderabad_007', 'Hyderabad_008', 'Hyderabad_009', 'Hyderabad_010', 'Hyderabad_011', 'Hyderabad_012', 'Hyderabad_013', 'Hyderabad_014', 'Hyderabad_015', 'Hyderabad_016', 'Hyderabad_017', 'Hyderabad_018', 'Hyderabad_019', 'Hyderabad_020', 'Hyderabad_021', 'Hyderabad_022', 'Hyderabad_023', 'Hyderabad_024', 'Hyderabad_025', 'Hyderabad_026', 'Hyderabad_027', 'Hyderabad_028', 'Hyderabad_029', 'Hyderabad_030', 'Hyderabad_031', 'Hyderabad_032', 'Hyderabad_033', 'hero'],
+  'kanhari-caves': ['KanhariCaves_001', 'KanhariCaves_002', 'KanhariCaves_003', 'KanhariCaves_004', 'KanhariCaves_005', 'KanhariCaves_006', 'KanhariCaves_007', 'KanhariCaves_008', 'hero'],
+  'kolkata-streets': ['Kolkata_001', 'Kolkata_002', 'Kolkata_003', 'Kolkata_004', 'Kolkata_005', 'Kolkata_006', 'Kolkata_007', 'Kolkata_008', 'Kolkata_009', 'Kolkata_010', 'Kolkata_011', 'Kolkata_012', 'Kolkata_013', 'Kolkata_014', 'Kolkata_015', 'hero'],
+  'ladakh': ['Ladakh_001', 'Ladakh_002', 'Ladakh_003', 'Ladakh_004', 'Ladakh_005', 'Ladakh_006', 'Ladakh_007', 'Ladakh_008', 'Ladakh_009', 'Ladakh_010', 'Ladakh_011', 'Ladakh_012', 'Ladakh_013', 'Ladakh_014', 'Ladakh_015', 'Ladakh_016', 'Ladakh_017', 'Ladakh_018', 'Ladakh_019', 'Ladakh_020', 'Ladakh_021', 'Ladakh_022', 'Ladakh_023', 'Ladakh_024', 'Ladakh_025', 'Ladakh_026', 'Ladakh_027', 'Ladakh_028', 'Ladakh_029', 'hero'],
+  'london': ['London_001', 'London_002', 'London_003', 'London_004', 'London_005', 'London_006', 'London_007', 'London_008', 'London_009', 'London_010', 'London_011', 'London_012', 'London_013', 'London_014', 'London_015', 'London_016', 'London_017', 'London_018', 'London_019', 'London_020', 'London_021', 'London_022', 'London_023', 'London_024', 'London_025', 'London_026', 'London_027', 'London_028', 'London_029', 'London_030', 'London_031', 'London_032', 'London_033', 'London_034', 'London_035', 'London_036', 'London_037', 'London_038', 'London_039', 'London_040', 'London_041', 'London_042', 'London_043', 'London_044', 'hero'],
+  'macro': ['Macro_001', 'Macro_002', 'Macro_003', 'Macro_004', 'Macro_005', 'Macro_006', 'Macro_007', 'Macro_008', 'Macro_009', 'Macro_010', 'Macro_011', 'Macro_012', 'Macro_013', 'Macro_014', 'Macro_015', 'Macro_016', 'Macro_017', 'Macro_018', 'Macro_019', 'hero'],
+  'rajasthan': ['Rajasthan_001', 'Rajasthan_002', 'Rajasthan_003', 'Rajasthan_004', 'Rajasthan_005', 'Rajasthan_006', 'Rajasthan_007', 'Rajasthan_008', 'Rajasthan_009', 'Rajasthan_010', 'Rajasthan_011', 'Rajasthan_012', 'Rajasthan_013', 'Rajasthan_014', 'Rajasthan_015', 'Rajasthan_016', 'Rajasthan_017', 'Rajasthan_018', 'Rajasthan_019', 'Rajasthan_020', 'Rajasthan_021', 'Rajasthan_022', 'hero'],
+  'rock-forms': ['RockFormations_001', 'RockFormations_002', 'RockFormations_003', 'RockFormations_004', 'RockFormations_005', 'RockFormations_006', 'RockFormations_007', 'RockFormations_008', 'RockFormations_009', 'RockFormations_010', 'RockFormations_011', 'RockFormations_012', 'RockFormations_013', 'RockFormations_014', 'RockFormations_015', 'RockFormations_016', 'RockFormations_017', 'RockFormations_018', 'RockFormations_019', 'RockFormations_020', 'hero'],
+  'thai': ['Thailand_001', 'Thailand_002', 'Thailand_003', 'Thailand_004', 'Thailand_005', 'Thailand_006', 'Thailand_007', 'Thailand_008', 'Thailand_009', 'Thailand_010', 'Thailand_011', 'Thailand_012', 'Thailand_013', 'Thailand_014', 'Thailand_015', 'Thailand_016', 'Thailand_017', 'Thailand_018', 'Thailand_019', 'Thailand_020', 'Thailand_021', 'Thailand_022', 'Thailand_023', 'Thailand_024', 'Thailand_025', 'Thailand_026', 'Thailand_027', 'Thailand_028', 'Thailand_029', 'Thailand_030', 'Thailand_031', 'Thailand_032', 'Thailand_033', 'Thailand_034', 'Thailand_035', 'hero'],
+  'tombs': ['Tombs_001', 'Tombs_002', 'Tombs_003', 'Tombs_004', 'Tombs_005', 'Tombs_006', 'Tombs_007', 'Tombs_008', 'Tombs_009', 'Tombs_010', 'Tombs_011', 'Tombs_012', 'Tombs_013', 'Tombs_014', 'Tombs_015', 'Tombs_016', 'Tombs_017', 'Tombs_018', 'Tombs_019', 'Tombs_020', 'Tombs_021', 'Tombs_022', 'Tombs_023', 'Tombs_024', 'Tombs_025', 'Tombs_026', 'Tombs_027', 'Tombs_028', 'Tombs_029', 'Tombs_030', 'Tombs_031', 'hero'],
+  'wildlife': ['Wildlife_001', 'Wildlife_002', 'Wildlife_003', 'Wildlife_004', 'Wildlife_005', 'Wildlife_006', 'Wildlife_007', 'Wildlife_008', 'Wildlife_009', 'Wildlife_010', 'Wildlife_011', 'Wildlife_012', 'Wildlife_013', 'Wildlife_014', 'Wildlife_015', 'Wildlife_016', 'Wildlife_017', 'Wildlife_018', 'Wildlife_019', 'Wildlife_020', 'Wildlife_021', 'Wildlife_022', 'Wildlife_023', 'Wildlife_024', 'Wildlife_025', 'Wildlife_026', 'Wildlife_027', 'Wildlife_028', 'Wildlife_029', 'Wildlife_030', 'Wildlife_031', 'Wildlife_032', 'Wildlife_033', 'hero']
 };
 
 // Function to create a photo object with S3 URLs (same as before)
@@ -79,16 +70,18 @@ const createPhotoObject = (baseName: string, categoryId: string, dirName: string
   const uniqueId = `${categoryId}-${baseName}-${Math.random().toString(36).substring(2, 9)}`;
   const cleanedBaseName = baseName.replace(/[ '\"](?!\([^)]*\))/g, "");
 
-  const thumbnailUrl = `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/thumbnails/${cleanedBaseName}.jpeg`;
+  // New S3 structure: Aviation/thumbnails/, Aviation/fullscreen/, Aviation/{original_images}
+  // Note: original images are directly in category folder
+  const thumbnailUrl = `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/thumbnails/${cleanedBaseName}.jpeg`;
 
   return {
     id: uniqueId,
     src: thumbnailUrl,
-    fullscreenSrc: `${s3BaseUrl}/categories/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/fullscreen/${cleanedBaseName}.jpeg`,
-    originalSrc: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg`,
+    fullscreenSrc: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/fullscreen/${cleanedBaseName}.jpeg`,
+    originalSrc: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpg`,
     alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
     description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-    downloadUrl: `${s3BaseUrl}/categories/original/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpeg`
+    downloadUrl: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpg`
   };
 };
 

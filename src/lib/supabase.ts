@@ -11,12 +11,20 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Check if environment variables are set
+// Only throw error in production - in development, allow graceful degradation
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('[Supabase Init] Missing Supabase environment variables (NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY)');
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('[Supabase Init] Missing Supabase environment variables (NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY)');
+  } else {
+    console.warn('[Supabase Init] Supabase not configured. Contact form submissions will not be saved.');
+  }
 }
 
 // Create and export the Supabase client
 // Type is explicitly SupabaseClient
-const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+// Use dummy values if not configured (for development only)
+const supabase: SupabaseClient = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createClient('https://placeholder.supabase.co', 'placeholder-key');
 
 export { supabase }; 

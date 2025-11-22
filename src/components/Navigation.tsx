@@ -66,8 +66,9 @@ export default function Navigation() {
           <div className="flex items-center sm:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="relative w-10 h-10 flex justify-center items-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              className="relative min-w-[44px] min-h-[44px] w-11 h-11 flex justify-center items-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 touch-manipulation active:scale-95 transition-transform"
               aria-expanded={isMobileMenuOpen}
+              aria-label="Toggle navigation menu"
             >
               <span className="sr-only">Open main menu</span>
               <div className="absolute w-5 flex flex-col items-center">
@@ -104,7 +105,7 @@ export default function Navigation() {
               key={link.href}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-6 py-3 text-base font-medium ${
+              className={`block px-6 py-4 min-h-[48px] text-base font-medium touch-manipulation active:bg-gray-200 dark:active:bg-gray-600 ${
                 isActive(link.href)
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-l-4 border-blue-500 dark:border-blue-400'
                   : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white hover:border-l-4 hover:border-gray-300 dark:hover:border-gray-500'

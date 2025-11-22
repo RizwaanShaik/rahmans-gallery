@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import FullscreenModal from '@/components/FullscreenModal';
 import { motion } from 'framer-motion';
 import type Masonry from 'masonry-layout';
@@ -73,15 +74,15 @@ export default function CategoryGallery() {
 
       const createMasonryInstance = () => {
         if (!gridRef.current || masonryRef.current || !MasonryLib) return;
-        
-        const msnry = new MasonryLib(gridRef.current, {
-          itemSelector: `.${MASONRY_ITEM_SELECTOR}`,
-          columnWidth: '.grid-sizer',
-          gutter: 0,
-          percentPosition: true,
-          transitionDuration: 0
-        });
-        masonryRef.current = msnry;
+
+      const msnry = new MasonryLib(gridRef.current, {
+        itemSelector: `.${MASONRY_ITEM_SELECTOR}`,
+        columnWidth: '.grid-sizer',
+        gutter: 0,
+        percentPosition: true,
+        transitionDuration: 0
+      });
+      masonryRef.current = msnry;
 
         // Initial layout after masonry is created
         requestAnimationFrame(() => {
@@ -120,7 +121,7 @@ export default function CategoryGallery() {
               setTimeout(() => {
                 createMasonryInstance();
               }, 50);
-            });
+        });
           }, 150);
           return;
         }
@@ -211,27 +212,27 @@ export default function CategoryGallery() {
     if (libsLoaded && !loadingInitial && displayedPhotos.length > 0 && gridRef.current) {
       if (!masonryRef.current) {
         // Initialize masonry only after images are loaded
-        initializeMasonry();
+         initializeMasonry();
       } else {
         // Recalculate layout when displayedPhotos changes - wait for images to load
         if (imagesLoadedLibRef.current && gridRef.current) {
           imagesLoadedLibRef.current(gridRef.current).on('always', () => {
             // Wait a bit for images to have dimensions
             setTimeout(() => {
-              if (masonryRef.current) {
+            if (masonryRef.current) {
                 requestAnimationFrame(() => {
-                  requestAnimationFrame(() => {
-                    const masonry = masonryRef.current;
-                    if (isMasonryInstance(masonry)) {
-                      masonry.layout!();
+              requestAnimationFrame(() => {
+                const masonry = masonryRef.current;
+                if (isMasonryInstance(masonry)) {
+                  masonry.layout!();
                       // After layout recalculation, ensure images are visible
                       if (!imagesReadyToShow) {
                         setImagesReadyToShow(true);
                       }
-                    }
+                }
                   });
-                });
-              }
+              });
+            }
             }, 50);
           });
         }
@@ -308,10 +309,10 @@ export default function CategoryGallery() {
         
         // Wait for masonry layout before fading in
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const currentMasonry = masonryRef.current;
-            if (isMasonryInstance(currentMasonry)) {
-              currentMasonry.layout!();
+        requestAnimationFrame(() => {
+          const currentMasonry = masonryRef.current;
+          if (isMasonryInstance(currentMasonry)) {
+            currentMasonry.layout!();
               // Fade in images after layout is calculated
               setTimeout(() => {
                 newElements.forEach(el => { 
@@ -438,8 +439,63 @@ export default function CategoryGallery() {
     );
   }
 
+  // Get breadcrumb path based on category
+  const getBreadcrumbs = () => {
+    const crumbs = [
+      { label: 'Home', href: '/' },
+      { label: 'Gallery', href: '/gallery' }
+    ];
+
+    // Determine parent category
+    const placesCategories = ['bidar', 'warangal', 'kanhari-caves', 'hampi', 'kolkata-streets', 'ladakh', 'london', 'rajasthan', 'thai', 'hyderabad'];
+    const heritageCategories = ['heritage', 'tombs', 'culture'];
+    const natureCategories = ['wildlife', 'landscapes', 'rock-forms'];
+    const styleCategories = ['macro', 'b-and-w', 'air-show'];
+
+    if (placesCategories.includes(categoryId)) {
+      crumbs.push({ label: 'Places', href: '/gallery/places' });
+    } else if (heritageCategories.includes(categoryId)) {
+      crumbs.push({ label: 'Heritage & History', href: '/gallery/heritage-history' });
+    } else if (natureCategories.includes(categoryId)) {
+      crumbs.push({ label: 'Nature & Wildlife', href: '/gallery/nature-wildlife' });
+    } else if (styleCategories.includes(categoryId)) {
+      crumbs.push({ label: 'Photography Styles', href: '/gallery/photography-styles' });
+    }
+
+    crumbs.push({ label: formatCategoryName(categoryId), href: '' });
+    return crumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+  const imageCount = allPhotosRef.current.length;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+      {/* Breadcrumbs */}
+      <nav className="container mx-auto px-4 py-4 md:py-6" aria-label="Breadcrumb">
+        <ol className="flex items-center space-x-2 text-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
+          {breadcrumbs.map((crumb, index) => (
+            <li key={index} className="flex items-center flex-shrink-0">
+              {index > 0 && (
+                <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-400 mx-1 md:mx-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              )}
+              {crumb.href ? (
+                <Link
+                  href={crumb.href}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors min-h-[44px] flex items-center px-1"
+                >
+                  {crumb.label}
+                </Link>
+              ) : (
+                <span className="text-gray-900 dark:text-white font-medium min-h-[44px] flex items-center px-1">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       {heroImage && (
         <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
           <div 
@@ -453,7 +509,7 @@ export default function CategoryGallery() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
           <button
             onClick={handleBack}
-            className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 p-3 rounded-full transition-all duration-300 shadow-lg"
+            className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 p-3 md:p-4 rounded-full transition-all duration-300 shadow-lg min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             aria-label="Back to gallery"
           >
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -471,9 +527,9 @@ export default function CategoryGallery() {
             </h1>
             <div className="flex items-center text-white/80">
               <span className="text-sm md:text-base">
-                {allPhotosRef.current.length > 0
-                  ? `${allPhotosRef.current.length} photo${allPhotosRef.current.length !== 1 ? 's' : ''}`
-                  : `0 photos`
+                {imageCount > 0
+                  ? `${imageCount} ${imageCount === 1 ? 'image' : 'images'}`
+                  : `0 images`
                 }
               </span>
             </div>
@@ -483,10 +539,24 @@ export default function CategoryGallery() {
 
       <div className="container mx-auto px-4 py-8">
         {loadingInitial && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array.from({ length: ITEMS_PER_LOAD }).map((_, index) => (
-              <div key={index} className="bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse h-[250px]"></div>
-            ))}
+          <div className="masonry-grid -m-2">
+            <div className="grid-sizer w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"></div>
+            {Array.from({ length: ITEMS_PER_LOAD }).map((_, index) => {
+              // Vary heights to match masonry layout
+              const heights = [200, 250, 300, 280, 220, 260, 240, 270];
+              const height = heights[index % heights.length];
+              return (
+                <div 
+                  key={index} 
+                  className="grid-item w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 mb-4 box-border p-2"
+                >
+                  <div 
+                    className="bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse w-full"
+                    style={{ height: `${height}px` }}
+                  ></div>
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -512,8 +582,11 @@ export default function CategoryGallery() {
                    <img
                      src={photo.src}
                      alt={photo.alt}
-                     className="block w-full h-auto rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105"
+                     className="block w-full h-auto rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 touch-manipulation"
                      onClick={() => openModal(index)}
+                     style={{ touchAction: 'manipulation' }}
+                     loading={index < 20 ? "eager" : "lazy"}
+                     decoding="async"
                      onLoad={(e) => {
                        // Ensure image has natural dimensions before triggering layout
                        const img = e.currentTarget;

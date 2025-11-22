@@ -267,8 +267,8 @@ export default function FullscreenModal({
               className={`${
                 highContrast 
                   ? 'bg-white text-black border-2 border-black' 
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              } px-3 py-2 rounded-lg transition-colors flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base`}
+                  : 'bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
+              } min-w-[48px] min-h-[48px] px-4 py-3 rounded-lg transition-all flex items-center gap-2 backdrop-blur-sm focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base touch-manipulation active:scale-95`}
               aria-label="Download original quality image"
               title="Download original quality image"
             >
@@ -301,8 +301,8 @@ export default function FullscreenModal({
           className={`${
             highContrast 
               ? 'bg-white text-black border-2 border-black' 
-              : 'bg-black/40 text-white hover:bg-black/60'
-          } p-2 rounded-lg transition-colors backdrop-blur-sm`}
+              : 'bg-black/40 text-white hover:bg-black/60 active:bg-black/80'
+          } min-w-[48px] min-h-[48px] p-3 rounded-lg transition-all backdrop-blur-sm touch-manipulation active:scale-95 flex items-center justify-center`}
           aria-label="Close modal"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -357,9 +357,9 @@ export default function FullscreenModal({
             onClick={handlePrev}
             className={`${
               highContrast 
-                ? 'text-black hover:text-gray-700' 
-                : 'text-white hover:text-gray-300'
-            } transition-colors p-4 disabled:opacity-50 hover:bg-black/20 rounded-full`}
+                ? 'text-black hover:text-gray-700 active:text-gray-900' 
+                : 'text-white hover:text-gray-300 active:text-gray-200'
+            } transition-all min-w-[56px] min-h-[56px] p-4 disabled:opacity-50 hover:bg-black/20 active:bg-black/30 rounded-full touch-manipulation active:scale-95 flex items-center justify-center`}
             aria-label="Previous image"
             disabled={currentIndex === 0}
           >
@@ -378,9 +378,9 @@ export default function FullscreenModal({
             onClick={handleNext}
             className={`${
               highContrast 
-                ? 'text-black hover:text-gray-700' 
-                : 'text-white hover:text-gray-300'
-            } transition-colors p-4 disabled:opacity-50 hover:bg-black/20 rounded-full`}
+                ? 'text-black hover:text-gray-700 active:text-gray-900' 
+                : 'text-white hover:text-gray-300 active:text-gray-200'
+            } transition-all min-w-[56px] min-h-[56px] p-4 disabled:opacity-50 hover:bg-black/20 active:bg-black/30 rounded-full touch-manipulation active:scale-95 flex items-center justify-center`}
             aria-label="Next image"
             disabled={currentIndex === totalImages - 1}
           >

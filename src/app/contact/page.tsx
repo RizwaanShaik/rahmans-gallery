@@ -167,7 +167,7 @@ export default function Contact() {
             variants={fadeInUp}
           >
             <Image 
-              src={`${s3BaseUrl}/categories/tombs/hero/hero.jpeg`}
+              src={`${s3BaseUrl}/Tombs/hero/hero.jpeg`}
               alt="Professor Rahman" 
               fill
               priority
@@ -177,9 +177,9 @@ export default function Contact() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <blockquote className="italic text-base">
-                  &quot;Photography is the story I fail to put into words.&quot;
+                  &quot; “Passion gives you purpose; confidence gives you the courage to live it.”&quot;
                 </blockquote>
-                <p className="mt-1 text-sm text-gray-300">- Professor Rahman</p>
+                <p className="mt-1 text-sm text-gray-300">- Prof. Rahman</p>
               </div>
             </div>
           </motion.div>
@@ -209,13 +209,13 @@ export default function Contact() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`block w-full px-3 py-3 rounded-md border ${
+                    className={`block w-full px-4 py-4 min-h-[48px] rounded-lg border text-base ${
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                         : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
-                    } transition-colors`}
-                    placeholder="John Doe"
+                    } transition-colors touch-manipulation`}
                     aria-label="Your Name"
+                    autoComplete="name"
                   />
                 </div>
                 <div className="space-y-2">
@@ -228,13 +228,14 @@ export default function Contact() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`block w-full px-3 py-3 rounded-md border ${
+                    className={`block w-full px-4 py-4 min-h-[48px] rounded-lg border text-base ${
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                         : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
-                    } transition-colors`}
-                    placeholder="john@example.com"
+                    } transition-colors touch-manipulation`}
                     aria-label="Your Email"
+                    autoComplete="email"
+                    inputMode="email"
                   />
                 </div>
               </div>
@@ -248,11 +249,11 @@ export default function Contact() {
                   id="relation"
                   value={relation}
                   onChange={(e) => setRelation(e.target.value)}
-                  className={`block w-full px-3 py-3 rounded-md border ${
+                  className={`block w-full px-4 py-4 min-h-[48px] rounded-lg border text-base ${
                     isDarkMode 
                       ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                       : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
-                  } transition-colors`}
+                  } transition-colors touch-manipulation`}
                   aria-label="Your Relation to Prof. Rahman"
                 >
                   <option value="">Select your relation</option>
@@ -273,15 +274,15 @@ export default function Contact() {
                   name="message"
                   id="message"
                   required
-                  rows={4}
+                  rows={5}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className={`block w-full px-3 py-3 rounded-md border ${
+                  className={`block w-full px-4 py-4 rounded-lg border text-base resize-y ${
                     isDarkMode 
                       ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                       : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
-                  } transition-colors`}
-                  placeholder="Share your memories, thoughts, or tribute to Professor Rahman..."
+                  } transition-colors touch-manipulation`}
+                  placeholder="Share your memories, thoughts, or tribute to Prof. Rahman..."
                   aria-label="Your Message"
                 />
               </div>
@@ -296,7 +297,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md text-base font-medium text-white transition-colors shadow-sm
+                  className={`w-full flex justify-center items-center min-h-[52px] py-4 px-6 border border-transparent rounded-lg text-base font-medium text-white transition-all shadow-lg touch-manipulation active:scale-95
                     ${isSubmitting 
                       ? 'bg-gray-400 cursor-not-allowed' 
                       : isDarkMode 
@@ -380,7 +381,7 @@ export default function Contact() {
             variants={fadeInUp}
           >
             <Image 
-              src={`${s3BaseUrl}/categories/tombs/hero/hero.jpeg`}
+              src={`${s3BaseUrl}/tombs/hero/hero.jpeg`}
               alt="Professor Rahman" 
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

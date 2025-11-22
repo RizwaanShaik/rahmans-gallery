@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import FeaturedCollection from '@/components/FeaturedCollection';
 import Timeline from '@/components/Timeline';
 import type { Metadata } from 'next';
 
@@ -19,7 +18,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center">
         <Image
-          src={`${s3BaseUrl}/categories/wildlife/hero/hero.jpeg`}
+          src={`${s3BaseUrl}/Wildlife/hero/hero.jpeg`}
           alt="Hero background"
           fill
           className="object-cover"
@@ -36,25 +35,20 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:justify-center gap-4">
             <Link
               href="/gallery"
-              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg 
-                       hover:bg-white/20 transition-all duration-300 text-lg font-medium"
+              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 min-h-[48px] rounded-lg 
+                       hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-lg font-medium touch-manipulation active:scale-95 flex items-center justify-center"
             >
               Explore Gallery
             </Link>
             <Link
               href="/about"
-              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-lg
-                       hover:bg-white/20 transition-all duration-300 text-lg font-medium"
+              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 min-h-[48px] rounded-lg
+                       hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-lg font-medium touch-manipulation active:scale-95 flex items-center justify-center"
             >
               Read Full Biography
             </Link>
           </div>
         </div>
-      </section>
-
-      {/* Featured Collection */}
-      <section id="featured" className="container mx-auto px-4 py-16 dark:bg-gray-900">
-        <FeaturedCollection />
       </section>
 
       {/* Timeline Section */}
