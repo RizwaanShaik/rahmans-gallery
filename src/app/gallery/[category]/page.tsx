@@ -37,7 +37,6 @@ export default function CategoryGallery() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [masonryReady, setMasonryReady] = useState(false);
   const [imagesReadyToShow, setImagesReadyToShow] = useState(false);
   const allPhotosRef = useRef<Photo[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -89,8 +88,6 @@ export default function CategoryGallery() {
           requestAnimationFrame(() => {
             if (masonryRef.current) {
               masonryRef.current.layout!();
-              // Mark masonry as ready, then fade in images smoothly
-              setMasonryReady(true);
               // Small delay before showing images for smooth transition
               setTimeout(() => {
                 setImagesReadyToShow(true);
@@ -142,7 +139,6 @@ export default function CategoryGallery() {
     setLoadingMore(false);
     setDisplayedPhotos([]);
     setHasMore(true);
-    setMasonryReady(false);
     setImagesReadyToShow(false);
     allPhotosRef.current = [];
     window.scrollTo(0, 0);
@@ -241,7 +237,7 @@ export default function CategoryGallery() {
         }
       }
     }
-  }, [loadingInitial, displayedPhotos, initializeMasonry, libsLoaded]);
+  }, [loadingInitial, displayedPhotos, initializeMasonry, libsLoaded, imagesReadyToShow]);
 
   // Handle window resize to recalculate masonry layout
   useEffect(() => {
