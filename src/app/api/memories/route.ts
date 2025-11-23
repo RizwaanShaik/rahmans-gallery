@@ -81,8 +81,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ memory });
   } catch (error) {
     console.error('Error creating memory:', error);
+    
+    // Enhanced error logging
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      if ('cause' in error) {
+        console.error('Error cause:', error.cause);
+      }
+    }
+    
+    // Check if it's a network/fetch error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    if (errorMessage.includes('fetch failed') || errorMessage.includes('ECONNREFUSED') || errorMessage.includes('ENOTFOUND')) {
+      console.error('[Memories API] Network error detected - Supabase URL might be unreachable');
+      console.error('[Memories API] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+      return NextResponse.json(
+        { 
+          error: 'Database connection failed', 
+          details: 'Unable to connect to database. Please check server configuration.',
+          hint: 'Verify NEXT_PUBLIC_SUPABASE_URL is correct and Supabase project is active'
+        },
+        { status: 503 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create memory', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to create memory', details: errorMessage },
       { status: 500 }
     );
   }
