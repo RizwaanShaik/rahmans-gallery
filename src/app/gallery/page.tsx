@@ -55,7 +55,7 @@ const allCategoryDefinitions = {
   'rajasthan': {
     id: 'rajasthan',
     title: 'Rajasthan',
-    image: `${s3BaseUrl}/Rajasthan/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Rajasthan/hero/Rajasthan_015_hero.jpeg`,
     description: 'The colors, architecture, and desert landscapes of royal Rajasthan',
   },
   'thai': {
