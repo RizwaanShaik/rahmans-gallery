@@ -24,7 +24,8 @@ const categories = [
   { id: 'tadoba' },
   { id: 'thai' },
   { id: 'tombs' },
-  { id: 'warangal' }
+  { id: 'warangal' },
+  { id: 'portraits' }
 ];
 
 const baseUrl = 'https://skrahman.art'

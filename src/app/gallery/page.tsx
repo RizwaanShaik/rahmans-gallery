@@ -31,7 +31,7 @@ const allCategoryDefinitions = {
   'hampi': {
     id: 'hampi',
     title: 'Hampi',
-    image: `${s3BaseUrl}/Hampi/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Hampi/hero/Hampi_008_hero.jpeg`,
     description: 'The ancient ruins and boulder-strewn landscape of this UNESCO site',
   },
   'kolkata-streets': {
@@ -67,7 +67,7 @@ const allCategoryDefinitions = {
   'hyderabad': {
     id: 'hyderabad',
     title: 'Hyderabad',
-    image: `${s3BaseUrl}/Hyderabad/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
     description: 'The city of pearls, with its unique blend of history and modernity',
   },
   'heritage': {
@@ -124,6 +124,12 @@ const allCategoryDefinitions = {
     image: `${s3BaseUrl}/Aviation/hero/hero.jpeg`,
     description: 'Dramatic captures of aerial performances and magnificent aircraft',
   },
+  'portraits': {
+    id: 'portraits',
+    title: 'Portraits',
+    image: `${s3BaseUrl}/Portraits/hero/Portraits_013_hero.jpeg`,
+    description: 'Capturing the essence and character of people through portrait photography',
+  },
   'featured': {
     id: 'featured',
     title: 'Featured',
@@ -148,7 +154,7 @@ const categorySections = [
     categories: ['bidar', 'warangal', 'kanhari-caves', 'hampi', 
                  'kolkata-streets', 'ladakh', 'london', 'rajasthan', 
                  'thai', 'hyderabad'],
-    image: `${s3BaseUrl}/London/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Ladakh/thumbnails/Ladakh_007.jpeg`,
     description: 'Explore photography from around the world',
     href: '/gallery/places'
   },
@@ -171,9 +177,9 @@ const categorySections = [
   {
     title: "Photography Styles",
     id: 'photography-styles',
-    categories: ['macro', 'b-and-w', 'air-show'],
-    image: `${s3BaseUrl}/Macro/hero/hero.jpeg`,
-    description: 'Macro, Black & White, and aerial photography',
+    categories: ['macro', 'b-and-w', 'air-show', 'portraits'],
+    image: `${s3BaseUrl}/Macro/thumbnails/Macro_001.jpeg`,
+    description: 'Macro, Black & White, aerial, and portrait photography',
     href: '/gallery/photography-styles'
   }
 ];

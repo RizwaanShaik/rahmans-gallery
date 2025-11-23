@@ -26,6 +26,12 @@ const photographyStylesCategories = [
     image: `${s3BaseUrl}/Aviation/hero/hero.jpeg`,
     description: 'Dramatic captures of aerial performances and magnificent aircraft',
   },
+  {
+    id: 'portraits',
+    title: 'Portraits',
+    image: `${s3BaseUrl}/Portraits/hero/Portraits_013_hero.jpeg`,
+    description: 'Capturing the essence and character of people through portrait photography',
+  },
 ];
 
 export default function PhotographyStylesPage() {
@@ -75,7 +81,7 @@ export default function PhotographyStylesPage() {
               Photography Styles
             </h1>
             <p className="text-center text-gray-600 dark:text-gray-400 mb-4 md:mb-8 text-base md:text-xl">
-              Explore macro, black & white, and aerial photography
+              Explore macro, black & white, aerial, and portrait photography
             </p>
           </motion.div>
         </div>

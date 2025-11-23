@@ -29,7 +29,7 @@ const placeCategories = [
   {
     id: 'hampi',
     title: 'Hampi',
-    image: `${s3BaseUrl}/Hampi/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Hampi/hero/Hampi_008_hero.jpeg`,
     description: 'The ancient ruins and boulder-strewn landscape of this UNESCO site',
   },
   {
@@ -65,7 +65,7 @@ const placeCategories = [
   {
     id: 'hyderabad',
     title: 'Hyderabad',
-    image: `${s3BaseUrl}/Hyderabad/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
     description: 'The city of pearls, with its unique blend of history and modernity',
   },
 ];

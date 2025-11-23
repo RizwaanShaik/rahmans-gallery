@@ -451,7 +451,7 @@ export default function CategoryGallery() {
     const placesCategories = ['bidar', 'warangal', 'kanhari-caves', 'hampi', 'kolkata-streets', 'ladakh', 'london', 'rajasthan', 'thai', 'hyderabad'];
     const heritageCategories = ['heritage', 'tombs', 'culture'];
     const natureCategories = ['wildlife', 'landscapes', 'rock-forms'];
-    const styleCategories = ['macro', 'b-and-w', 'air-show'];
+    const styleCategories = ['macro', 'b-and-w', 'air-show', 'portraits'];
 
     if (placesCategories.includes(categoryId)) {
       crumbs.push({ label: 'Places', href: '/gallery/places' });
