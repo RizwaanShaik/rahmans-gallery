@@ -18,7 +18,8 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center">
         <Image
-          src={`${s3BaseUrl}/Black/hero/Black_002_hero.jpeg`}
+          //src={`${s3BaseUrl}/Ladakh/hero/Ladakh_022_hero.jpeg`}
+          src={`${s3BaseUrl}/Warangal/hero/Warangal_009_hero.jpeg`}
           alt="Hero background"
           fill
           className="object-cover"
