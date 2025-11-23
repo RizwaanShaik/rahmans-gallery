@@ -65,7 +65,7 @@ const placeCategories = [
   {
     id: 'hyderabad',
     title: 'Hyderabad',
-    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
+    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_010_hero.jpeg`,
     description: 'The city of pearls, with its unique blend of history and modernity',
   },
 ];

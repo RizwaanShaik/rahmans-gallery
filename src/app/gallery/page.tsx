@@ -67,13 +67,13 @@ const allCategoryDefinitions = {
   'hyderabad': {
     id: 'hyderabad',
     title: 'Hyderabad',
-    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
+    image: `${s3BaseUrl}/Hyderabad/hero/Hyderabad_010_hero.jpeg`,
     description: 'The city of pearls, with its unique blend of history and modernity',
   },
   'heritage': {
     id: 'heritage',
     title: 'Heritage',
-    image: `${s3BaseUrl}/Heritage/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Heritage/hero/Heritage_006_hero.jpeg`,
     description: 'Historical monuments and cultural landmarks preserving our rich history',
   },
   'tombs': {
@@ -85,7 +85,7 @@ const allCategoryDefinitions = {
   'rock-forms': {
     id: 'rock-forms',
     title: 'Rock Forms',
-    image: `${s3BaseUrl}/RockFormations/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/RockFormations/hero/RockFormations_001_hero.jpeg`,
     description: 'Natural sculptures shaped by time, weather, and geological forces',
   },
   'wildlife': {
@@ -162,7 +162,7 @@ const categorySections = [
     title: "Heritage & History",
     id: 'heritage-history',
     categories: ['heritage', 'tombs', 'culture'],
-    image: `${s3BaseUrl}/Heritage/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Heritage/hero/Heritage_006_hero.jpeg`,
     description: 'Historical monuments, tombs, and cultural heritage',
     href: '/gallery/heritage-history'
   },

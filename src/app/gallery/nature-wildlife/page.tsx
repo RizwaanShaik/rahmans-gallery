@@ -23,7 +23,7 @@ const natureWildlifeCategories = [
   {
     id: 'rock-forms',
     title: 'Rock Forms',
-    image: `${s3BaseUrl}/RockFormations/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/RockFormations/hero/RockFormations_001_hero.jpeg`,
     description: 'Natural sculptures shaped by time, weather, and geological forces',
   },
 ];

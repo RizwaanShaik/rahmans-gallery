@@ -11,7 +11,7 @@ const heritageHistoryCategories = [
   {
     id: 'heritage',
     title: 'Heritage',
-    image: `${s3BaseUrl}/Heritage/hero/hero.jpeg`,
+    image: `${s3BaseUrl}/Heritage/hero/Heritage_006_hero.jpeg`,
     description: 'Historical monuments and cultural landmarks preserving our rich history',
   },
   {
