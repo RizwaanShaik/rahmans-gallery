@@ -244,26 +244,35 @@ export default function Contact() {
                 <label htmlFor="relation" className="block text-sm font-medium">
                   Your Relation to Prof. Rahman <span className="text-gray-400">(optional)</span>
                 </label>
-                <select
-                  name="relation"
-                  id="relation"
-                  value={relation}
-                  onChange={(e) => setRelation(e.target.value)}
-                  className={`block w-full px-4 py-4 min-h-[48px] rounded-lg border text-base ${
-                    isDarkMode 
-                      ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
-                      : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
-                  } transition-colors touch-manipulation`}
-                  aria-label="Your Relation to Prof. Rahman"
-                >
-                  <option value="">Select your relation</option>
-                  <option value="Student">Student</option>
-                  <option value="Colleague">Colleague</option>
-                  <option value="Friend">Friend</option>
-                  <option value="Family">Family</option>
-                  <option value="Admirer">Admirer</option>
-                  <option value="Other">Other</option>
-                </select>
+                <div className="relative">
+                  <select
+                    name="relation"
+                    id="relation"
+                    value={relation}
+                    onChange={(e) => setRelation(e.target.value)}
+                    className={`block w-full pl-4 pr-10 py-4 min-h-[48px] rounded-lg border text-base appearance-none ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
+                        : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
+                    } transition-colors touch-manipulation`}
+                    aria-label="Your Relation to Prof. Rahman"
+                  >
+                    <option value="">Select your relation</option>
+                    <option value="Student">Student</option>
+                    <option value="Colleague">Colleague</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Family">Family</option>
+                    <option value="Admirer">Admirer</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <div className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
