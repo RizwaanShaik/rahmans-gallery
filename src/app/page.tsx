@@ -30,7 +30,7 @@ export default function Home() {
             Professor Rahman&apos;s Photography
           </h1>
           <p className="text-base md:text-lg text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-            Professor Shaik Khaleel-ur-Rahman was a distinguished photographer and educator who dedicated his life to the art of photography, inspiring countless students as the Director of Academic and Planning at JNAFAU College of Fine Arts.
+           A tribute gallery dedicated to the memory of Professor Shaik Khaleel-ur-Rahman (1966–2021), whose photography and teaching left a lasting impact on students, colleagues, friends, and family alike.
           </p>
           <div className="flex flex-col sm:flex-row sm:justify-center gap-4">
             <Link
@@ -38,14 +38,21 @@ export default function Home() {
               className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 min-h-[48px] rounded-lg 
                        hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-lg font-medium touch-manipulation active:scale-95 flex items-center justify-center"
             >
-              Explore Gallery
+              Open Gallery
             </Link>
             <Link
               href="/about"
               className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 min-h-[48px] rounded-lg
                        hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-lg font-medium touch-manipulation active:scale-95 flex items-center justify-center"
             >
-              Read Full Biography
+              Read his story
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-block bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 min-h-[48px] rounded-lg
+                       hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-lg font-medium touch-manipulation active:scale-95 flex items-center justify-center"
+            >
+              Share a Memory
             </Link>
           </div>
         </div>

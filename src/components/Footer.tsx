@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ContactModal from './ContactModal';
+import SocialShare from './SocialShare';
 
 export default function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -26,56 +29,78 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Quick Links
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  href="/" 
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/gallery" 
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Gallery
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/about" 
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Biography
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/contact" 
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Share Memories
-                </Link>
-              </li>
-            </ul>
-          </div>
+{/* Quick Links */}
+<div>
+  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    Quick Links
+  </h3>
+  <ul className="space-y-2">
+    <li>
+      <Link
+        href="/"
+        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+      >
+        Home
+      </Link>
+    </li>
+    <li>
+      <Link
+        href="/gallery"
+        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+      >
+        Gallery
+      </Link>
+    </li>
+    <li>
+      <Link
+        href="/about"
+        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+      >
+        Biography
+      </Link>
+    </li>
+    <li>
+      <Link
+        href="/contact"
+        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+      >
+        Share Memories
+      </Link>
+    </li>
+    <li>
+      <Link
+        href="#contact"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsContactModalOpen(true);
+        }}
+        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+      >
+        Contact
+      </Link>
+    </li>
+  </ul>
+</div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
             <p className="text-gray-600 dark:text-gray-400 text-sm text-center md:text-left">
               © {year} Professor Rahman&apos;s Gallery. All rights reserved.
+            </p>
+            <p className="text-gray-500 dark:text-gray-500 text-xs text-center md:text-right">
+              In loving memory of Professor Shaik Khaleel-ur-Rahman (1966–2021)
             </p>
           </div>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
     </footer>
   );
 }

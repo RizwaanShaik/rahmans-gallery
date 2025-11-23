@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import SocialShare from './SocialShare';
+import ContactModal from './ContactModal';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const pathname = usePathname();
 
   // Handle scroll effect
@@ -28,7 +30,8 @@ export default function Navigation() {
     { href: '/', label: 'Home' },
     { href: '/gallery', label: 'Gallery' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' }
+    { href: '/contact', label: 'Share Memories' },
+    { type: 'contact', label: 'Contact' }
   ];
 
   const isActive = (path: string) => pathname === path;
@@ -48,19 +51,32 @@ export default function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`inline-flex items-center px-6 py-3 text-base font-medium rounded-lg ${
-                  isActive(link.href)
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                } transition-all`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              if ('type' in link && link.type === 'contact') {
+                return (
+                  <button
+                    key="contact"
+                    onClick={() => setIsContactModalOpen(true)}
+                    className="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-all"
+                  >
+                    {link.label}
+                  </button>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`inline-flex items-center px-6 py-3 text-base font-medium rounded-lg ${
+                    isActive(link.href)
+                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                  } transition-all`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             <div className="ml-2">
               <SocialShare
                 url={typeof window !== 'undefined' ? window.location.href : ''}
@@ -115,22 +131,44 @@ export default function Navigation() {
         } sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-lg z-40`}
       >
         <div className="py-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-6 py-4 min-h-[48px] text-base font-medium touch-manipulation active:bg-gray-200 dark:active:bg-gray-600 ${
-                isActive(link.href)
-                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-l-4 border-blue-500 dark:border-blue-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white hover:border-l-4 hover:border-gray-300 dark:hover:border-gray-500'
-              } transition-all duration-200`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            if ('type' in link && link.type === 'contact') {
+              return (
+                <button
+                  key="contact"
+                  onClick={() => {
+                    setIsContactModalOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block px-6 py-4 min-h-[48px] text-base font-medium touch-manipulation active:bg-gray-200 dark:active:bg-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white hover:border-l-4 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 w-full text-left"
+                >
+                  {link.label}
+                </button>
+              );
+            }
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-6 py-4 min-h-[48px] text-base font-medium touch-manipulation active:bg-gray-200 dark:active:bg-gray-600 ${
+                  isActive(link.href)
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-l-4 border-blue-500 dark:border-blue-400'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white hover:border-l-4 hover:border-gray-300 dark:hover:border-gray-500'
+                } transition-all duration-200`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
+
+      {/* Contact Modal */}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </nav>
   );
 }
