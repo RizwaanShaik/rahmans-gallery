@@ -12,19 +12,41 @@ echo ""
 # Check if environment variables are set
 echo "1. Checking environment variables in ecosystem.config.js..."
 if grep -q "NEXT_PUBLIC_SUPABASE_URL" ecosystem.config.js; then
-    SUPABASE_URL=$(grep "NEXT_PUBLIC_SUPABASE_URL" ecosystem.config.js | cut -d"'" -f4)
-    echo "   ✓ Found SUPABASE_URL: $SUPABASE_URL"
+    # Extract value between single quotes (field 2 after splitting by ')
+    SUPABASE_URL=$(grep "NEXT_PUBLIC_SUPABASE_URL" ecosystem.config.js | sed "s/.*'\([^']*\)'.*/\1/" | head -1)
+    if [ -z "$SUPABASE_URL" ]; then
+        # Try alternative extraction method
+        SUPABASE_URL=$(grep "NEXT_PUBLIC_SUPABASE_URL" ecosystem.config.js | grep -oP "(?<=')[^']*(?=')" | head -1)
+    fi
+    if [ -n "$SUPABASE_URL" ]; then
+        echo "   ✓ Found SUPABASE_URL: $SUPABASE_URL"
+    else
+        echo "   ✗ Could not extract SUPABASE_URL from ecosystem.config.js"
+        echo "   Line found: $(grep 'NEXT_PUBLIC_SUPABASE_URL' ecosystem.config.js)"
+        exit 1
+    fi
 else
     echo "   ✗ SUPABASE_URL not found in ecosystem.config.js"
     exit 1
 fi
 
 if grep -q "NEXT_PUBLIC_SUPABASE_ANON_KEY" ecosystem.config.js; then
-    ANON_KEY=$(grep "NEXT_PUBLIC_SUPABASE_ANON_KEY" ecosystem.config.js | cut -d"'" -f4)
-    if [ ${#ANON_KEY} -gt 50 ]; then
-        echo "   ✓ Found SUPABASE_ANON_KEY (length: ${#ANON_KEY} chars)"
+    # Extract value between single quotes (field 2 after splitting by ')
+    ANON_KEY=$(grep "NEXT_PUBLIC_SUPABASE_ANON_KEY" ecosystem.config.js | sed "s/.*'\([^']*\)'.*/\1/" | head -1)
+    if [ -z "$ANON_KEY" ]; then
+        # Try alternative extraction method
+        ANON_KEY=$(grep "NEXT_PUBLIC_SUPABASE_ANON_KEY" ecosystem.config.js | grep -oP "(?<=')[^']*(?=')" | head -1)
+    fi
+    if [ -n "$ANON_KEY" ]; then
+        if [ ${#ANON_KEY} -gt 50 ]; then
+            echo "   ✓ Found SUPABASE_ANON_KEY (length: ${#ANON_KEY} chars)"
+        else
+            echo "   ⚠️  ANON_KEY seems too short (${#ANON_KEY} chars). Should be ~200+ chars"
+        fi
     else
-        echo "   ⚠️  ANON_KEY seems too short (${#ANON_KEY} chars). Should be ~200+ chars"
+        echo "   ✗ Could not extract SUPABASE_ANON_KEY from ecosystem.config.js"
+        echo "   Line found: $(grep 'NEXT_PUBLIC_SUPABASE_ANON_KEY' ecosystem.config.js)"
+        exit 1
     fi
 else
     echo "   ✗ SUPABASE_ANON_KEY not found in ecosystem.config.js"
