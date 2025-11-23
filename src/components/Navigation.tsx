@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import SocialShare from './SocialShare';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function Navigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden sm:flex sm:items-center sm:space-x-6">
+          <div className="hidden sm:flex sm:items-center sm:space-x-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -60,10 +61,24 @@ export default function Navigation() {
                 {link.label}
               </Link>
             ))}
+            <div className="ml-2">
+              <SocialShare
+                url={typeof window !== 'undefined' ? window.location.href : ''}
+                title="Professor Rahman's Photography Gallery"
+                description="Explore the stunning photographic work of Professor Shaik Khaleel-ur-Rahman"
+                variant="icon-only"
+              />
+            </div>
           </div>
 
-          {/* Mobile Navigation Button */}
-          <div className="flex items-center sm:hidden">
+          {/* Mobile Navigation Button and Share */}
+          <div className="flex items-center gap-2 sm:hidden">
+            <SocialShare
+              url={typeof window !== 'undefined' ? window.location.href : ''}
+              title="Professor Rahman's Photography Gallery"
+              description="Explore the stunning photographic work of Professor Shaik Khaleel-ur-Rahman"
+              variant="icon-only"
+            />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="relative min-w-[44px] min-h-[44px] w-11 h-11 flex justify-center items-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 touch-manipulation active:scale-95 transition-transform"

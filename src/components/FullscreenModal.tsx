@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { downloadS3Image, formatS3ImageUrl } from '../utils/imageUtils';
 import { motion } from 'framer-motion';
+import SocialShare from './SocialShare';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ interface FullscreenModalProps {
   currentIndex: number;
   highContrast?: boolean;
   getNextImageSrc?: (currentIndex: number) => string | null;
+  imageTitle?: string;
+  categoryName?: string;
 }
 
 export default function FullscreenModal({
@@ -27,6 +30,8 @@ export default function FullscreenModal({
   currentIndex,
   highContrast = false,
   getNextImageSrc,
+  imageTitle,
+  categoryName,
 }: FullscreenModalProps) {
   const [, setIsLoading] = useState(true);
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
@@ -263,8 +268,19 @@ export default function FullscreenModal({
     >
       {/* Top Controls Bar */}
       <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 z-50 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
-        {/* Left side: Download button */}
-        <div className="flex items-center gap-4">
+        {/* Left side: Download and Share buttons */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Share Button */}
+          <SocialShare
+            url={typeof window !== 'undefined' ? window.location.href : ''}
+            title={imageTitle || `Professor Rahman's Photography${categoryName ? ` - ${categoryName}` : ''}`}
+            description={`View this stunning photograph from Professor Rahman's collection${categoryName ? ` in ${categoryName}` : ''}`}
+            imageUrl={currentImage}
+            variant="icon-only"
+            className="[&_button]:bg-white/10 [&_button]:hover:bg-white/20 [&_button]:text-white [&_button]:dark:bg-white/10 [&_button]:dark:hover:bg-white/20 [&_button]:shadow-none"
+          />
+          
+          {/* Download button */}
           {originalImage ? (
             <button
               onClick={handleDownload}

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import FullscreenModal from '@/components/FullscreenModal';
+import SocialShare from '@/components/SocialShare';
 import { motion } from 'framer-motion';
 import type Masonry from 'masonry-layout';
 
@@ -670,6 +671,8 @@ export default function CategoryGallery() {
           onPrev={prevImage}
           totalImages={allPhotosRef.current.length}
           currentIndex={currentIndex}
+          imageTitle={allPhotosRef.current[currentIndex]?.alt || `Photo ${currentIndex + 1}`}
+          categoryName={formatCategoryName(categoryId)}
           getNextImageSrc={(index) => {
             const nextIndex = index + 1;
             if (nextIndex >= 0 && nextIndex < allPhotosRef.current.length) {

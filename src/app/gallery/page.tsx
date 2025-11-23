@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import SocialShare from '@/components/SocialShare';
 
 // Update the base S3 URL
 // S3 bucket base URL (no  prefix - direct folder structure)
@@ -134,7 +135,7 @@ const allCategoryDefinitions = {
     id: 'featured',
     title: 'Featured',
     image: `${s3BaseUrl}/Featured/hero/hero.jpeg`,
-    description: 'A curated selection of my finest photography work',
+    description: 'A curated selection of Professor Rahman&apos;s finest photography work',
   },
 };
 
@@ -145,7 +146,7 @@ const categorySections = [
     id: 'featured',
     categories: ['featured'],
     image: `${s3BaseUrl}/Featured/hero/hero.jpeg`,
-    description: 'A curated selection of my finest photography work',
+    description: 'A curated selection of Professor Rahman&apos;s finest photography work',
     href: '/gallery/featured'
   },
   {
@@ -323,7 +324,7 @@ export default function Gallery() {
             Photography Gallery
           </h1>
           <p className="text-center text-gray-600 dark:text-gray-400 mb-4 md:mb-8 text-base md:text-xl">
-            Explore the world through my lens — moments frozen in time
+            A timeless collection capturing the world through his lens, moments preserved for eternity
           </p>
         </motion.div>
         

@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 // Homepage Specific Metadata
 export const metadata: Metadata = {
   title: "Professor Rahman's Photography Gallery | Home",
-  description: "Explore the stunning photographic work of Professor Shaik Khaleel-ur-Rahman, showcasing diverse collections from wildlife to heritage. Discover the legacy of a master photographer and educator.",
+  description: "A tribute to Professor Shaik Khaleel-ur-Rahman's photographic legacy, showcasing diverse collections from wildlife to heritage. Honoring the memory of a master photographer and educator.",
 };
 
 // S3 bucket base URL

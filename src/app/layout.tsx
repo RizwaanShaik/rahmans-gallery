@@ -9,14 +9,53 @@ const siteUrl = 'https://skrahman.art';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl), // Set the base URL for resolving paths
-  title: "Professor Rahman's Gallery",
-  description: "A legacy of capturing the extraordinary in nature and wildlife through the lens",
+  title: {
+    default: "Professor Rahman's Gallery",
+    template: "%s | Professor Rahman's Gallery",
+  },
+  description: "A tribute to Professor Shaik Khaleel-ur-Rahman's photographic legacy, showcasing diverse collections from wildlife to heritage. Honoring the memory of a master photographer and educator.",
+  keywords: ['photography', 'gallery', 'wildlife photography', 'heritage photography', 'Professor Rahman', 'photography collection'],
+  authors: [{ name: 'Professor Shaik Khaleel-ur-Rahman' }],
+  creator: 'Professor Shaik Khaleel-ur-Rahman',
   alternates: {
     canonical: '/', // Sets the base canonical URL
   },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: "Professor Rahman's Gallery",
+    title: "Professor Rahman's Gallery",
+    description: "A tribute to Professor Shaik Khaleel-ur-Rahman's photographic legacy, showcasing diverse collections from wildlife to heritage.",
+    images: [
+      {
+        url: `${siteUrl}/images/Profile.jpeg`,
+        width: 1200,
+        height: 630,
+        alt: "Professor Rahman's Photography Gallery",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Professor Rahman's Gallery",
+    description: "A tribute to Professor Shaik Khaleel-ur-Rahman's photographic legacy",
+    images: [`${siteUrl}/images/Profile.jpeg`],
+  },
   icons: {
-    icon: '/favicon.ico', // Explicitly define the favicon path
-    // You can add other icons like apple-touch-icon here if needed
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
