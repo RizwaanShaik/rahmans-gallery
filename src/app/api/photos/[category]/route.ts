@@ -49,7 +49,7 @@ const categoryPhotosData: { [key: string]: string[] } = {
   'landscapes': ['Landscapes_001', 'Landscapes_002', 'Landscapes_003', 'Landscapes_004', 'Landscapes_005', 'Landscapes_006', 'Landscapes_007', 'Landscapes_008', 'Landscapes_009', 'Landscapes_010', 'Landscapes_011', 'Landscapes_012', 'Landscapes_013', 'Landscapes_014', 'Landscapes_015', 'Landscapes_016', 'Landscapes_017', 'Landscapes_018', 'Landscapes_019', 'hero'],
   'featured': ['Featured_001', 'Featured_002', 'Featured_003', 'Featured_004', 'Featured_005', 'Featured_006', 'Featured_007', 'Featured_008', 'Featured_009', 'Featured_010', 'Featured_011', 'Featured_012', 'Featured_013', 'Featured_014', 'Featured_015', 'Featured_016', 'Featured_017', 'Featured_018', 'Featured_019', 'Featured_020', 'Featured_021', 'Featured_022', 'Featured_023', 'Featured_024', 'Featured_025', 'hero'],
   'culture': ['Culture_001', 'Culture_002', 'Culture_003', 'Culture_004', 'Culture_005', 'Culture_006', 'Culture_007', 'Culture_008', 'Culture_009', 'Culture_010', 'Culture_011', 'Culture_012', 'Culture_013', 'Culture_014', 'Culture_015', 'Culture_016', 'Culture_017', 'Culture_018', 'Culture_019', 'hero'],
-  'hampi': ['Hampi_001', 'Hampi_002', 'Hampi_003', 'Hampi_004', 'Hampi_005', 'Hampi_006', 'Hampi_007', 'Hampi_008', 'Hampi_009', 'Hampi_010', 'hero'],
+  'hampi': ['Hampi_001', 'Hampi_002', 'Hampi_003', 'Hampi_004', 'Hampi_005', 'Hampi_006', 'Hampi_007', 'Hampi_008', 'Hampi_009', 'Hampi_010', 'Hampi_hero', 'hero'],
   'heritage': ['Heritage_001', 'Heritage_002', 'Heritage_003', 'Heritage_004', 'Heritage_005', 'Heritage_006', 'Heritage_007', 'Heritage_008', 'hero'],
   'hyderabad': ['Hyderabad_001', 'Hyderabad_002', 'Hyderabad_003', 'Hyderabad_004', 'Hyderabad_005', 'Hyderabad_006', 'Hyderabad_007', 'Hyderabad_008', 'Hyderabad_009', 'Hyderabad_010', 'Hyderabad_011', 'Hyderabad_012', 'Hyderabad_013', 'Hyderabad_014', 'Hyderabad_015', 'Hyderabad_016', 'Hyderabad_017', 'Hyderabad_018', 'Hyderabad_019', 'Hyderabad_020', 'Hyderabad_021', 'Hyderabad_022', 'Hyderabad_023', 'Hyderabad_024', 'Hyderabad_025', 'Hyderabad_026', 'Hyderabad_027', 'Hyderabad_028', 'Hyderabad_029', 'Hyderabad_030', 'Hyderabad_031', 'Hyderabad_032', 'Hyderabad_033', 'Hyderabad_hero', 'hero'],
   'kanhari-caves': ['KanhariCaves_001', 'KanhariCaves_002', 'KanhariCaves_003', 'KanhariCaves_004', 'KanhariCaves_005', 'KanhariCaves_006', 'KanhariCaves_007', 'KanhariCaves_008', 'hero'],
@@ -73,16 +73,18 @@ const createPhotoObject = (baseName: string, categoryId: string, dirName: string
 
   // New S3 structure: Aviation/thumbnails/, Aviation/fullscreen/, Aviation/{original_images}
   // Note: original images are directly in category folder
+  // Handle .jpeg extension for files like Hampi_hero.jpeg
+  const originalExtension = baseName.includes('_hero') && baseName !== 'hero' ? '.jpeg' : '.jpg';
   const thumbnailUrl = `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/thumbnails/${cleanedBaseName}.jpeg`;
 
   return {
     id: uniqueId,
     src: thumbnailUrl,
     fullscreenSrc: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/fullscreen/${cleanedBaseName}.jpeg`,
-    originalSrc: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpg`,
+    originalSrc: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}${originalExtension}`,
     alt: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
     description: baseName.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim(),
-    downloadUrl: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}.jpg`
+    downloadUrl: `${s3BaseUrl}/${categoryPath.replace(/[ '\"](?!\([^)]*\))/g, "")}/${cleanedBaseName}${originalExtension}`
   };
 };
 
@@ -102,7 +104,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'No photos found' }, { status: 404 });
   }
 
-  const photos: Photo[] = photoNames.map(name => createPhotoObject(name, categoryId, folderName));
+  // Filter out only the exact 'hero' entry - hero images are only for category thumbnails, not gallery display
+  // But keep entries like 'Hampi_hero' or 'Hyderabad_hero' as they are regular catalog images
+  const filteredPhotoNames = photoNames.filter(name => name !== 'hero');
+  
+  const photos: Photo[] = filteredPhotoNames.map(name => createPhotoObject(name, categoryId, folderName));
 
   console.log(`[API Route] Successfully fetched ${photos.length} photos for category: ${categoryId}`);
   return NextResponse.json(photos);

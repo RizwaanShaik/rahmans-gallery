@@ -26,6 +26,34 @@ function isMasonryInstance(obj: Masonry | null): obj is Masonry {
 
 const MASONRY_ITEM_SELECTOR = 'grid-item';
 
+// S3 bucket base URL
+const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
+
+// Category hero image mappings (matching gallery/page.tsx)
+const categoryHeroImages: { [key: string]: string } = {
+  'bidar': `${s3BaseUrl}/Bidar/hero/hero.jpeg`,
+  'warangal': `${s3BaseUrl}/Warangal/hero/hero.jpeg`,
+  'kanhari-caves': `${s3BaseUrl}/KanhariCaves/hero/hero.jpeg`,
+  'hampi': `${s3BaseUrl}/Hampi/hero/Hampi_008_hero.jpeg`,
+  'kolkata-streets': `${s3BaseUrl}/Kolkata/hero/hero.jpeg`,
+  'ladakh': `${s3BaseUrl}/Ladakh/hero/hero.jpeg`,
+  'london': `${s3BaseUrl}/London/hero/hero.jpeg`,
+  'rajasthan': `${s3BaseUrl}/Rajasthan/hero/hero.jpeg`,
+  'thai': `${s3BaseUrl}/Thailand/hero/hero.jpeg`,
+  'hyderabad': `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
+  'heritage': `${s3BaseUrl}/Heritage/hero/hero.jpeg`,
+  'tombs': `${s3BaseUrl}/Tombs/hero/hero.jpeg`,
+  'rock-forms': `${s3BaseUrl}/RockFormations/hero/hero.jpeg`,
+  'wildlife': `${s3BaseUrl}/Wildlife/hero/hero.jpeg`,
+  'landscapes': `${s3BaseUrl}/Landscapes/hero/hero.jpeg`,
+  'culture': `${s3BaseUrl}/Culture/hero/hero.jpeg`,
+  'macro': `${s3BaseUrl}/Macro/hero/hero.jpeg`,
+  'b-and-w': `${s3BaseUrl}/Black/hero/hero.jpeg`,
+  'air-show': `${s3BaseUrl}/Aviation/hero/hero.jpeg`,
+  'portraits': `${s3BaseUrl}/Portraits/hero/Portraits_013_hero.jpeg`,
+  'featured': `${s3BaseUrl}/Featured/hero/hero.jpeg`,
+};
+
 export default function CategoryGallery() {
   const router = useRouter();
   const params = useParams();
@@ -409,11 +437,15 @@ export default function CategoryGallery() {
   }, []);
 
   const getHeroImage = () => {
+    // Get hero image from category definition first
+    const heroImageUrl = categoryHeroImages[categoryId];
+    if (heroImageUrl) {
+      return heroImageUrl;
+    }
+    // Fallback to first photo if no hero image defined
     if (categoryNotFound || allPhotosRef.current.length === 0) {
       return null;
     }
-    const heroFromPhotos = allPhotosRef.current.find(photo => photo.id.includes('hero'));
-    if (heroFromPhotos) return heroFromPhotos.fullscreenSrc;
     return allPhotosRef.current[0]?.fullscreenSrc;
   };
 
