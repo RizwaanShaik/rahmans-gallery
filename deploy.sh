@@ -30,14 +30,15 @@ npm install
 # Create .env.production file with Supabase credentials
 cat > .env.production << 'ENVEOF'
 NEXT_PUBLIC_SUPABASE_URL=https://yobsydzqblekahndatnh.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=NwILBXKVRdv3A85K3vdz6Cj4NZEOPqi0bn7GxbNKb0zSgD+VWUE+RjPIXg2PuTqbEYkAQN7+xcAtqsEfPDEUcw==
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvYnN5ZHpxYmxla2FobmRhdG5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MzMyNjksImV4cCI6MjA3OTQwOTI2OX0.CDwkj0r_1zwVE9NVg_iMWgzfimfxScwHsDBvU8ywdgg
 ENVEOF
 
 # Build the application (environment variables are bundled at build time for NEXT_PUBLIC_*)
 npm run build
 
-# Configure PM2 to start the application
-pm2 start npm --name "rahmans-gallery" -- start
+# Configure PM2 to start the application with environment variables
+# Use ecosystem.config.js which includes Supabase credentials
+pm2 start ecosystem.config.js
 
 # Save PM2 process list and configure it to start on boot
 pm2 save
