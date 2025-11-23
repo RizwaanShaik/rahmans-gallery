@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import SocialShare from '@/components/SocialShare';
 
 // Update the base S3 URL
 // S3 bucket base URL (no  prefix - direct folder structure)

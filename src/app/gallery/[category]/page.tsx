@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import FullscreenModal from '@/components/FullscreenModal';
-import SocialShare from '@/components/SocialShare';
 import { motion } from 'framer-motion';
 import type Masonry from 'masonry-layout';
 

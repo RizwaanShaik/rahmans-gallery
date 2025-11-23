@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ContactModal from './ContactModal';
-import SocialShare from './SocialShare';
 
 export default function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());

@@ -26,13 +26,28 @@ export default function Navigation() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const navLinks = [
+  type StandardNavLink = {
+    href: string;
+    label: string;
+  };
+
+  type ContactNavLink = {
+    type: 'contact';
+    label: string;
+  };
+
+  type NavLink = StandardNavLink | ContactNavLink;
+
+  const navLinks: NavLink[] = [
     { href: '/', label: 'Home' },
     { href: '/gallery', label: 'Gallery' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Share Memories' },
     { type: 'contact', label: 'Contact' }
   ];
+
+  const isContactLink = (link: NavLink): link is ContactNavLink =>
+    'type' in link && link.type === 'contact';
 
   const isActive = (path: string) => pathname === path;
 
@@ -52,7 +67,7 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
             {navLinks.map((link) => {
-              if ('type' in link && link.type === 'contact') {
+              if (isContactLink(link)) {
                 return (
                   <button
                     key="contact"
@@ -131,8 +146,8 @@ export default function Navigation() {
         } sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-lg z-40`}
       >
         <div className="py-2">
-          {navLinks.map((link) => {
-            if ('type' in link && link.type === 'contact') {
+            {navLinks.map((link) => {
+            if (isContactLink(link)) {
               return (
                 <button
                   key="contact"
