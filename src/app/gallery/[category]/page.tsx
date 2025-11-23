@@ -38,7 +38,7 @@ const categoryHeroImages: { [key: string]: string } = {
   'kolkata-streets': `${s3BaseUrl}/Kolkata/hero/hero.jpeg`,
   'ladakh': `${s3BaseUrl}/Ladakh/hero/hero.jpeg`,
   'london': `${s3BaseUrl}/London/hero/hero.jpeg`,
-  'rajasthan': `${s3BaseUrl}/Rajasthan/hero/hero.jpeg`,
+  'rajasthan': `${s3BaseUrl}/Rajasthan/hero/Rajasthan_015_hero.jpeg`,
   'thai': `${s3BaseUrl}/Thailand/hero/hero.jpeg`,
   'hyderabad': `${s3BaseUrl}/Hyderabad/hero/Hyderabad_004_hero.jpeg`,
   'heritage': `${s3BaseUrl}/Heritage/hero/hero.jpeg`,
