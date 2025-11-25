@@ -1,0 +1,16 @@
+# Requirements for image categorization script
+
+# AWS SDK
+boto3>=1.28.0
+
+# OpenAI (optional - for GPT-4 Vision)
+openai>=1.0.0
+
+# CLIP Model (free, recommended)
+torch>=2.0.0
+transformers>=4.30.0
+pillow>=10.0.0
+
+# Image processing
+Pillow>=10.0.0
+
