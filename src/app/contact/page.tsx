@@ -5,7 +5,7 @@ import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 import { motion } from 'framer-motion';
 import { formatDate } from '@/utils/dateUtils';
-import { formatMessage, searchMemories } from '@/utils/textUtils';
+import { formatMessage } from '@/utils/textUtils';
 
 // S3 bucket base URL
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
@@ -33,11 +33,15 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [memories, setMemories] = useState<Memory[]>([]);
-  const [filteredMemories, setFilteredMemories] = useState<Memory[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [sortedMemories, setSortedMemories] = useState<Memory[]>([]);
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const memoriesPerPage = 5;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const AUTO_ROTATE_INTERVAL = 6000; // 6 seconds
 
   // Initialize EmailJS
   useEffect(() => {
@@ -65,15 +69,77 @@ export default function Contact() {
     fetchMemories();
   }, []);
 
-  // Filter memories when search term changes
+  // Sort memories when sort option changes
   useEffect(() => {
-    if (searchTerm.trim()) {
-      setFilteredMemories(searchMemories(memories, searchTerm));
-      setCurrentPage(1); // Reset to first page when searching
-    } else {
-      setFilteredMemories(memories);
+    const sorted = [...memories].sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'name':
+          const nameA = (a.is_anonymous ? 'Anonymous' : (a.name || 'Anonymous')).toLowerCase();
+          const nameB = (b.is_anonymous ? 'Anonymous' : (b.name || 'Anonymous')).toLowerCase();
+          return nameA.localeCompare(nameB);
+        default:
+          return 0;
+      }
+    });
+    setSortedMemories(sorted);
+    setCurrentIndex(0); // Reset to first memory when sorting changes
+  }, [sortBy, memories]);
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    if (sortedMemories.length <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % sortedMemories.length);
+    }, AUTO_ROTATE_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [sortedMemories.length, isPaused, AUTO_ROTATE_INTERVAL]);
+
+  // Handle touch events for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && sortedMemories.length > 0) {
+      setIsPaused(true); // Pause autoplay when user swipes
+      setCurrentIndex((prev) => (prev + 1) % sortedMemories.length);
     }
-  }, [searchTerm, memories]);
+    if (isRightSwipe && sortedMemories.length > 0) {
+      setIsPaused(true); // Pause autoplay when user swipes
+      setCurrentIndex((prev) => (prev - 1 + sortedMemories.length) % sortedMemories.length);
+    }
+  };
+
+  const goToNext = () => {
+    setIsPaused(true); // Pause autoplay when user interacts
+    setCurrentIndex((prev) => (prev + 1) % sortedMemories.length);
+  };
+
+  const goToPrevious = () => {
+    setIsPaused(true); // Pause autoplay when user interacts
+    setCurrentIndex((prev) => (prev - 1 + sortedMemories.length) % sortedMemories.length);
+  };
+
+  const goToIndex = (index: number) => {
+    setIsPaused(true); // Pause autoplay when user interacts
+    setCurrentIndex(index);
+  };
 
   const fetchMemories = async () => {
     try {
@@ -81,18 +147,18 @@ export default function Contact() {
       const data = await response.json();
       if (data.memories) {
         setMemories(data.memories);
-        setFilteredMemories(data.memories);
+        // Initial sort will be handled by useEffect
       } else if (data.error) {
         console.error('Error fetching memories:', data.error);
         // Still set empty array to show empty state
         setMemories([]);
-        setFilteredMemories([]);
+        setSortedMemories([]);
       }
     } catch (error) {
       console.error('Error fetching memories:', error);
       // Set empty array on error to show empty state
       setMemories([]);
-      setFilteredMemories([]);
+      setSortedMemories([]);
     }
   };
 
@@ -191,11 +257,8 @@ export default function Contact() {
     }
   };
 
-  // Pagination logic
-  const indexOfLastMemory = currentPage * memoriesPerPage;
-  const indexOfFirstMemory = indexOfLastMemory - memoriesPerPage;
-  const currentMemories = filteredMemories.slice(indexOfFirstMemory, indexOfLastMemory);
-  const totalPages = Math.ceil(filteredMemories.length / memoriesPerPage);
+  // Get current memory for carousel
+  const currentMemory = sortedMemories[currentIndex];
 
   // Animation variants
   const fadeInUp = {
@@ -500,155 +563,178 @@ export default function Contact() {
           animate="visible"
           variants={fadeInUp}
         >
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div className="flex flex-row justify-between items-center gap-4 mb-8">
             <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Shared Memories {searchTerm && `(${filteredMemories.length} found)`}
+              Shared Memories
             </h2>
             {memories.length > 0 && (
-              <div className="flex items-center gap-4">
-                {/* Search Input */}
-                <div className="relative flex-1 sm:flex-initial sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search memories..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`w-full px-4 py-2 pl-10 rounded-lg border text-sm ${
+              <div className="flex items-center gap-3">
+                {/* Sort By Dropdown */}
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'name')}
+                    className={`px-3 py-1.5 pl-7 pr-7 rounded-lg border text-xs md:text-sm appearance-none cursor-pointer ${
                       isDarkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500' 
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-blue-600 focus:border-blue-600'
+                        ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
+                        : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
                     } transition-colors`}
-                  />
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${
+                    aria-label="Sort memories"
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name">Sort by Name</option>
+                  </select>
+                  <div className={`absolute inset-y-0 left-0 pl-1.5 flex items-center pointer-events-none ${
                     isDarkMode ? 'text-gray-400' : 'text-gray-500'
                   }`}>
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <svg className="h-3 w-3 md:h-4 md:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                     </svg>
                   </div>
-                  {searchTerm && (
-                    <button
-                      onClick={() => setSearchTerm('')}
-                      className={`absolute inset-y-0 right-0 pr-3 flex items-center ${
-                        isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                      aria-label="Clear search"
-                    >
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-                <span className={`text-sm whitespace-nowrap ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {filteredMemories.length > 0 && (
-                    `Showing ${indexOfFirstMemory + 1}-${Math.min(indexOfLastMemory, filteredMemories.length)} of ${filteredMemories.length}`
-                  )}
-                </span>
-              </div>
-            )}
-          </div>
-          
-          <div className="space-y-6">
-            {currentMemories.map((memory, index) => (
-              <motion.div 
-                key={memory.id} 
-                className={`p-6 rounded-lg shadow-md ${
-                  isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
-                }`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-4">
-                  <div>
-                    <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      {memory.is_anonymous ? 'Anonymous' : (memory.name || 'Anonymous')}
-                    </h3>
-                    {memory.relation && (
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mt-1 ${
-                        isDarkMode ? 'bg-blue-900/30 text-blue-200' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {memory.relation}
-                      </span>
-                    )}
+                  <div className={`absolute inset-y-0 right-0 pr-1.5 flex items-center pointer-events-none ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    <svg className="h-3 w-3 md:h-4 md:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </div>
-                  <time className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {formatDate(memory.created_at)}
-                  </time>
                 </div>
-                <div 
-                  className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-line`}
-                  dangerouslySetInnerHTML={{ __html: formatMessage(memory.message) }}
-                />
-              </motion.div>
-            ))}
-            
-            {filteredMemories.length === 0 && (
-              <div className={`text-center py-16 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                <svg className="mx-auto h-12 w-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-                <p className="mt-4 text-lg">
-                  {searchTerm ? 'No memories found matching your search.' : 'No memories shared yet.'}
-                </p>
-                <p className="mt-2">
-                  {searchTerm ? 'Try a different search term.' : 'Be the first to share your story!'}
-                </p>
+                {sortedMemories.length > 0 && (
+                  <span className={`text-xs md:text-sm whitespace-nowrap ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {currentIndex + 1} / {sortedMemories.length}
+                  </span>
+                )}
               </div>
             )}
           </div>
           
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center">
-              <nav className="flex items-center space-x-2" aria-label="Pagination">
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-2 rounded-md ${
-                    currentPage === 1
-                      ? isDarkMode ? 'text-gray-500 cursor-not-allowed' : 'text-gray-400 cursor-not-allowed'
-                      : isDarkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                  aria-label="Previous page"
-                >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                
-                {Array.from({ length: totalPages }).map((_, index) => (
+          {/* Carousel Container */}
+          {sortedMemories.length > 0 ? (
+            <div 
+              ref={carouselRef}
+              className="relative"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {/* Navigation Arrows - Desktop only, outside the box */}
+              {sortedMemories.length > 1 && (
+                <>
                   <button
-                    key={index + 1}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-4 py-2 rounded-md ${
-                      currentPage === index + 1
-                        ? isDarkMode ? 'bg-blue-800 text-white' : 'bg-blue-600 text-white'
-                        : isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                    aria-label={`Page ${index + 1}`}
-                    aria-current={currentPage === index + 1 ? 'page' : undefined}
+                    onClick={goToPrevious}
+                    className={`hidden md:flex absolute -left-16 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg transition-all z-10 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                        : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
+                    } hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    aria-label="Previous memory"
                   >
-                    {index + 1}
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
                   </button>
-                ))}
-                
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-2 rounded-md ${
-                    currentPage === totalPages
-                      ? isDarkMode ? 'text-gray-500 cursor-not-allowed' : 'text-gray-400 cursor-not-allowed'
-                      : isDarkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                  
+                  <button
+                    onClick={goToNext}
+                    className={`hidden md:flex absolute -right-16 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg transition-all z-10 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                        : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
+                    } hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    aria-label="Next memory"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </>
+              )}
+
+              {/* Carousel Track */}
+              <div className="relative overflow-hidden rounded-xl">
+                <motion.div
+                  key={currentIndex}
+                  className={`p-8 md:p-12 rounded-xl shadow-lg min-h-[400px] flex flex-col justify-between ${
+                    isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
                   }`}
-                  aria-label="Next page"
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
                 >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </nav>
+                  {currentMemory && (
+                    <>
+                      <div>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+                          <div>
+                            <h3 className={`text-2xl md:text-3xl font-semibold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                              {currentMemory.is_anonymous ? 'Anonymous' : (currentMemory.name || 'Anonymous')}
+                            </h3>
+                            {currentMemory.relation && (
+                              <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium ${
+                                isDarkMode ? 'bg-blue-900/30 text-blue-200' : 'bg-blue-100 text-blue-800'
+                              }`}>
+                                {currentMemory.relation}
+                              </span>
+                            )}
+                          </div>
+                          <time className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            {formatDate(currentMemory.created_at)}
+                          </time>
+                        </div>
+                        <div 
+                          className={`text-lg md:text-xl leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-line`}
+                          dangerouslySetInnerHTML={{ __html: formatMessage(currentMemory.message) }}
+                        />
+                      </div>
+                    </>
+                  )}
+                </motion.div>
+              </div>
+
+              {/* Dots Indicator - Instagram style */}
+              {sortedMemories.length > 1 && (
+                <div className="flex justify-center items-center gap-1 md:gap-1.5 mt-6">
+                  {sortedMemories.map((_, index) => (
+                    <div
+                      key={index}
+                      onClick={() => goToIndex(index)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          goToIndex(index);
+                        }
+                      }}
+                      className={`flex-shrink-0 transition-all duration-200 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        index === currentIndex
+                          ? isDarkMode 
+                            ? 'bg-white w-[9px] h-[9px] md:w-2 md:h-2 opacity-100' 
+                            : 'bg-gray-800 w-[9px] h-[9px] md:w-2 md:h-2 opacity-100'
+                          : isDarkMode 
+                            ? 'bg-white w-[6px] h-[6px] md:w-1.5 md:h-1.5 hover:bg-white/80 opacity-50' 
+                            : 'bg-gray-600 w-[6px] h-[6px] md:w-1.5 md:h-1.5 hover:bg-gray-700 opacity-50'
+                      }`}
+                      style={{ minWidth: 'unset', minHeight: 'unset' }}
+                      aria-label={`Go to memory ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className={`text-center py-16 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <svg className="mx-auto h-12 w-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              <p className="mt-4 text-lg">
+                No memories shared yet.
+              </p>
+              <p className="mt-2">
+                Be the first to share your story!
+              </p>
             </div>
           )}
         </motion.div>
