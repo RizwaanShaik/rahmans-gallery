@@ -199,8 +199,8 @@ export default function Contact() {
     }
 
     try {
-      // First, try to send the email
-      if (form.current && !isAnonymous) {
+      // First, try to send the email (send for all submissions, including anonymous)
+      if (form.current) {
         try {
           const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
           const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
