@@ -45,7 +45,12 @@ export default function Contact() {
 
   // Initialize EmailJS
   useEffect(() => {
-    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'KGyg8MIyzMnx7qIiY');
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+    } else {
+      console.warn('EmailJS public key not configured');
+    }
   }, []);
 
   // Check for dark mode
@@ -197,13 +202,21 @@ export default function Contact() {
       // First, try to send the email
       if (form.current && !isAnonymous) {
         try {
-          const result = await emailjs.sendForm(
-            "service_k027bvr",
-            "template_mlnh9pb",
-            form.current,
-            "KGyg8MIyzMnx7qIiY"
-          );
-          console.log("Email sent successfully:", result);
+          const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+          const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+          const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+          
+          if (serviceId && templateId && publicKey) {
+            const result = await emailjs.sendForm(
+              serviceId,
+              templateId,
+              form.current,
+              publicKey
+            );
+            console.log("Email sent successfully:", result);
+          } else {
+            console.warn('EmailJS configuration incomplete, skipping email send');
+          }
         } catch (emailError) {
           console.error('Error sending email:', emailError);
           // Continue with database save even if email fails
