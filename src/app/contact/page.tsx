@@ -3,17 +3,22 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
-import { motion } from 'framer-motion'; // Adding animations
+import { motion } from 'framer-motion';
+import { formatDate } from '@/utils/dateUtils';
+import { formatMessage, searchMemories } from '@/utils/textUtils';
 
 // S3 bucket base URL
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
 
+const MAX_MESSAGE_LENGTH = 2000;
+
 interface Memory {
   id: number;
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
   message: string;
-  relation: string;
+  relation: string | null;
+  is_anonymous?: boolean;
   created_at: string;
 }
 
@@ -23,9 +28,13 @@ export default function Contact() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [relation, setRelation] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [memories, setMemories] = useState<Memory[]>([]);
+  const [filteredMemories, setFilteredMemories] = useState<Memory[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const memoriesPerPage = 5;
@@ -56,26 +65,71 @@ export default function Contact() {
     fetchMemories();
   }, []);
 
+  // Filter memories when search term changes
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      setFilteredMemories(searchMemories(memories, searchTerm));
+      setCurrentPage(1); // Reset to first page when searching
+    } else {
+      setFilteredMemories(memories);
+    }
+  }, [searchTerm, memories]);
+
   const fetchMemories = async () => {
     try {
       const response = await fetch('/api/memories');
       const data = await response.json();
       if (data.memories) {
         setMemories(data.memories);
+        setFilteredMemories(data.memories);
+      } else if (data.error) {
+        console.error('Error fetching memories:', data.error);
+        // Still set empty array to show empty state
+        setMemories([]);
+        setFilteredMemories([]);
       }
     } catch (error) {
       console.error('Error fetching memories:', error);
+      // Set empty array on error to show empty state
+      setMemories([]);
+      setFilteredMemories([]);
     }
+  };
+
+  const validateForm = (): string | null => {
+    if (!message.trim()) {
+      return 'Message is required';
+    }
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return `Message must be ${MAX_MESSAGE_LENGTH} characters or less`;
+    }
+    if (!isAnonymous && !name.trim()) {
+      return 'Name is required when not sharing anonymously';
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
+    // Validate form
+    const validationError = validateForm();
+    if (validationError) {
+      setErrorMessage(validationError);
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // First, try to send the email
-      if (form.current) {
+      if (form.current && !isAnonymous) {
         try {
           const result = await emailjs.sendForm(
             "service_k027bvr",
@@ -97,12 +151,15 @@ export default function Contact() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          email,
-          message,
-          relation,
+          name: isAnonymous ? null : name.trim(),
+          email: email.trim() || null,
+          message: message.trim(),
+          relation: relation || null,
+          is_anonymous: isAnonymous,
         }),
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         setSubmitStatus('success');
@@ -110,6 +167,8 @@ export default function Contact() {
         setEmail('');
         setMessage('');
         setRelation('');
+        setIsAnonymous(false);
+        setErrorMessage('');
         // Refresh memories list
         fetchMemories();
         // Scroll to success message
@@ -117,10 +176,15 @@ export default function Contact() {
           document.getElementById('success-message')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       } else {
+        // Show detailed error message
+        const errorMsg = data.error || data.details || 'Failed to submit memory. Please try again.';
+        const hint = data.hint ? ` ${data.hint}` : '';
+        setErrorMessage(`${errorMsg}${hint}`);
         setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Error submitting memory:', error);
+      setErrorMessage('Network error. Please check your connection and try again.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -130,8 +194,8 @@ export default function Contact() {
   // Pagination logic
   const indexOfLastMemory = currentPage * memoriesPerPage;
   const indexOfFirstMemory = indexOfLastMemory - memoriesPerPage;
-  const currentMemories = memories.slice(indexOfFirstMemory, indexOfLastMemory);
-  const totalPages = Math.ceil(memories.length / memoriesPerPage);
+  const currentMemories = filteredMemories.slice(indexOfFirstMemory, indexOfLastMemory);
+  const totalPages = Math.ceil(filteredMemories.length / memoriesPerPage);
 
   // Animation variants
   const fadeInUp = {
@@ -141,7 +205,6 @@ export default function Contact() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
-      {/* Add some top padding to account for the fixed header */}
       <div className="pt-16 max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="text-center mb-12"
@@ -197,19 +260,48 @@ export default function Contact() {
             </div>
             
             <form ref={form} onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Anonymity Checkbox */}
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="isAnonymous"
+                    name="isAnonymous"
+                    type="checkbox"
+                    checked={isAnonymous}
+                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                    className={`h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 ${
+                      isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white'
+                    }`}
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label htmlFor="isAnonymous" className={`font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Share anonymously
+                  </label>
+                  <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Your name will not be displayed publicly
+                  </p>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label htmlFor="name" className="block text-sm font-medium">
-                    Your Name <span className="text-red-500">*</span>
+                    Your Name {!isAnonymous && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     type="text"
                     name="name"
                     id="name"
-                    required
+                    required={!isAnonymous}
+                    disabled={isAnonymous}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className={`block w-full px-4 py-4 min-h-[48px] rounded-lg border text-base ${
+                      isAnonymous 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : ''
+                    } ${
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                         : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
@@ -220,7 +312,7 @@ export default function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-medium">
-                    Your Email <span className="text-gray-400">(optional)</span>
+                    Your Email
                   </label>
                   <input
                     type="email"
@@ -242,7 +334,7 @@ export default function Contact() {
 
               <div className="space-y-2">
                 <label htmlFor="relation" className="block text-sm font-medium">
-                  Your Relation to Prof. Rahman <span className="text-gray-400">(optional)</span>
+                  Your Relation to Prof. Rahman
                 </label>
                 <div className="relative">
                   <select
@@ -276,17 +368,27 @@ export default function Contact() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="message" className="block text-sm font-medium">
-                  Your Message <span className="text-red-500">*</span>
-                </label>
+                <div className="flex justify-between items-center">
+                  <label htmlFor="message" className="block text-sm font-medium">
+                    Your Message <span className="text-red-500">*</span>
+                  </label>
+                  <span className={`text-xs ${message.length > MAX_MESSAGE_LENGTH ? 'text-red-500' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {message.length}/{MAX_MESSAGE_LENGTH}
+                  </span>
+                </div>
                 <textarea
                   name="message"
                   id="message"
                   required
                   rows={5}
+                  maxLength={MAX_MESSAGE_LENGTH}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className={`block w-full px-4 py-4 rounded-lg border text-base resize-y ${
+                    message.length > MAX_MESSAGE_LENGTH 
+                      ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
+                      : ''
+                  } ${
                     isDarkMode 
                       ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' 
                       : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-600 focus:border-blue-600'
@@ -295,6 +397,17 @@ export default function Contact() {
                   aria-label="Your Message"
                 />
               </div>
+
+              {/* Error Message */}
+              {errorMessage && (
+                <div className={`rounded-md p-3 border ${
+                  isDarkMode 
+                    ? 'bg-red-900/30 border-red-800 text-red-200' 
+                    : 'bg-red-50 border-red-200 text-red-800'
+                }`}>
+                  <p className="text-sm">{errorMessage}</p>
+                </div>
+              )}
 
               <input type="hidden" name="date" value={new Date().toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -353,32 +466,6 @@ export default function Contact() {
                   </div>
                 </motion.div>
               )}
-
-              {submitStatus === 'error' && (
-                <motion.div 
-                  className={`rounded-md p-4 border ${
-                    isDarkMode 
-                      ? 'bg-red-900/30 border-red-800 text-red-200' 
-                      : 'bg-red-50 border-red-200 text-red-800'
-                  }`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium">
-                        Sorry, there was an error sending your message. Please try again later.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
             </form>
           </motion.div>
           
@@ -413,14 +500,52 @@ export default function Contact() {
           animate="visible"
           variants={fadeInUp}
         >
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Shared Memories
+              Shared Memories {searchTerm && `(${filteredMemories.length} found)`}
             </h2>
             {memories.length > 0 && (
-              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                Showing {indexOfFirstMemory + 1}-{Math.min(indexOfLastMemory, memories.length)} of {memories.length}
-              </span>
+              <div className="flex items-center gap-4">
+                {/* Search Input */}
+                <div className="relative flex-1 sm:flex-initial sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Search memories..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className={`w-full px-4 py-2 pl-10 rounded-lg border text-sm ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500' 
+                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-blue-600 focus:border-blue-600'
+                    } transition-colors`}
+                  />
+                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className={`absolute inset-y-0 right-0 pr-3 flex items-center ${
+                        isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                      aria-label="Clear search"
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <span className={`text-sm whitespace-nowrap ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {filteredMemories.length > 0 && (
+                    `Showing ${indexOfFirstMemory + 1}-${Math.min(indexOfLastMemory, filteredMemories.length)} of ${filteredMemories.length}`
+                  )}
+                </span>
+              </div>
             )}
           </div>
           
@@ -438,7 +563,7 @@ export default function Contact() {
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-4">
                   <div>
                     <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      {memory.name}
+                      {memory.is_anonymous ? 'Anonymous' : (memory.name || 'Anonymous')}
                     </h3>
                     {memory.relation && (
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mt-1 ${
@@ -449,26 +574,27 @@ export default function Contact() {
                     )}
                   </div>
                   <time className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {new Date(memory.created_at).toLocaleDateString(undefined, {
-                      year: 'numeric', 
-                      month: 'short', 
-                      day: 'numeric'
-                    })}
+                    {formatDate(memory.created_at)}
                   </time>
                 </div>
-                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-line`}>
-                  {memory.message}
-                </p>
+                <div 
+                  className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-line`}
+                  dangerouslySetInnerHTML={{ __html: formatMessage(memory.message) }}
+                />
               </motion.div>
             ))}
             
-            {memories.length === 0 && (
+            {filteredMemories.length === 0 && (
               <div className={`text-center py-16 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 <svg className="mx-auto h-12 w-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-                <p className="mt-4 text-lg">No memories shared yet.</p>
-                <p className="mt-2">Be the first to share your story!</p>
+                <p className="mt-4 text-lg">
+                  {searchTerm ? 'No memories found matching your search.' : 'No memories shared yet.'}
+                </p>
+                <p className="mt-2">
+                  {searchTerm ? 'Try a different search term.' : 'Be the first to share your story!'}
+                </p>
               </div>
             )}
           </div>

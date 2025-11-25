@@ -47,33 +47,72 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Received request body:', body);
     
-    const { name, email, message, relation } = body;
+    const { name, email, message, relation, is_anonymous } = body;
 
-    // Validate required fields
-    if (!name || !message) {
-      console.error('Missing required fields:', { name, message });
+    // Validate required fields - only message is required now
+    if (!message || message.trim().length === 0) {
+      console.error('Missing required field: message');
       return NextResponse.json(
-        { error: 'Name and message are required fields' },
+        { error: 'Message is required' },
         { status: 400 }
       );
+    }
+
+    // Validate: if not anonymous, name should be provided
+    if (!is_anonymous && (!name || name.trim().length === 0)) {
+      console.error('Name required when not anonymous');
+      return NextResponse.json(
+        { error: 'Name is required when not sharing anonymously' },
+        { status: 400 }
+      );
+    }
+
+    // Build insert object - conditionally include is_anonymous to handle missing column
+    const insertData: any = { 
+      name: is_anonymous ? null : (name?.trim() || null), 
+      email: email?.trim() || null, 
+      message: message.trim(), 
+      relation: relation || null
+    };
+    
+    // Only include is_anonymous if it's true (to avoid errors if column doesn't exist yet)
+    // If column doesn't exist, Supabase will ignore unknown fields, but safer to conditionally include
+    if (is_anonymous) {
+      insertData.is_anonymous = true;
     }
 
     // Insert into database
     const { data: memory, error } = await supabase
       .from('memories')
-      .insert([
-        { 
-          name, 
-          email: email || null, 
-          message, 
-          relation: relation || null 
-        }
-      ])
+      .insert([insertData])
       .select()
       .single();
 
     if (error) {
       console.error('Supabase error in POST:', error);
+      // If error is about unknown column, try without is_anonymous
+      if (error.message && error.message.includes('column') && error.message.includes('is_anonymous')) {
+        console.warn('[Memories API] is_anonymous column not found, retrying without it');
+        const { data: retryMemory, error: retryError } = await supabase
+          .from('memories')
+          .insert([
+            { 
+              name: is_anonymous ? null : (name?.trim() || null), 
+              email: email?.trim() || null, 
+              message: message.trim(), 
+              relation: relation || null
+            }
+          ])
+          .select()
+          .single();
+        
+        if (retryError) {
+          console.error('Supabase error on retry:', retryError);
+          throw retryError;
+        }
+        
+        return NextResponse.json({ memory: retryMemory });
+      }
       throw error;
     }
 
@@ -106,8 +145,21 @@ export async function POST(request: Request) {
       );
     }
     
+    // Return more detailed error information
+    const errorDetails = error instanceof Error ? {
+      name: error.name,
+      message: error.message,
+      ...(error as any).code && { code: (error as any).code },
+      ...(error as any).details && { details: (error as any).details },
+      ...(error as any).hint && { hint: (error as any).hint }
+    } : { message: errorMessage };
+
     return NextResponse.json(
-      { error: 'Failed to create memory', details: errorMessage },
+      { 
+        error: 'Failed to create memory', 
+        details: errorMessage,
+        ...errorDetails
+      },
       { status: 500 }
     );
   }
