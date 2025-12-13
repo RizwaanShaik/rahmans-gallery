@@ -6,6 +6,7 @@ import emailjs from '@emailjs/browser';
 import { motion } from 'framer-motion';
 import { formatDate } from '@/utils/dateUtils';
 import { formatMessage } from '@/utils/textUtils';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 // S3 bucket base URL
 const s3BaseUrl = "https://rahmansgallerybucket.s3.ap-south-1.amazonaws.com";
@@ -698,7 +699,7 @@ export default function Contact() {
                         </div>
                         <div 
                           className={`text-lg md:text-xl leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-line`}
-                          dangerouslySetInnerHTML={{ __html: formatMessage(currentMemory.message) }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatMessage(currentMemory.message)) }}
                         />
                       </div>
                     </>

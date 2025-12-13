@@ -22,7 +22,12 @@ module.exports = {
     merge_logs: true,
     autorestart: true,
     watch: false,
-    max_memory_restart: '1G',
+    max_memory_restart: '512M',
+    max_restarts: 10,
+    min_uptime: '10s',
+    restart_delay: 4000,
+    kill_timeout: 5000,
+    listen_timeout: 3000,
   }]
 };
 

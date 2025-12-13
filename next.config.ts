@@ -29,15 +29,17 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: '*',
+            value: process.env.NODE_ENV === 'production' 
+              ? 'https://skrahman.art' 
+              : '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
-            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+            value: 'GET,POST,OPTIONS',
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: '*',
+            value: 'Content-Type, Authorization',
           },
           // Security Headers
           {

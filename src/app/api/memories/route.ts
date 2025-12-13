@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { sanitizeText, sanitizeEmail, sanitizeForDatabase } from '@/utils/sanitize';
 
 // GET /api/memories
 export async function GET() {
@@ -67,12 +68,33 @@ export async function POST(request: Request) {
       );
     }
 
+    // Sanitize all inputs to prevent XSS and injection attacks
+    const sanitizedName = name ? sanitizeText(name.trim()) : null;
+    const sanitizedEmail = email ? sanitizeEmail(email.trim()) : null;
+    const sanitizedMessage = sanitizeForDatabase(message.trim());
+    const sanitizedRelation = relation ? sanitizeText(relation) : null;
+
+    // Additional validation after sanitization
+    if (sanitizedMessage.length === 0) {
+      return NextResponse.json(
+        { error: 'Message contains invalid content' },
+        { status: 400 }
+      );
+    }
+
+    if (sanitizedEmail && sanitizedEmail.length === 0 && email.trim().length > 0) {
+      return NextResponse.json(
+        { error: 'Invalid email address' },
+        { status: 400 }
+      );
+    }
+
     // Build insert object - conditionally include is_anonymous to handle missing column
     const insertData: any = { 
-      name: is_anonymous ? null : (name?.trim() || null), 
-      email: email?.trim() || null, 
-      message: message.trim(), 
-      relation: relation || null
+      name: is_anonymous ? null : sanitizedName, 
+      email: sanitizedEmail, 
+      message: sanitizedMessage, 
+      relation: sanitizedRelation
     };
     
     // Only include is_anonymous if it's true (to avoid errors if column doesn't exist yet)
