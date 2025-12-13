@@ -41,6 +41,8 @@ export default function Contact() {
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [isLoadingMemories, setIsLoadingMemories] = useState(true);
+  const [memoriesError, setMemoriesError] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const AUTO_ROTATE_INTERVAL = 6000; // 6 seconds
 
@@ -149,6 +151,8 @@ export default function Contact() {
 
   const fetchMemories = async () => {
     try {
+      setIsLoadingMemories(true);
+      setMemoriesError(null);
       const response = await fetch('/api/memories');
       const data = await response.json();
       if (data.memories) {
@@ -156,15 +160,19 @@ export default function Contact() {
         // Initial sort will be handled by useEffect
       } else if (data.error) {
         console.error('Error fetching memories:', data.error);
+        setMemoriesError(data.error);
         // Still set empty array to show empty state
         setMemories([]);
         setSortedMemories([]);
       }
     } catch (error) {
       console.error('Error fetching memories:', error);
+      setMemoriesError('Failed to load memories. Please try again later.');
       // Set empty array on error to show empty state
       setMemories([]);
       setSortedMemories([]);
+    } finally {
+      setIsLoadingMemories(false);
     }
   };
 
@@ -623,8 +631,42 @@ export default function Contact() {
             )}
           </div>
           
-          {/* Carousel Container */}
-          {sortedMemories.length > 0 ? (
+          {/* Loading State */}
+          {isLoadingMemories ? (
+            <div className={`flex flex-col items-center justify-center p-12 rounded-xl shadow-lg min-h-[400px] ${
+              isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+            }`}>
+              <div className="relative w-16 h-16 mb-4">
+                <div className={`absolute inset-0 rounded-full border-4 border-t-transparent animate-spin ${
+                  isDarkMode ? 'border-blue-400' : 'border-blue-600'
+                }`}></div>
+              </div>
+              <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Loading memories...
+              </p>
+            </div>
+          ) : memoriesError ? (
+            <div className={`flex flex-col items-center justify-center p-12 rounded-xl shadow-lg min-h-[400px] ${
+              isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+            }`}>
+              <svg className={`w-16 h-16 mb-4 ${isDarkMode ? 'text-red-400' : 'text-red-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className={`text-lg mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                {memoriesError}
+              </p>
+              <button
+                onClick={fetchMemories}
+                className={`px-6 py-2 rounded-lg transition-colors ${
+                  isDarkMode 
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+              >
+                Try Again
+              </button>
+            </div>
+          ) : sortedMemories.length > 0 ? (
             <div 
               ref={carouselRef}
               className="relative"
